@@ -13,7 +13,6 @@ import uploadRoutes from './routes/uploadRoutes.js'
 import paymentRoutes from './routes/paymentRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
 
-
 dotenv.config()
 
 connectDB()
@@ -24,14 +23,25 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
-
 app.use(express.json())
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  )
+  res.header(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PUT, DELETE, OPTIONS'
+  )
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200)
+  }
+
+  next()
+})
 
 app.use('/api/products', productRoutes)
 app.use('/api/users', userRoutes)
@@ -43,23 +53,34 @@ app.use('/api/admin', adminRoutes)
 app.get('/api/config/paypal', (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
 )
- 
 
 const __dirname = path.resolve()
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+
+app.use(
+  '/uploads',
+  express.static(path.join(__dirname, '/uploads'))
+)
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '/frontend/build')))
+  app.use(
+    express.static(path.join(__dirname, '/frontend/build'))
+  )
 
   app.get('*', (req, res) =>
-    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+    res.sendFile(
+      path.resolve(
+        __dirname,
+        'frontend',
+        'build',
+        'index.html'
+      )
+    )
   )
 } else {
   app.get('/', (req, res) => {
     res.send('Hari Om Kiki Server is live')
   })
-}  
-
+}
 
 app.use(notFound)
 app.use(errorHandler)
@@ -68,7 +89,7 @@ const PORT = process.env.PORT || 6000
 
 app.listen(
   PORT,
-  console.log( 
+  console.log(
     `Server running in ${process.env.NODE_ENV} mode on ${PORT} port`
   )
 )
