@@ -1,20 +1,15 @@
 import React from 'react'
-import { Spinner } from 'react-bootstrap'
 
 const Loader = () => {
   return (
-    <Spinner
-      animation='border'
+    <div
+      className='cartnova-loader'
       role='status'
-      style={{
-        width: '100px',
-        height: '100px',
-        margin: 'auto',
-        display: 'block',
-      }}
+      aria-label='Loading'
     >
-      <span className='sr-only'>Loading...</span>
-    </Spinner>
+      <div className='cartnova-loader-spinner'></div>
+      <span>Loading...</span>
+    </div>
   )
 }
 

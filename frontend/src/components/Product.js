@@ -1,60 +1,158 @@
 import React from 'react'
 import { Card } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 import Rating from './Rating'
 
 function numberWithCommas(price) {
-  return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return Number(price || 0)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }
 
-function mrp(price)
-{
-  let min = price*1.19;
-  let max = price*1.41 ;
-  let new_mrp = (Math.random() * (max - min) + min).toFixed(0);
-  let mrp_format = numberWithCommas(new_mrp);
-  return mrp_format;
+/*
+  Stable MRP:
+  Random MRP hata diya gaya hai.
+*/
+function getMrp(price) {
+  const currentPrice = Number(price || 0)
+
+  if (currentPrice <= 0) {
+    return 0
+  }
+
+  return Math.round(currentPrice * 1.25)
 }
 
-function new_mrp(price)
-{
-  let min = price*1.19;
-  let max = price*1.41 ;
-  let mrp_format = (Math.random() * (max - min) + min).toFixed(0);
-  return mrp_format;
+/*
+  Stable offer:
+  ₹0 product par NaN nahi aayega.
+*/
+function getOffer(price) {
+  const currentPrice = Number(price || 0)
+
+  if (currentPrice <= 0) {
+    return 0
+  }
+
+  const mrpPrice = getMrp(currentPrice)
+
+  return Math.round(
+    ((mrpPrice - currentPrice) / mrpPrice) * 100
+  )
 }
-
-function offer(curr)
-{
-  let mrp_ = new_mrp(curr);
-  let offer = (curr/ mrp_)*100;
-  return Math.abs(100 - offer.toFixed(0));
-}
-
-
 
 const Product = ({ product }) => {
-  
+  const currentPrice = Number(product.price || 0)
+  const mrpPrice = getMrp(currentPrice)
+  const offerPercent = getOffer(currentPrice)
+
   return (
-    <Card className='my-3 p-3 rounded'>
-      <a href={`/product/${product._id}`}>
-        <Card.Img src={product.image} variant='top' />
-      </a>
+    <Card className='cartnova-product-card'>
 
-      <Card.Body>
-        <a href={`/product/${product._id}`}>
-          <Card.Title as='div' >
-            <strong>{product.name}</strong>
+      {/* ================= IMAGE ================= */}
+
+      <Link
+        to={`/product/${product._id}`}
+        className='cartnova-product-image-link'
+      >
+        <div className='cartnova-product-image-wrapper'>
+
+          <span className='cartnova-deal-badge'>
+            <i className='fas fa-bolt'></i>
+            Today's Deal
+          </span>
+
+          {product.image ? (
+            <Card.Img
+              src={product.image}
+              alt={product.name}
+              className='cartnova-product-image'
+            />
+          ) : (
+            <div className='cartnova-no-image'>
+              <i className='fas fa-image'></i>
+              <span>No Image</span>
+            </div>
+          )}
+
+        </div>
+      </Link>
+
+      {/* ================= DETAILS ================= */}
+
+      <Card.Body className='cartnova-product-body'>
+
+        {/* PRODUCT NAME */}
+
+        <Link
+          to={`/product/${product._id}`}
+          className='cartnova-product-title-link'
+        >
+          <Card.Title
+            as='div'
+            className='cartnova-product-title'
+          >
+            {product.name}
           </Card.Title>
-        </a>
+        </Link>
 
-        <Card.Text as='div'>
-          <Rating value={product.rating} text={`${product.numReviews} review`}/>
+        {/* RATING */}
+
+        <Card.Text
+          as='div'
+          className='cartnova-product-rating'
+        >
+          <Rating
+            value={product.rating || 0}
+            text={`${product.numReviews || 0} reviews`}
+          />
         </Card.Text>
 
-        <Card.Text as='h3' styles=" padding-bottom:0px"><strong>₹{numberWithCommas(product.price)}</strong></Card.Text>
-        <div className='mrp_on_card'>₹{mrp(product.price)}</div> 
-        <div className='offer_on_card'><span className='offer_name'>Today's Deal 👉🏻 </span><strong>{offer(product.price)}</strong>% offer</div>
+        {/* PRICE */}
+
+        <div className='cartnova-price-row'>
+
+          <span className='cartnova-current-price'>
+            ₹{numberWithCommas(currentPrice)}
+          </span>
+
+          {mrpPrice > currentPrice && (
+            <span className='cartnova-mrp'>
+              ₹{numberWithCommas(mrpPrice)}
+            </span>
+          )}
+
+        </div>
+
+        {/* OFFER */}
+
+        {offerPercent > 0 && (
+          <div className='cartnova-offer'>
+
+            <span>
+              <i className='fas fa-fire'></i>
+              Today's Deal
+            </span>
+
+            <strong>
+              {offerPercent}% OFF
+            </strong>
+
+          </div>
+        )}
+
+        {/* VIEW PRODUCT */}
+
+        <Link
+          to={`/product/${product._id}`}
+          className='cartnova-product-btn'
+        >
+          View Product
+          <i className='fas fa-arrow-right'></i>
+        </Link>
+
       </Card.Body>
+
     </Card>
   )
 }

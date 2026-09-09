@@ -7,21 +7,37 @@ import Product from '../models/productModel.js'
 const getProducts = asyncHandler(async (req, res) => {
   const pageSize = 10
   const page = Number(req.query.pageNumber) || 1
+
   const keyword = req.query.keyword
-  ? {
-      name: {
-        $regex: req.query.keyword,
-        $options: 'i',
-      },
-    }
-  : {}
+    ? {
+        $or: [
+          {
+            name: {
+              $regex: req.query.keyword,
+              $options: 'i',
+            },
+          },
+          {
+            category: {
+              $regex: req.query.keyword,
+              $options: 'i',
+            },
+          },
+        ],
+      }
+    : {}
 
-  const count = await Product.countDocuments({ ...keyword })
+  const count = await Product.countDocuments(keyword)
 
-const products = await Product.find({ ...keyword })
+  const products = await Product.find(keyword)
     .limit(pageSize)
     .skip(pageSize * (page - 1))
-  res.json({ products, page, pages: Math.ceil(count / pageSize) })
+
+  res.json({
+    products,
+    page,
+    pages: Math.ceil(count / pageSize),
+  })
 })
 
 // @desc    Fetch single product
@@ -61,7 +77,8 @@ const createProduct = asyncHandler(async (req, res) => {
     name: 'Sample name',
     price: 0,
     user: req.user._id,
-    image: '',
+    image:
+      'https://via.placeholder.com/600x600.png?text=Sample+Product',
     brand: 'Sample brand',
     category: 'Sample category',
     countInStock: 0,
@@ -70,6 +87,7 @@ const createProduct = asyncHandler(async (req, res) => {
   })
 
   const createdProduct = await product.save()
+
   res.status(201).json(createdProduct)
 })
 
@@ -99,6 +117,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.countInStock = countInStock
 
     const updatedProduct = await product.save()
+
     res.json(updatedProduct)
   } else {
     res.status(404)
@@ -136,10 +155,13 @@ const createProductReview = asyncHandler(async (req, res) => {
     product.numReviews = product.reviews.length
 
     product.rating =
-      product.reviews.reduce((acc, item) => item.rating + acc, 0) /
-      product.reviews.length
+      product.reviews.reduce(
+        (acc, item) => item.rating + acc,
+        0
+      ) / product.reviews.length
 
     await product.save()
+
     res.status(201).json({ message: 'Review added' })
   } else {
     res.status(404)
@@ -151,7 +173,9 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @route   GET /api/products/top
 // @access  Public
 const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ rating: -1 }).limit(3)
+  const products = await Product.find({})
+    .sort({ rating: -1 })
+    .limit(3)
 
   res.json(products)
 })

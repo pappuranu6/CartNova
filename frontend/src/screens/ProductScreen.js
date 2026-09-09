@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap'
+import {
+  Row,
+  Col,
+  Image,
+  ListGroup,
+  Card,
+  Button,
+  Form,
+} from 'react-bootstrap'
+
 import Rating from '../components/Rating'
 import Message from '../components/Message'
 import Loader from '../components/Loader'
 import Meta from '../components/Meta'
+
 import {
   listProductDetails,
   createProductReview,
 } from '../actions/productActions'
-import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants'
+
+import {
+  PRODUCT_CREATE_REVIEW_RESET,
+} from '../constants/productConstants'
 
 const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1)
@@ -19,13 +32,26 @@ const ProductScreen = ({ history, match }) => {
 
   const dispatch = useDispatch()
 
-  const productDetails = useSelector((state) => state.productDetails)
-  const { loading, error, product } = productDetails
+  const productDetails = useSelector(
+    (state) => state.productDetails
+  )
 
-  const userLogin = useSelector((state) => state.userLogin)
+  const {
+    loading,
+    error,
+    product,
+  } = productDetails
+
+  const userLogin = useSelector(
+    (state) => state.userLogin
+  )
+
   const { userInfo } = userLogin
 
-  const productReviewCreate = useSelector((state) => state.productReviewCreate)
+  const productReviewCreate = useSelector(
+    (state) => state.productReviewCreate
+  )
+
   const {
     success: successProductReview,
     error: errorProductReview,
@@ -34,206 +60,548 @@ const ProductScreen = ({ history, match }) => {
   useEffect(() => {
     if (successProductReview) {
       alert('Review Submitted!')
+
       setRating(0)
       setComment('')
-      dispatch({ type: PRODUCT_CREATE_REVIEW_RESET })
+
+      dispatch({
+        type: PRODUCT_CREATE_REVIEW_RESET,
+      })
     }
-    dispatch(listProductDetails(match.params.id))
-  }, [dispatch, match, successProductReview])
+
+    dispatch(
+      listProductDetails(match.params.id)
+    )
+  }, [
+    dispatch,
+    match,
+    successProductReview,
+  ])
+
+  /* ================= ADD TO CART ================= */
 
   const addToCartHandler = () => {
-    history.push(`/cart/${match.params.id}?qty=${qty}`)
-  }
-
-  const submitHandler = (e) => {
-    e.preventDefault()
-    dispatch(
-      createProductReview(match.params.id, {
-        rating,
-        comment,
-      })
+    history.push(
+      `/cart/${match.params.id}?qty=${qty}`
     )
   }
 
-  function numberWithCommas(price) {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  /* ================= REVIEW ================= */
+
+  const submitHandler = (e) => {
+    e.preventDefault()
+
+    dispatch(
+      createProductReview(
+        match.params.id,
+        {
+          rating,
+          comment,
+        }
+      )
+    )
   }
-  
-  function mrp(price)
-  {
-    let new_mrp = (price*1.3).toFixed(2);
-    let mrp_format = numberWithCommas(new_mrp);
-    return mrp_format;
+
+  /* ================= PRICE ================= */
+
+  const numberWithCommas = (price) => {
+    return Number(price || 0)
+      .toLocaleString('en-IN')
   }
 
-  function new_mrp(price)
-{
-  let min = price*1.19;
-  let max = price*1.41 ;
-  let mrp_format = (Math.random() * (max - min) + min).toFixed(0);
-  return mrp_format;
-}
+  const currentPrice = Number(
+    product?.price || 0
+  )
 
-function offer(curr)
-{
-  let mrp_ = new_mrp(curr);
-  let offer = (curr/ mrp_)*100;
-  return Math.abs(100 - offer.toFixed(0));
-}
+  const mrpPrice =
+    currentPrice > 0
+      ? Math.round(currentPrice * 1.3)
+      : 0
 
-  
+  const offerPercent =
+    currentPrice > 0
+      ? Math.round(
+          ((mrpPrice - currentPrice) /
+            mrpPrice) *
+            100
+        )
+      : 0
+
   return (
     <>
-      <Link className='btn btn-light my-3' to='/'>
-        Go Back
-      </Link>
       {loading ? (
-        <Loader />
+        <div className='cartnova-product-loader'>
+          <Loader />
+        </div>
       ) : error ? (
-        <Message variant='danger'>{error}</Message>
+        <Message variant='danger'>
+          {error}
+        </Message>
       ) : (
         <>
-        <Meta title={product.name} />
-          <Row>
-            <Col md={6}>
-              <Image src={product.image} alt={product.name} fluid />
-            </Col>
-            <Col md={3}>
-              <ListGroup variant='flush'>
-                <ListGroup.Item>
-                  <h3>{product.name}</h3>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  <Rating
-                    value={product.rating}
-                    text={`${product.numReviews} reviews`}
-                  />
-                </ListGroup.Item>
-                <ListGroup.Item><strong>Today's Deal : ₹{product.price}</strong></ListGroup.Item>
-                <ListGroup.Item className='mrp_on_card'>MRP: ₹{mrp(product.price)}</ListGroup.Item>
-                <div className='offer_on_card'><strong>{offer(product.price)}</strong>% offer</div>
-                <ListGroup.Item>
-                  <strong>Description:</strong> {product.description}
-                </ListGroup.Item>
-              </ListGroup>
-            </Col>
-            <Col md={3}>
-              <Card>
-                <ListGroup variant='flush'>
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Price:</Col>
-                      <Col>
-                        <strong>₹{product.price}</strong>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
+          <Meta title={product.name} />
 
-                  <ListGroup.Item>
-                    <Row>
-                      <Col>Status:</Col>
-                      <Col>
-                        {product.countInStock > 0 ? 'In Stock' : 'Out Of Stock'}
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
+          {/* ================= BACK BUTTON ================= */}
 
-                  {product.countInStock > 0 && (
-                    <ListGroup.Item>
-                      <Row>
-                        <Col>Qty</Col>
-                        <Col>
-                          <Form.Control
-                            as='select'
-                            value={qty}
-                            onChange={(e) => setQty(e.target.value)}
-                          >
-                            {[...Array(product.countInStock).keys()].map(
-                              (x) => (
-                                <option key={x + 1} value={x + 1}>
-                                  {x + 1}
-                                </option>
-                              )
-                            )}
-                          </Form.Control>
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
+          <Link
+            className='cartnova-product-back'
+            to='/'
+          >
+            <i className='fas fa-arrow-left'></i>
+            Back to Products
+          </Link>
+
+          {/* ================= PRODUCT DETAILS ================= */}
+
+          <div className='cartnova-product-details'>
+
+            {/* IMAGE */}
+
+            <div className='cartnova-product-details-image'>
+
+              <div className='cartnova-details-deal'>
+                <i className='fas fa-bolt'></i>
+                Today's Deal
+              </div>
+
+              {product.image ? (
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fluid
+                />
+              ) : (
+                <div className='cartnova-details-no-image'>
+                  <i className='fas fa-image'></i>
+                  <span>No Image Available</span>
+                </div>
+              )}
+
+            </div>
+
+            {/* INFORMATION */}
+
+            <div className='cartnova-product-details-info'>
+
+              <div className='cartnova-details-category'>
+                <i className='fas fa-tag'></i>
+                CartNova Product
+              </div>
+
+              <h1>
+                {product.name}
+              </h1>
+
+              {/* RATING */}
+
+              <div className='cartnova-details-rating'>
+                <Rating
+                  value={product.rating}
+                  text={`${product.numReviews} reviews`}
+                />
+              </div>
+
+              {/* PRICE */}
+
+              <div className='cartnova-details-price-box'>
+
+                <div className='cartnova-details-price'>
+                  ₹
+                  {numberWithCommas(
+                    currentPrice
                   )}
+                </div>
 
-                  <ListGroup.Item>
-                    <Button
-                      onClick={addToCartHandler}
-                      className='btn-block'
-                      type='button'
-                      disabled={product.countInStock === 0}
-                    >
-                      Add To Cart
-                    </Button>
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col md={6} className='review_card'>
-              <h2><strong>Reviews</strong></h2>
-              {product.reviews.length === 0 && <Message>No Reviews</Message>}
-              <ListGroup variant='flush'>
+                {mrpPrice >
+                  currentPrice && (
+                  <div className='cartnova-details-mrp'>
+                    MRP:
+                    <span>
+                      ₹
+                      {numberWithCommas(
+                        mrpPrice
+                      )}
+                    </span>
+                  </div>
+                )}
 
-                {product.reviews.map((review) => (
-                  <ListGroup.Item key={review._id}>
-                    <strong>{review.name}</strong>
-                    <Rating value={review.rating} />
-                    <p>{review.createdAt.substring(0, 10)}</p>
-                    <p><strong>{review.comment}</strong></p>
-                  </ListGroup.Item>
-                ))}
+                {offerPercent > 0 && (
+                  <span className='cartnova-details-offer'>
+                    {offerPercent}% OFF
+                  </span>
+                )}
 
-                <ListGroup.Item>
-                  <h2><strong>Share your valuable feedback</strong></h2>
-                  {errorProductReview && (
-                    <Message variant='danger'>{errorProductReview}</Message>
+              </div>
+
+              {/* DESCRIPTION */}
+
+              <div className='cartnova-details-description'>
+
+                <h4>
+                  <i className='fas fa-info-circle'></i>
+                  Product Description
+                </h4>
+
+                <p>
+                  {product.description}
+                </p>
+
+              </div>
+
+              {/* FEATURES */}
+
+              <div className='cartnova-details-features'>
+
+                <div>
+                  <i className='fas fa-shield-alt'></i>
+                  <span>
+                    Secure Shopping
+                  </span>
+                </div>
+
+                <div>
+                  <i className='fas fa-truck'></i>
+                  <span>
+                    Fast Delivery
+                  </span>
+                </div>
+
+                <div>
+                  <i className='fas fa-check-circle'></i>
+                  <span>
+                    Quality Product
+                  </span>
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* PURCHASE CARD */}
+
+            <div className='cartnova-product-purchase'>
+
+              <div className='cartnova-purchase-price'>
+                <span>
+                  Price
+                </span>
+
+                <strong>
+                  ₹
+                  {numberWithCommas(
+                    currentPrice
                   )}
-                  {userInfo ? (
-                    <Form onSubmit={submitHandler}>
-                      <Form.Group controlId='rating'>
-                        <Form.Label>Rating</Form.Label>
-                        <Form.Control
-                          as='select'
-                          value={rating}
-                          onChange={(e) => setRating(e.target.value)}
+                </strong>
+              </div>
+
+              <div className='cartnova-purchase-divider'></div>
+
+              {/* STOCK */}
+
+              <div className='cartnova-purchase-stock'>
+
+                <span>
+                  Availability
+                </span>
+
+                {product.countInStock > 0 ? (
+                  <strong className='in-stock'>
+                    <i className='fas fa-check-circle'></i>
+                    In Stock
+                  </strong>
+                ) : (
+                  <strong className='out-stock'>
+                    <i className='fas fa-times-circle'></i>
+                    Out of Stock
+                  </strong>
+                )}
+
+              </div>
+
+              {/* QUANTITY */}
+
+              {product.countInStock > 0 && (
+                <div className='cartnova-purchase-qty'>
+
+                  <label>
+                    Quantity
+                  </label>
+
+                  <Form.Control
+                    as='select'
+                    value={qty}
+                    onChange={(e) =>
+                      setQty(
+                        Number(e.target.value)
+                      )
+                    }
+                  >
+                    {[
+                      ...Array(
+                        product.countInStock
+                      ).keys(),
+                    ].map((x) => (
+                      <option
+                        key={x + 1}
+                        value={x + 1}
+                      >
+                        {x + 1}
+                      </option>
+                    ))}
+                  </Form.Control>
+
+                </div>
+              )}
+
+              {/* ADD TO CART */}
+
+              <Button
+                onClick={
+                  addToCartHandler
+                }
+                className='cartnova-add-cart-btn'
+                type='button'
+                disabled={
+                  product.countInStock === 0
+                }
+              >
+                <i className='fas fa-shopping-cart'></i>
+                {product.countInStock > 0
+                  ? 'Add To Cart'
+                  : 'Out of Stock'}
+              </Button>
+
+              <div className='cartnova-secure-note'>
+                <i className='fas fa-lock'></i>
+                Secure & Safe Checkout
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* ================= REVIEWS ================= */}
+
+          <div className='cartnova-reviews-section'>
+
+            <div className='cartnova-reviews-header'>
+
+              <div>
+                <span>
+                  CUSTOMER FEEDBACK
+                </span>
+
+                <h2>
+                  Reviews
+                </h2>
+              </div>
+
+              <div className='cartnova-review-count'>
+                <i className='fas fa-star'></i>
+                {product.numReviews || 0}
+                {' '}
+                Reviews
+              </div>
+
+            </div>
+
+            <div className='cartnova-reviews-content'>
+
+              {/* REVIEW LIST */}
+
+              <div className='cartnova-review-list'>
+
+                {product.reviews.length === 0 ? (
+                  <div className='cartnova-no-reviews'>
+                    <div>
+                      <i className='far fa-comment-dots'></i>
+                    </div>
+
+                    <h4>
+                      No Reviews Yet
+                    </h4>
+
+                    <p>
+                      Be the first customer
+                      to share your experience.
+                    </p>
+                  </div>
+                ) : (
+                  <ListGroup variant='flush'>
+
+                    {product.reviews.map(
+                      (review) => (
+                        <ListGroup.Item
+                          key={review._id}
+                          className='cartnova-review-item'
                         >
-                          <option value=''>Select...</option>
-                          <option value='1'>1 - Poor</option>
-                          <option value='2'>2 - Fair</option>
-                          <option value='3'>3 - Good</option>
-                          <option value='4'>4 - Very Good</option>
-                          <option value='5'>5 - Excellent</option>
-                        </Form.Control>
-                      </Form.Group>
-                      <Form.Group controlId='comment'>
-                        <Form.Label>Comment</Form.Label>
-                        <Form.Control
-                          as='textarea'
-                          row='3'
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                        ></Form.Control>
-                      </Form.Group>
-                      <Button type='submit' variant='primary'>
-                        Submit
-                      </Button>
-                    </Form>
-                  ) : (
-                    <Message>
-                      Please <Link to='/login'>sign in</Link> to write a review{' '}
-                    </Message>
-                  )}
-                </ListGroup.Item>
-              </ListGroup>
-            </Col>
-          </Row>
+
+                          <div className='cartnova-review-user'>
+
+                            <div className='cartnova-review-avatar'>
+                              <i className='fas fa-user'></i>
+                            </div>
+
+                            <div>
+                              <strong>
+                                {review.name}
+                              </strong>
+
+                              <span>
+                                {new Date(
+                                  review.createdAt
+                                ).toLocaleDateString(
+                                  'en-IN'
+                                )}
+                              </span>
+                            </div>
+
+                          </div>
+
+                          <Rating
+                            value={
+                              review.rating
+                            }
+                          />
+
+                          <p>
+                            {review.comment}
+                          </p>
+
+                        </ListGroup.Item>
+                      )
+                    )}
+
+                  </ListGroup>
+                )}
+
+              </div>
+
+              {/* WRITE REVIEW */}
+
+              <div className='cartnova-write-review'>
+
+                <div className='cartnova-write-review-heading'>
+                  <div>
+                    <i className='fas fa-pen'></i>
+                  </div>
+
+                  <div>
+                    <h3>
+                      Share Your Feedback
+                    </h3>
+
+                    <p>
+                      Your feedback helps
+                      other customers.
+                    </p>
+                  </div>
+                </div>
+
+                {errorProductReview && (
+                  <Message variant='danger'>
+                    {errorProductReview}
+                  </Message>
+                )}
+
+                {userInfo ? (
+                  <Form
+                    onSubmit={submitHandler}
+                  >
+
+                    <Form.Group
+                      controlId='rating'
+                      className='cartnova-review-form-group'
+                    >
+                      <Form.Label>
+                        Rating
+                      </Form.Label>
+
+                      <Form.Control
+                        as='select'
+                        value={rating}
+                        onChange={(e) =>
+                          setRating(
+                            Number(
+                              e.target.value
+                            )
+                          )
+                        }
+                        required
+                      >
+                        <option value=''>
+                          Select Rating...
+                        </option>
+
+                        <option value='1'>
+                          1 - Poor
+                        </option>
+
+                        <option value='2'>
+                          2 - Fair
+                        </option>
+
+                        <option value='3'>
+                          3 - Good
+                        </option>
+
+                        <option value='4'>
+                          4 - Very Good
+                        </option>
+
+                        <option value='5'>
+                          5 - Excellent
+                        </option>
+                      </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group
+                      controlId='comment'
+                      className='cartnova-review-form-group'
+                    >
+                      <Form.Label>
+                        Your Comment
+                      </Form.Label>
+
+                      <Form.Control
+                        as='textarea'
+                        rows='4'
+                        placeholder='Share your experience with this product...'
+                        value={comment}
+                        onChange={(e) =>
+                          setComment(
+                            e.target.value
+                          )
+                        }
+                        required
+                      />
+                    </Form.Group>
+
+                    <Button
+                      type='submit'
+                      className='cartnova-review-submit'
+                    >
+                      <i className='fas fa-paper-plane'></i>
+                      Submit Review
+                    </Button>
+
+                  </Form>
+                ) : (
+                  <Message>
+                    Please{' '}
+                    <Link to='/login'>
+                      sign in
+                    </Link>{' '}
+                    to write a review.
+                  </Message>
+                )}
+
+              </div>
+
+            </div>
+
+          </div>
+
         </>
       )}
     </>

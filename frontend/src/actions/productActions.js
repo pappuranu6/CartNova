@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 import {
   PRODUCT_LIST_REQUEST,
   PRODUCT_LIST_SUCCESS,
@@ -22,6 +23,7 @@ import {
   PRODUCT_TOP_SUCCESS,
   PRODUCT_TOP_FAIL,
 } from '../constants/productConstants'
+
 
 export const listProducts = (keyword = '', pageNumber = '') => async (
   dispatch
@@ -48,6 +50,7 @@ export const listProducts = (keyword = '', pageNumber = '') => async (
   }
 }
 
+
 export const listProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST })
@@ -68,6 +71,7 @@ export const listProductDetails = (id) => async (dispatch) => {
     })
   }
 }
+
 
 export const deleteProduct = (id) => async (dispatch, getState) => {
   try {
@@ -101,6 +105,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
   }
 }
 
+
 export const createProduct = () => async (dispatch, getState) => {
   try {
     dispatch({
@@ -133,6 +138,7 @@ export const createProduct = () => async (dispatch, getState) => {
     })
   }
 }
+
 
 export const updateProduct = (product) => async (dispatch, getState) => {
   try {
@@ -172,6 +178,7 @@ export const updateProduct = (product) => async (dispatch, getState) => {
   }
 }
 
+
 export const createProductReview = (productId, review) => async (
   dispatch,
   getState
@@ -191,7 +198,12 @@ export const createProductReview = (productId, review) => async (
         Authorization: `Bearer ${userInfo.token}`,
       },
     }
-    await axios.post(`/api/products/${productId}/reviews`, review, config)
+
+    await axios.post(
+      `/api/products/${productId}/reviews`,
+      review,
+      config
+    )
 
     dispatch({
       type: PRODUCT_CREATE_REVIEW_SUCCESS,
@@ -206,6 +218,7 @@ export const createProductReview = (productId, review) => async (
     })
   }
 }
+
 
 export const listTopProducts = () => async (dispatch) => {
   try {

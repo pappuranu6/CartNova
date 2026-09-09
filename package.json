@@ -8,8 +8,8 @@
     "start": "node backend/server",
     "data:import": "node backend/seeder",
     "data:destroy": "node backend/seeder -d",
-    "predeploy":"npm install",
-    "deploy":"gh-pages -d build",
+    "predeploy": "npm install",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -44,6 +44,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.20",
     "path": "^0.12.7",
+    "razorpay": "^2.9.8",
     "react-google-login": "^5.2.2",
     "react-helmet": "^6.1.0",
     "react-paypal-button-v2": "^2.6.3",
@@ -51,8 +52,10 @@
     "react-tooltip": "^5.8.3",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.4.1",
-    "styled-components": "^5.3.6"
+    "styled-components": "^5.3.6",
+    "twilio": "^6.1.0"
   },
   "engines": {
-    "node": ">=16.0.0"}
+    "node": ">=16.0.0"
+  }
 }
