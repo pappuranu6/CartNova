@@ -46,6 +46,11 @@ const Product = ({ product }) => {
   const mrpPrice = getMrp(currentPrice)
   const offerPercent = getOffer(currentPrice)
 
+  // Live backend image URL
+  const imageUrl = product.image?.startsWith('http')
+    ? product.image
+    : `https://cartnova-5dvn.onrender.com${product.image}`
+
   return (
     <Card className='cartnova-product-card'>
 
@@ -64,7 +69,7 @@ const Product = ({ product }) => {
 
           {product.image ? (
             <Card.Img
-              src={product.image}
+              src={imageUrl}
               alt={product.name}
               className='cartnova-product-image'
             />
