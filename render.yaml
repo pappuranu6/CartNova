@@ -2,6 +2,7 @@ services:
   - type: web
     runtime: static
     name: cartnova
+    rootDir: frontend
     buildCommand: npm run build
     staticPublishPath: build
     routes:
