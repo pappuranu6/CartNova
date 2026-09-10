@@ -19,6 +19,40 @@ function commas(price) {
   return Number(price || 0).toLocaleString('en-IN')
 }
 
+/*
+  Check whether the saved Today's Deal
+  is still active.
+
+  If the 24-hour expiry has passed,
+  normal/original price will be used.
+*/
+function isDealLive(item) {
+  if (!item?.isDealActive) {
+    return false
+  }
+
+  const discount = Number(
+    item?.dealDiscount || 0
+  )
+
+  if (
+    discount <= 0 ||
+    discount > 100
+  ) {
+    return false
+  }
+
+  if (!item?.dealExpiresAt) {
+    return false
+  }
+
+  return (
+    new Date(
+      item.dealExpiresAt
+    ).getTime() > Date.now()
+  )
+}
+
 const CartScreen = ({
   match,
   location,
@@ -40,10 +74,17 @@ const CartScreen = ({
 
   const { cartItems } = cart
 
+  // =========================
+  // ADD PRODUCT TO CART
+  // =========================
+
   useEffect(() => {
     if (productId) {
       dispatch(
-        addToCart(productId, qty)
+        addToCart(
+          productId,
+          qty
+        )
       )
     }
   }, [
@@ -52,11 +93,21 @@ const CartScreen = ({
     qty,
   ])
 
-  const removeFromCartHandler = (id) => {
+  // =========================
+  // REMOVE ITEM
+  // =========================
+
+  const removeFromCartHandler = (
+    id
+  ) => {
     dispatch(
       removeFromCart(id)
     )
   }
+
+  // =========================
+  // CHECKOUT
+  // =========================
 
   const checkoutHandler = () => {
     history.push(
@@ -64,17 +115,61 @@ const CartScreen = ({
     )
   }
 
-  const totalItems = cartItems.reduce(
-    (acc, item) =>
-      acc + item.qty,
-    0
-  )
+  // =========================
+  // TOTAL ITEMS
+  // =========================
 
-  const subtotal = cartItems.reduce(
-    (acc, item) =>
-      acc + item.qty * item.price,
-    0
-  )
+  const totalItems =
+    cartItems.reduce(
+      (acc, item) =>
+        acc + item.qty,
+      0
+    )
+
+  /*
+    ==========================================
+    CALCULATE CART SUBTOTAL
+    ==========================================
+
+    New cart items already contain
+    the discounted price.
+
+    For old/localStorage items that don't
+    contain deal information, their saved
+    price will continue to work normally.
+  */
+
+  const subtotal =
+    cartItems.reduce(
+      (acc, item) => {
+        let itemPrice = Number(
+          item.price || 0
+        )
+
+        /*
+          If deal information exists but
+          the deal has expired, use originalPrice.
+        */
+
+        if (
+          item.isDealActive &&
+          item.dealExpiresAt &&
+          !isDealLive(item) &&
+          item.originalPrice !== undefined
+        ) {
+          itemPrice = Number(
+            item.originalPrice || 0
+          )
+        }
+
+        return (
+          acc +
+          item.qty *
+            itemPrice
+        )
+      },
+      0
+    )
 
   return (
     <div className='cartnova-cart-page'>
@@ -167,175 +262,290 @@ const CartScreen = ({
               <div className='cartnova-cart-items'>
 
                 {cartItems.map(
-                  (item) => (
-                    <div
-                      key={item.product}
-                      className='cartnova-cart-item'
-                    >
+                  (item) => {
 
-                      {/* IMAGE */}
+                    const dealLive =
+                      isDealLive(item)
 
-                      <Link
-                        to={`/product/${item.product}`}
-                        className='cartnova-cart-image'
+                    const discount =
+                      Number(
+                        item.dealDiscount || 0
+                      )
+
+                    const originalPrice =
+                      Number(
+                        item.originalPrice ??
+                          item.price ??
+                          0
+                      )
+
+                    /*
+                      Current cart price.
+
+                      If deal is live:
+                      item.price is already
+                      the discounted price.
+
+                      If deal expired:
+                      original price is used.
+                    */
+
+                    const currentItemPrice =
+                      dealLive
+                        ? Number(
+                            item.price || 0
+                          )
+                        : Number(
+                            item.originalPrice ??
+                              item.price ??
+                              0
+                          )
+
+                    const itemSubtotal =
+                      item.qty *
+                      currentItemPrice
+
+                    return (
+                      <div
+                        key={item.product}
+                        className='cartnova-cart-item'
                       >
-                        {item.image ? (
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                          />
-                        ) : (
-                          <div>
-                            <i className='fas fa-image'></i>
-                          </div>
-                        )}
-                      </Link>
 
-                      {/* PRODUCT INFO */}
-
-                      <div className='cartnova-cart-product'>
+                        {/* ================= IMAGE ================= */}
 
                         <Link
                           to={`/product/${item.product}`}
-                          className='cartnova-cart-product-name'
+                          className='cartnova-cart-image'
                         >
-                          {item.name}
+                          {item.image ? (
+                            <Image
+                              src={
+                                item.image?.startsWith(
+                                  'http'
+                                )
+                                  ? item.image
+                                  : `https://cartnova-5dvn.onrender.com${item.image}`
+                              }
+                              alt={item.name}
+                            />
+                          ) : (
+                            <div>
+                              <i className='fas fa-image'></i>
+                            </div>
+                          )}
                         </Link>
 
-                        <span className='cartnova-cart-unit-price'>
-                          ₹
-                          {commas(
-                            item.price
-                          )}{' '}
-                          / item
-                        </span>
+                        {/* ================= PRODUCT INFO ================= */}
 
-                        <div className='cartnova-cart-mobile-actions'>
+                        <div className='cartnova-cart-product'>
 
-                          <div className='cartnova-cart-quantity'>
-                            <label>
-                              Qty
-                            </label>
+                          <Link
+                            to={`/product/${item.product}`}
+                            className='cartnova-cart-product-name'
+                          >
+                            {item.name}
+                          </Link>
 
-                            <Form.Control
-                              as='select'
-                              value={item.qty}
-                              onChange={(e) =>
-                                dispatch(
-                                  addToCart(
-                                    item.product,
-                                    Number(
-                                      e.target.value
+                          {/* PRICE */}
+
+                          <span className='cartnova-cart-unit-price'>
+
+                            ₹
+                            {commas(
+                              currentItemPrice
+                            )}
+
+                            {' '}/ item
+
+                          </span>
+
+                          {/* DEAL */}
+
+                          {dealLive && (
+                            <div
+                              style={{
+                                marginTop: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                color: '#047857',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                              }}
+                            >
+                              <i className='fas fa-bolt'></i>
+
+                              Today's Deal -{' '}
+                              {discount}% OFF
+
+                            </div>
+                          )}
+
+                          {/* ORIGINAL PRICE */}
+
+                          {dealLive &&
+                            originalPrice >
+                              currentItemPrice && (
+                              <div
+                                style={{
+                                  marginTop: '4px',
+                                  fontSize: '12px',
+                                  color: '#6b7280',
+                                  textDecoration:
+                                    'line-through',
+                                }}
+                              >
+                                ₹
+                                {commas(
+                                  originalPrice
+                                )}
+                              </div>
+                            )}
+
+                          <div className='cartnova-cart-mobile-actions'>
+
+                            {/* MOBILE QUANTITY */}
+
+                            <div className='cartnova-cart-quantity'>
+
+                              <label>
+                                Qty
+                              </label>
+
+                              <Form.Control
+                                as='select'
+                                value={item.qty}
+                                onChange={(e) =>
+                                  dispatch(
+                                    addToCart(
+                                      item.product,
+                                      Number(
+                                        e.target.value
+                                      )
                                     )
                                   )
+                                }
+                              >
+                                {[
+                                  ...Array(
+                                    item.countInStock
+                                  ).keys(),
+                                ].map(
+                                  (x) => (
+                                    <option
+                                      key={
+                                        x + 1
+                                      }
+                                      value={
+                                        x + 1
+                                      }
+                                    >
+                                      {x + 1}
+                                    </option>
+                                  )
+                                )}
+                              </Form.Control>
+
+                            </div>
+
+                            {/* MOBILE REMOVE */}
+
+                            <button
+                              type='button'
+                              className='cartnova-remove-btn'
+                              onClick={() =>
+                                removeFromCartHandler(
+                                  item.product
                                 )
                               }
+                              title='Remove item'
                             >
-                              {[
-                                ...Array(
-                                  item.countInStock
-                                ).keys(),
-                              ].map((x) => (
-                                <option
-                                  key={x + 1}
-                                  value={x + 1}
-                                >
-                                  {x + 1}
-                                </option>
-                              ))}
-                            </Form.Control>
-                          </div>
+                              <i className='fas fa-trash-alt'></i>
+                            </button>
 
-                          <button
-                            type='button'
-                            className='cartnova-remove-btn'
-                            onClick={() =>
-                              removeFromCartHandler(
-                                item.product
-                              )
-                            }
-                            title='Remove item'
-                          >
-                            <i className='fas fa-trash-alt'></i>
-                          </button>
+                          </div>
 
                         </div>
 
-                      </div>
+                        {/* ================= DESKTOP QUANTITY ================= */}
 
-                      {/* DESKTOP QUANTITY */}
+                        <div className='cartnova-cart-desktop-qty'>
 
-                      <div className='cartnova-cart-desktop-qty'>
+                          <label>
+                            Quantity
+                          </label>
 
-                        <label>
-                          Quantity
-                        </label>
-
-                        <Form.Control
-                          as='select'
-                          value={item.qty}
-                          onChange={(e) =>
-                            dispatch(
-                              addToCart(
-                                item.product,
-                                Number(
-                                  e.target.value
+                          <Form.Control
+                            as='select'
+                            value={item.qty}
+                            onChange={(e) =>
+                              dispatch(
+                                addToCart(
+                                  item.product,
+                                  Number(
+                                    e.target.value
+                                  )
                                 )
                               )
+                            }
+                          >
+                            {[
+                              ...Array(
+                                item.countInStock
+                              ).keys(),
+                            ].map(
+                              (x) => (
+                                <option
+                                  key={
+                                    x + 1
+                                  }
+                                  value={
+                                    x + 1
+                                  }
+                                >
+                                  {x + 1}
+                                </option>
+                              )
+                            )}
+                          </Form.Control>
+
+                        </div>
+
+                        {/* ================= SUBTOTAL ================= */}
+
+                        <div className='cartnova-item-subtotal'>
+
+                          <span>
+                            Subtotal
+                          </span>
+
+                          <strong>
+                            ₹
+                            {commas(
+                              itemSubtotal
+                            )}
+                          </strong>
+
+                        </div>
+
+                        {/* ================= DESKTOP REMOVE ================= */}
+
+                        <button
+                          type='button'
+                          className='cartnova-remove-desktop'
+                          onClick={() =>
+                            removeFromCartHandler(
+                              item.product
                             )
                           }
+                          title='Remove item'
                         >
-                          {[
-                            ...Array(
-                              item.countInStock
-                            ).keys(),
-                          ].map((x) => (
-                            <option
-                              key={x + 1}
-                              value={x + 1}
-                            >
-                              {x + 1}
-                            </option>
-                          ))}
-                        </Form.Control>
+                          <i className='fas fa-trash-alt'></i>
+                        </button>
 
                       </div>
-
-                      {/* SUBTOTAL */}
-
-                      <div className='cartnova-item-subtotal'>
-
-                        <span>
-                          Subtotal
-                        </span>
-
-                        <strong>
-                          ₹
-                          {commas(
-                            item.qty *
-                              item.price
-                          )}
-                        </strong>
-
-                      </div>
-
-                      {/* DESKTOP REMOVE */}
-
-                      <button
-                        type='button'
-                        className='cartnova-remove-desktop'
-                        onClick={() =>
-                          removeFromCartHandler(
-                            item.product
-                          )
-                        }
-                        title='Remove item'
-                      >
-                        <i className='fas fa-trash-alt'></i>
-                      </button>
-
-                    </div>
-                  )
+                    )
+                  }
                 )}
 
               </div>
@@ -379,7 +589,10 @@ const CartScreen = ({
 
               </div>
 
+              {/* ITEMS */}
+
               <div className='cartnova-summary-row'>
+
                 <span>
                   Items
                 </span>
@@ -387,9 +600,13 @@ const CartScreen = ({
                 <strong>
                   {totalItems}
                 </strong>
+
               </div>
 
+              {/* SUBTOTAL */}
+
               <div className='cartnova-summary-row'>
+
                 <span>
                   Subtotal
                 </span>
@@ -400,11 +617,15 @@ const CartScreen = ({
                     subtotal
                   )}
                 </strong>
+
               </div>
 
               <div className='cartnova-summary-divider'></div>
 
+              {/* TOTAL */}
+
               <div className='cartnova-summary-total'>
+
                 <span>
                   Total
                 </span>
@@ -415,7 +636,10 @@ const CartScreen = ({
                     subtotal
                   )}
                 </strong>
+
               </div>
+
+              {/* CHECKOUT */}
 
               <Button
                 type='button'

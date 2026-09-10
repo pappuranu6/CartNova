@@ -11,7 +11,7 @@ function numberWithCommas(price) {
 
 /*
   Stable MRP:
-  Random MRP hata diya gaya hai.
+  Existing product pricing logic preserved.
 */
 function getMrp(price) {
   const currentPrice = Number(price || 0)
@@ -24,32 +24,73 @@ function getMrp(price) {
 }
 
 /*
-  Stable offer:
-  ₹0 product par NaN nahi aayega.
+  Check whether Today's Deal is still live.
+  Deal automatically becomes inactive after 24 hours.
 */
-function getOffer(price) {
-  const currentPrice = Number(price || 0)
-
-  if (currentPrice <= 0) {
-    return 0
+function isDealLive(product) {
+  if (!product?.isDealActive) {
+    return false
   }
 
-  const mrpPrice = getMrp(currentPrice)
+  const discount = Number(product?.dealDiscount || 0)
 
-  return Math.round(
-    ((mrpPrice - currentPrice) / mrpPrice) * 100
-  )
+  if (discount <= 0 || discount > 100) {
+    return false
+  }
+
+  if (!product?.dealExpiresAt) {
+    return false
+  }
+
+  return new Date(product.dealExpiresAt).getTime() > Date.now()
+}
+
+/*
+  ================= IMAGE URL =================
+
+  Local VS Code:
+  http://localhost:5000/uploads/...
+
+  Live Render:
+  https://cartnova-5dvn.onrender.com/uploads/...
+
+  If product.image is already a complete URL,
+  use it directly.
+*/
+function getImageUrl(image) {
+  if (!image) {
+    return ''
+  }
+
+  // Already a complete URL
+  if (image.startsWith('http://') || image.startsWith('https://')) {
+    return image
+  }
+
+  // Use Render backend when REACT_APP_API_URL is available.
+  // Otherwise use local backend.
+  const backendUrl =
+    process.env.REACT_APP_API_URL || 'http://localhost:5000'
+
+  const cleanBackendUrl = backendUrl.replace(/\/$/, '')
+  const cleanImagePath = image.startsWith('/')
+    ? image
+    : `/${image}`
+
+  return `${cleanBackendUrl}${cleanImagePath}`
 }
 
 const Product = ({ product }) => {
   const currentPrice = Number(product.price || 0)
   const mrpPrice = getMrp(currentPrice)
-  const offerPercent = getOffer(currentPrice)
 
-  // Live backend image URL
-  const imageUrl = product.image?.startsWith('http')
-    ? product.image
-    : `https://cartnova-5dvn.onrender.com${product.image}`
+  const dealLive = isDealLive(product)
+
+  const dealDiscount = Number(
+    product?.dealDiscount || 0
+  )
+
+  const imageUrl = getImageUrl(product.image)
 
   return (
     <Card className='cartnova-product-card'>
@@ -62,10 +103,14 @@ const Product = ({ product }) => {
       >
         <div className='cartnova-product-image-wrapper'>
 
-          <span className='cartnova-deal-badge'>
-            <i className='fas fa-bolt'></i>
-            Today's Deal
-          </span>
+          {/* TODAY'S DEAL BADGE */}
+
+          {dealLive && (
+            <span className='cartnova-deal-badge'>
+              <i className='fas fa-bolt'></i>
+              Today's Deal
+            </span>
+          )}
 
           {product.image ? (
             <Card.Img
@@ -129,9 +174,9 @@ const Product = ({ product }) => {
 
         </div>
 
-        {/* OFFER */}
+        {/* TODAY'S DEAL */}
 
-        {offerPercent > 0 && (
+        {dealLive && (
           <div className='cartnova-offer'>
 
             <span>
@@ -140,7 +185,7 @@ const Product = ({ product }) => {
             </span>
 
             <strong>
-              {offerPercent}% OFF
+              {dealDiscount}% OFF
             </strong>
 
           </div>

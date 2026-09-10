@@ -26,6 +26,10 @@ const ProductEditScreen = ({ match, history }) => {
   const [description, setDescription] = useState('')
   const [uploading, setUploading] = useState(false)
 
+  // Today's Deal
+  const [isDealActive, setIsDealActive] = useState(false)
+  const [dealDiscount, setDealDiscount] = useState(0)
+
   const dispatch = useDispatch()
 
   const productDetails = useSelector(
@@ -48,6 +52,9 @@ const ProductEditScreen = ({ match, history }) => {
     success: successUpdate,
   } = productUpdate
 
+  // =========================
+  // LOAD PRODUCT
+  // =========================
   useEffect(() => {
     if (successUpdate) {
       dispatch({
@@ -57,12 +64,11 @@ const ProductEditScreen = ({ match, history }) => {
       history.push('/admin/productlist')
     } else {
       if (
+        !product ||
         !product.name ||
         product._id !== productId
       ) {
-        dispatch(
-          listProductDetails(productId)
-        )
+        dispatch(listProductDetails(productId))
       } else {
         setName(product.name)
         setPrice(product.price)
@@ -71,6 +77,20 @@ const ProductEditScreen = ({ match, history }) => {
         setCategory(product.category)
         setCountInStock(product.countInStock)
         setDescription(product.description)
+
+        // Today's Deal data
+        const dealStillActive =
+          Boolean(product.isDealActive) &&
+          Number(product.dealDiscount) > 0 &&
+          product.dealExpiresAt &&
+          new Date(product.dealExpiresAt).getTime() > Date.now()
+
+        setIsDealActive(dealStillActive)
+        setDealDiscount(
+          dealStillActive
+            ? Number(product.dealDiscount)
+            : 0
+        )
       }
     }
   }, [
@@ -81,9 +101,10 @@ const ProductEditScreen = ({ match, history }) => {
     successUpdate,
   ])
 
+  // =========================
+  // IMAGE UPLOAD
+  // =========================
   const uploadFileHandler = async (e) => {
-    alert('Upload function chal raha hai')
-
     const file = e.target.files[0]
 
     if (!file) {
@@ -101,11 +122,6 @@ const ProductEditScreen = ({ match, history }) => {
         formData
       )
 
-      console.log(
-        'UPLOAD RESPONSE:',
-        data
-      )
-
       if (data.image) {
         setImage(data.image)
       } else {
@@ -114,10 +130,7 @@ const ProductEditScreen = ({ match, history }) => {
 
       setUploading(false)
     } catch (error) {
-      console.error(
-        'UPLOAD ERROR:',
-        error
-      )
+      console.error('UPLOAD ERROR:', error)
 
       alert(
         error.response?.data?.message ||
@@ -128,21 +141,79 @@ const ProductEditScreen = ({ match, history }) => {
     }
   }
 
+  // =========================
+  // SUBMIT
+  // =========================
   const submitHandler = (e) => {
     e.preventDefault()
 
     if (!image) {
-      alert(
-        'Please upload an image first'
-      )
+      alert('Please upload an image first')
       return
     }
 
     if (!category) {
-      alert(
-        'Please select a category'
-      )
+      alert('Please select a category')
       return
+    }
+
+    // Deal validation
+    if (isDealActive) {
+      const discount = Number(dealDiscount)
+
+      if (
+        !discount ||
+        discount <= 0 ||
+        discount > 100
+      ) {
+        alert(
+          'Please enter a discount between 1% and 100%'
+        )
+        return
+      }
+    }
+
+    /*
+      IMPORTANT:
+      Agar existing deal abhi live hai,
+      to product edit karne par uska 24-hour timer
+      reset nahi hoga.
+
+      Agar deal OFF se ON ho raha hai,
+      to new 24-hour timer start hoga.
+    */
+
+    const existingDealStillActive =
+      Boolean(product?.isDealActive) &&
+      Number(product?.dealDiscount) > 0 &&
+      product?.dealExpiresAt &&
+      new Date(product.dealExpiresAt).getTime() > Date.now()
+
+    let finalDealStartedAt = null
+    let finalDealExpiresAt = null
+    let finalDealDiscount = 0
+
+    if (isDealActive) {
+      finalDealDiscount = Number(dealDiscount)
+
+      if (
+        existingDealStillActive &&
+        product?.dealStartedAt &&
+        product?.dealExpiresAt
+      ) {
+        // Existing timer continue
+        finalDealStartedAt = product.dealStartedAt
+        finalDealExpiresAt = product.dealExpiresAt
+      } else {
+        // New 24-hour deal
+        finalDealStartedAt =
+          new Date().toISOString()
+
+        finalDealExpiresAt =
+          new Date(
+            Date.now() + 24 * 60 * 60 * 1000
+          ).toISOString()
+      }
     }
 
     dispatch(
@@ -155,6 +226,12 @@ const ProductEditScreen = ({ match, history }) => {
         category,
         description,
         countInStock,
+
+        // Today's Deal
+        isDealActive,
+        dealDiscount: finalDealDiscount,
+        dealStartedAt: finalDealStartedAt,
+        dealExpiresAt: finalDealExpiresAt,
       })
     )
   }
@@ -162,7 +239,9 @@ const ProductEditScreen = ({ match, history }) => {
   return (
     <div className='cartnova-admin-product-edit-page'>
 
-      {/* BACK BUTTON */}
+      {/* =========================
+          BACK BUTTON
+      ========================= */}
 
       <Link
         to='/admin/productlist'
@@ -172,11 +251,15 @@ const ProductEditScreen = ({ match, history }) => {
         Back to Products
       </Link>
 
-      {/* MAIN CARD */}
+      {/* =========================
+          MAIN CARD
+      ========================= */}
 
       <div className='cartnova-product-edit-card'>
 
-        {/* LEFT SIDE */}
+        {/* =========================
+            LEFT SIDE
+        ========================= */}
 
         <div className='cartnova-product-edit-left'>
 
@@ -197,7 +280,11 @@ const ProductEditScreen = ({ match, history }) => {
           {image && (
             <div className='cartnova-product-preview'>
               <img
-                src={image}
+                src={
+                  image?.startsWith('http')
+                    ? image
+                    : `https://cartnova-5dvn.onrender.com${image}`
+                }
                 alt={name || 'Product'}
               />
 
@@ -208,9 +295,16 @@ const ProductEditScreen = ({ match, history }) => {
 
                 {price > 0 && (
                   <span>
-                    ₹{price}
+                    ₹{Number(price).toLocaleString('en-IN')}
                   </span>
                 )}
+
+                {isDealActive &&
+                  Number(dealDiscount) > 0 && (
+                    <small>
+                      Today's Deal - {dealDiscount}% OFF
+                    </small>
+                  )}
               </div>
             </div>
           )}
@@ -236,7 +330,9 @@ const ProductEditScreen = ({ match, history }) => {
 
         </div>
 
-        {/* RIGHT SIDE */}
+        {/* =========================
+            RIGHT SIDE
+        ========================= */}
 
         <div className='cartnova-product-edit-right'>
 
@@ -269,7 +365,9 @@ const ProductEditScreen = ({ match, history }) => {
           ) : (
             <Form onSubmit={submitHandler}>
 
-              {/* NAME */}
+              {/* =========================
+                  PRODUCT NAME
+              ========================= */}
 
               <Form.Group
                 controlId='name'
@@ -291,7 +389,9 @@ const ProductEditScreen = ({ match, history }) => {
                 />
               </Form.Group>
 
-              {/* PRICE + STOCK */}
+              {/* =========================
+                  PRICE + STOCK
+              ========================= */}
 
               <div className='cartnova-product-edit-row'>
 
@@ -341,7 +441,147 @@ const ProductEditScreen = ({ match, history }) => {
 
               </div>
 
-              {/* IMAGE */}
+              {/* =========================
+                  TODAY'S DEAL
+              ========================= */}
+
+              <div
+                className='cartnova-deal-admin-box'
+                style={{
+                  marginBottom: '20px',
+                  padding: '20px',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '14px',
+                  background: '#f8fafc',
+                }}
+              >
+
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '15px',
+                    marginBottom: isDealActive
+                      ? '18px'
+                      : '0',
+                  }}
+                >
+
+                  <div>
+                    <h4
+                      style={{
+                        margin: 0,
+                        fontWeight: 700,
+                        fontSize: '17px',
+                      }}
+                    >
+                      <i
+                        className='fas fa-bolt'
+                        style={{
+                          marginRight: '8px',
+                        }}
+                      ></i>
+                      Today's Deal
+                    </h4>
+
+                    <small
+                      style={{
+                        color: '#6b7280',
+                      }}
+                    >
+                      Activate a special discount
+                      for this product
+                    </small>
+                  </div>
+
+                  <Form.Check
+                    type='switch'
+                    id='deal-switch'
+                    checked={isDealActive}
+                    onChange={(e) =>
+                      setIsDealActive(
+                        e.target.checked
+                      )
+                    }
+                    style={{
+                      transform: 'scale(1.25)',
+                    }}
+                  />
+
+                </div>
+
+                {isDealActive && (
+                  <div>
+
+                    <Form.Group
+                      controlId='dealDiscount'
+                      style={{ marginBottom: 0 }}
+                    >
+
+                      <Form.Label
+                        style={{
+                          fontWeight: 600,
+                        }}
+                      >
+                        <i className='fas fa-percent'></i>{' '}
+                        Discount Percentage
+                      </Form.Label>
+
+                      <Form.Control
+                        type='number'
+                        placeholder='Example: 20'
+                        value={dealDiscount}
+                        onChange={(e) =>
+                          setDealDiscount(
+                            e.target.value
+                          )
+                        }
+                        min='1'
+                        max='100'
+                        step='1'
+                        required={isDealActive}
+                      />
+
+                      <small
+                        style={{
+                          display: 'block',
+                          marginTop: '7px',
+                          color: '#6b7280',
+                        }}
+                      >
+                        Enter any discount from 1% to
+                        100%. The deal will automatically
+                        expire after 24 hours.
+                      </small>
+
+                    </Form.Group>
+
+                    {Number(dealDiscount) > 0 && (
+                      <div
+                        style={{
+                          marginTop: '15px',
+                          padding: '12px 14px',
+                          borderRadius: '10px',
+                          background: '#ecfdf5',
+                          color: '#047857',
+                          fontWeight: 600,
+                        }}
+                      >
+                        <i className='fas fa-bolt'></i>{' '}
+                        Today's Deal -{' '}
+                        {dealDiscount}% OFF
+                      </div>
+                    )}
+
+                  </div>
+                )}
+
+              </div>
+
+              {/* =========================
+                  IMAGE
+              ========================= */}
 
               <Form.Group
                 controlId='image'
@@ -390,6 +630,7 @@ const ProductEditScreen = ({ match, history }) => {
                 {uploading && (
                   <div className='cartnova-uploading'>
                     <Loader />
+
                     <span>
                       Uploading image...
                     </span>
@@ -398,7 +639,9 @@ const ProductEditScreen = ({ match, history }) => {
 
               </Form.Group>
 
-              {/* BRAND */}
+              {/* =========================
+                  BRAND
+              ========================= */}
 
               <Form.Group
                 controlId='brand'
@@ -420,7 +663,9 @@ const ProductEditScreen = ({ match, history }) => {
                 />
               </Form.Group>
 
-              {/* CATEGORY */}
+              {/* =========================
+                  CATEGORY
+              ========================= */}
 
               <Form.Group
                 controlId='category'
@@ -485,7 +730,9 @@ const ProductEditScreen = ({ match, history }) => {
                 </Form.Control>
               </Form.Group>
 
-              {/* DESCRIPTION */}
+              {/* =========================
+                  DESCRIPTION
+              ========================= */}
 
               <Form.Group
                 controlId='description'
@@ -510,7 +757,9 @@ const ProductEditScreen = ({ match, history }) => {
                 />
               </Form.Group>
 
-              {/* UPDATE */}
+              {/* =========================
+                  UPDATE BUTTON
+              ========================= */}
 
               <Button
                 type='submit'
@@ -521,6 +770,7 @@ const ProductEditScreen = ({ match, history }) => {
                 }
               >
                 <i className='fas fa-save'></i>{' '}
+
                 {loadingUpdate
                   ? 'Updating Product...'
                   : 'Update Product'}

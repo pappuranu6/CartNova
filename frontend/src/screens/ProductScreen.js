@@ -57,6 +57,10 @@ const ProductScreen = ({ history, match }) => {
     error: errorProductReview,
   } = productReviewCreate
 
+  // =========================
+  // LOAD PRODUCT
+  // =========================
+
   useEffect(() => {
     if (successProductReview) {
       alert('Review Submitted!')
@@ -78,7 +82,9 @@ const ProductScreen = ({ history, match }) => {
     successProductReview,
   ])
 
-  /* ================= ADD TO CART ================= */
+  // =========================
+  // ADD TO CART
+  // =========================
 
   const addToCartHandler = () => {
     history.push(
@@ -86,7 +92,9 @@ const ProductScreen = ({ history, match }) => {
     )
   }
 
-  /* ================= REVIEW ================= */
+  // =========================
+  // REVIEW
+  // =========================
 
   const submitHandler = (e) => {
     e.preventDefault()
@@ -102,7 +110,9 @@ const ProductScreen = ({ history, match }) => {
     )
   }
 
-  /* ================= PRICE ================= */
+  // =========================
+  // PRICE
+  // =========================
 
   const numberWithCommas = (price) => {
     return Number(price || 0)
@@ -118,30 +128,71 @@ const ProductScreen = ({ history, match }) => {
       ? Math.round(currentPrice * 1.3)
       : 0
 
-  const offerPercent =
-    currentPrice > 0
-      ? Math.round(
-          ((mrpPrice - currentPrice) /
-            mrpPrice) *
-            100
-        )
-      : 0
-
   /*
-    ================= LIVE IMAGE URL =================
+    Today's Deal check.
 
-    Local image:
-    /uploads/image.jpg
-
-    Live backend:
-    https://cartnova-5dvn.onrender.com/uploads/image.jpg
+    Deal will only show when:
+    1. Admin has turned it ON
+    2. Discount is between 1 and 100
+    3. dealExpiresAt exists
+    4. Current time is before expiry
   */
 
-  const imageUrl = product?.image?.startsWith('http')
-    ? product.image
-    : product?.image
-      ? `https://cartnova-5dvn.onrender.com${product.image}`
-      : ''
+  const dealDiscount = Number(
+    product?.dealDiscount || 0
+  )
+
+  const isDealLive =
+    Boolean(product?.isDealActive) &&
+    dealDiscount > 0 &&
+    dealDiscount <= 100 &&
+    product?.dealExpiresAt &&
+    new Date(product.dealExpiresAt).getTime() >
+      Date.now()
+
+  /*
+    =========================
+    IMAGE URL
+    =========================
+
+    Local VS Code:
+    http://localhost:5000/uploads/...
+
+    Live Render:
+    https://cartnova-5dvn.onrender.com/uploads/...
+
+    If image is already a complete URL,
+    it will be used directly.
+  */
+
+  const getImageUrl = (image) => {
+    if (!image) {
+      return ''
+    }
+
+    if (
+      image.startsWith('http://') ||
+      image.startsWith('https://')
+    ) {
+      return image
+    }
+
+    const backendUrl =
+      process.env.REACT_APP_API_URL ||
+      'http://localhost:5000'
+
+    const cleanBackendUrl =
+      backendUrl.replace(/\/$/, '')
+
+    const cleanImagePath =
+      image.startsWith('/')
+        ? image
+        : `/${image}`
+
+    return `${cleanBackendUrl}${cleanImagePath}`
+  }
+
+  const imageUrl = getImageUrl(product?.image)
 
   return (
     <>
@@ -175,10 +226,14 @@ const ProductScreen = ({ history, match }) => {
 
             <div className='cartnova-product-details-image'>
 
-              <div className='cartnova-details-deal'>
-                <i className='fas fa-bolt'></i>
-                Today's Deal
-              </div>
+              {/* TODAY'S DEAL BADGE */}
+
+              {isDealLive && (
+                <div className='cartnova-details-deal'>
+                  <i className='fas fa-bolt'></i>
+                  Today's Deal
+                </div>
+              )}
 
               {product.image ? (
                 <Image
@@ -241,9 +296,11 @@ const ProductScreen = ({ history, match }) => {
                   </div>
                 )}
 
-                {offerPercent > 0 && (
+                {/* ADMIN SELECTED DEAL */}
+
+                {isDealLive && (
                   <span className='cartnova-details-offer'>
-                    {offerPercent}% OFF
+                    {dealDiscount}% OFF
                   </span>
                 )}
 
@@ -309,6 +366,25 @@ const ProductScreen = ({ history, match }) => {
                   )}
                 </strong>
               </div>
+
+              {/* DEAL INFO */}
+
+              {isDealLive && (
+                <div
+                  style={{
+                    marginTop: '10px',
+                    padding: '10px 12px',
+                    borderRadius: '8px',
+                    background: '#ecfdf5',
+                    color: '#047857',
+                    fontWeight: 600,
+                    fontSize: '14px',
+                  }}
+                >
+                  <i className='fas fa-bolt'></i>{' '}
+                  Today's Deal - {dealDiscount}% OFF
+                </div>
+              )}
 
               <div className='cartnova-purchase-divider'></div>
 
@@ -384,6 +460,7 @@ const ProductScreen = ({ history, match }) => {
                 }
               >
                 <i className='fas fa-shopping-cart'></i>
+
                 {product.countInStock > 0
                   ? 'Add To Cart'
                   : 'Out of Stock'}
@@ -431,6 +508,7 @@ const ProductScreen = ({ history, match }) => {
 
                 {product.reviews.length === 0 ? (
                   <div className='cartnova-no-reviews'>
+
                     <div>
                       <i className='far fa-comment-dots'></i>
                     </div>
@@ -443,6 +521,7 @@ const ProductScreen = ({ history, match }) => {
                       Be the first customer
                       to share your experience.
                     </p>
+
                   </div>
                 ) : (
                   <ListGroup variant='flush'>
