@@ -127,6 +127,22 @@ const ProductScreen = ({ history, match }) => {
         )
       : 0
 
+  /*
+    ================= LIVE IMAGE URL =================
+
+    Local image:
+    /uploads/image.jpg
+
+    Live backend:
+    https://cartnova-5dvn.onrender.com/uploads/image.jpg
+  */
+
+  const imageUrl = product?.image?.startsWith('http')
+    ? product.image
+    : product?.image
+      ? `https://cartnova-5dvn.onrender.com${product.image}`
+      : ''
+
   return (
     <>
       {loading ? (
@@ -166,7 +182,7 @@ const ProductScreen = ({ history, match }) => {
 
               {product.image ? (
                 <Image
-                  src={product.image}
+                  src={imageUrl}
                   alt={product.name}
                   fluid
                 />
@@ -332,7 +348,9 @@ const ProductScreen = ({ history, match }) => {
                     value={qty}
                     onChange={(e) =>
                       setQty(
-                        Number(e.target.value)
+                        Number(
+                          e.target.value
+                        )
                       )
                     }
                   >
@@ -482,6 +500,7 @@ const ProductScreen = ({ history, match }) => {
               <div className='cartnova-write-review'>
 
                 <div className='cartnova-write-review-heading'>
+
                   <div>
                     <i className='fas fa-pen'></i>
                   </div>
@@ -496,6 +515,7 @@ const ProductScreen = ({ history, match }) => {
                       other customers.
                     </p>
                   </div>
+
                 </div>
 
                 {errorProductReview && (
@@ -552,7 +572,9 @@ const ProductScreen = ({ history, match }) => {
                         <option value='5'>
                           5 - Excellent
                         </option>
+
                       </Form.Control>
+
                     </Form.Group>
 
                     <Form.Group
@@ -575,6 +597,7 @@ const ProductScreen = ({ history, match }) => {
                         }
                         required
                       />
+
                     </Form.Group>
 
                     <Button
