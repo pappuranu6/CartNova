@@ -24,16 +24,16 @@ const HeroSection = () => {
   }
 
   if (error) {
-    return <Message variant="danger">{error}</Message>
+    return <Message variant='danger'>{error}</Message>
   }
 
   return (
-    <section className="cartnova-hero">
+    <section className='cartnova-hero'>
 
       {/* LEFT CONTENT */}
-      <div className="cartnova-hero-content">
+      <div className='cartnova-hero-content'>
 
-        <span className="cartnova-hero-label">
+        <span className='cartnova-hero-label'>
           LIMITED TIME OFFER
         </span>
 
@@ -50,8 +50,8 @@ const HeroSection = () => {
         </p>
 
         <Link
-          to="/search/electronics"
-          className="cartnova-btn"
+          to='/search/electronics'
+          className='cartnova-btn'
         >
           Shop Now →
         </Link>
@@ -59,10 +59,10 @@ const HeroSection = () => {
       </div>
 
       {/* RIGHT PRODUCTS */}
-      <div className="cartnova-hero-products">
+      <div className='cartnova-hero-products'>
 
         {/* DISCOUNT BADGE */}
-        <div className="cartnova-discount-badge">
+        <div className='cartnova-discount-badge'>
           <small>UP TO</small>
           <strong>50%</strong>
           <span>OFF</span>
@@ -74,8 +74,8 @@ const HeroSection = () => {
             controls={true}
             indicators={true}
             interval={4000}
-            pause="hover"
-            className="cartnova-hero-carousel"
+            pause='hover'
+            className='cartnova-hero-carousel'
           >
 
             {products.slice(0, 3).map((product) => (
@@ -85,9 +85,13 @@ const HeroSection = () => {
                 <Link to={`/product/${product._id}`}>
 
                   <Image
-                    src={product.image}
+                    src={
+                      product.image?.startsWith('http')
+                        ? product.image
+                        : `https://cartnova-5dvn.onrender.com${product.image}`
+                    }
                     alt={product.name}
-                    className="cartnova-hero-image"
+                    className='cartnova-hero-image'
                   />
 
                 </Link>
@@ -100,7 +104,7 @@ const HeroSection = () => {
 
         ) : (
 
-          <div className="cartnova-hero-empty">
+          <div className='cartnova-hero-empty'>
             No products available
           </div>
 
