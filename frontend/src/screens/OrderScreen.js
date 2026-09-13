@@ -70,35 +70,29 @@ const OrderScreen = ({ match, history }) => {
     )
   }
 
+  // =========================================================
+  // LOAD ORDER DETAILS
+  // =========================================================
+  // Always fetch when orderId changes so Admin Details buttons
+  // open the correct order instead of the previously loaded one.
   useEffect(() => {
     if (!userInfo) {
       history.push('/login')
       return
     }
 
-    if (
-      !order ||
-      successPay ||
-      successDeliver
-    ) {
-      dispatch({
-        type: ORDER_PAY_RESET,
-      })
+    dispatch({
+      type: ORDER_PAY_RESET,
+    })
 
-      dispatch({
-        type: ORDER_DELIVER_RESET,
-      })
+    dispatch({
+      type: ORDER_DELIVER_RESET,
+    })
 
-      dispatch(
-        getOrderDetails(orderId)
-      )
-    }
+    dispatch(getOrderDetails(orderId))
   }, [
     dispatch,
     orderId,
-    successPay,
-    successDeliver,
-    order,
     userInfo,
     history,
   ])
@@ -164,7 +158,7 @@ const OrderScreen = ({ match, history }) => {
 
                 payer: {
                   email_address:
-                    order.user.email,
+                    order.user?.email || '',
                 },
               }
 
@@ -186,10 +180,10 @@ const OrderScreen = ({ match, history }) => {
 
         prefill: {
           name:
-            order.user.name,
+            order.user?.name || 'Unknown Customer',
 
           email:
-            order.user.email,
+            order.user?.email || '',
         },
 
         theme: {
@@ -380,7 +374,7 @@ const OrderScreen = ({ match, history }) => {
                   </span>
 
                   <strong>
-                    {order.user.name}
+                    {order.user?.name || 'Unknown Customer'}
                   </strong>
                 </div>
 
@@ -390,9 +384,9 @@ const OrderScreen = ({ match, history }) => {
                   </span>
 
                   <a
-                    href={`mailto:${order.user.email}`}
+                    href={`mailto:${order.user?.email || ''}`}
                   >
-                    {order.user.email}
+                    {order.user?.email || 'Email not available'}
                   </a>
                 </div>
 

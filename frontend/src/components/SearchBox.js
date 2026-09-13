@@ -6,25 +6,49 @@ const SearchBox = ({ history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault()
+
     if (keyword.trim()) {
-      history.push(`/search/${keyword}`)
+      history.push(`/search/${keyword.trim()}`)
     } else {
       history.push('/')
     }
   }
 
   return (
-    <div class="form-row">
-    <Form onSubmit={submitHandler} inline>
-      <Form.Control
-        type='text'
-        name='q'
-        onChange={(e) => setKeyword(e.target.value)}
-        placeholder='Explore Here...'
-        className='mr-sm-4 ml-sm-0'
-      ></Form.Control>
+    <Form
+      onSubmit={submitHandler}
+      className='cartnova-search-form'
+    >
+      <div className='cartnova-search-box'>
+
+        {/* Search Icon */}
+        <i className='fas fa-search cartnova-search-icon'></i>
+
+        {/* Input */}
+        <Form.Control
+          type='text'
+          name='q'
+          value={keyword}
+          onChange={(e) =>
+            setKeyword(e.target.value)
+          }
+          placeholder='Search products, brands & categories...'
+          className='cartnova-search-input'
+          autoComplete='off'
+        />
+
+        {/* Search Button */}
+        <button
+          type='submit'
+          className='cartnova-search-button'
+          aria-label='Search'
+        >
+          <span>Search</span>
+          <i className='fas fa-arrow-right'></i>
+        </button>
+
+      </div>
     </Form>
-    </div>
   )
 }
 

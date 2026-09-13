@@ -12240,3 +12240,2891 @@ img {
     color: #64748b !important;
   }
 }
+
+/* Order Screen Typography */
+.order-page {
+  font-size: 15px;
+}
+
+.order-page h1 {
+  font-size: 32px;
+}
+
+.order-page h2 {
+  font-size: 21px;
+}
+
+.order-page h3 {
+  font-size: 17px;
+}
+
+.order-page p,
+.order-page span,
+.order-page div {
+  font-size: 14px;
+}
+
+.order-page .order-label {
+  font-size: 12px;
+}
+
+.order-page .order-value {
+  font-size: 15px;
+}
+
+.order-page .order-total {
+  font-size: 24px;
+}
+
+/* =========================================================
+   CARTNOVA ORDER SCREEN - BETTER TYPOGRAPHY
+   ========================================================= */
+
+.cartnova-order-page {
+  font-size: 15px;
+}
+
+/* Order Header */
+.cartnova-order-page-header h1 {
+  font-size: 32px;
+  line-height: 1.25;
+  font-weight: 700;
+}
+
+.cartnova-order-page-header p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.cartnova-order-back {
+  font-size: 13px;
+}
+
+.cartnova-order-label {
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+/* Status Bar */
+.cartnova-order-status-item span,
+.cartnova-order-status-total span {
+  font-size: 11px;
+  letter-spacing: 0.7px;
+}
+
+.cartnova-order-status-item strong {
+  font-size: 14px;
+}
+
+.cartnova-order-status-total strong {
+  font-size: 23px;
+  font-weight: 700;
+}
+
+/* Card Headings */
+.cartnova-order-card-title h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.cartnova-order-card-title > div > span {
+  font-size: 13px;
+}
+
+/* Customer Information */
+.cartnova-customer-info span,
+.cartnova-order-address > span {
+  font-size: 11px;
+  letter-spacing: 0.7px;
+  font-weight: 600;
+}
+
+.cartnova-customer-info strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cartnova-customer-info a {
+  font-size: 14px;
+}
+
+.cartnova-order-address p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Alerts */
+.cartnova-order-alert span {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Payment */
+.cartnova-payment-method-display strong {
+  font-size: 16px;
+}
+
+.cartnova-payment-method-display span {
+  font-size: 12px;
+}
+
+.cartnova-paid-badge,
+.cartnova-unpaid-badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Order Items */
+.cartnova-order-item-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cartnova-order-item-info > span {
+  font-size: 13px;
+}
+
+.cartnova-order-item-total {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Order Summary */
+.cartnova-order-summary-header > div > span {
+  font-size: 11px;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+.cartnova-order-summary-header h2 {
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.cartnova-order-summary-lines span,
+.cartnova-order-summary-lines strong {
+  font-size: 14px;
+}
+
+.cartnova-order-grand-total span {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cartnova-order-grand-total strong {
+  font-size: 25px;
+  font-weight: 700;
+}
+
+/* Buttons */
+.cartnova-razorpay-button,
+.cartnova-delivery-button {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Complete / Secure Note */
+.cartnova-order-complete strong {
+  font-size: 16px;
+}
+
+.cartnova-order-complete span,
+.cartnova-order-secure-note span {
+  font-size: 12px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .cartnova-order-page-header h1 {
+    font-size: 26px;
+  }
+
+  .cartnova-order-card-title h2 {
+    font-size: 18px;
+  }
+
+  .cartnova-order-status-total strong {
+    font-size: 20px;
+  }
+
+  .cartnova-order-grand-total strong {
+    font-size: 22px;
+  }
+
+  .cartnova-customer-info strong,
+  .cartnova-order-item-name {
+    font-size: 14px;
+  }
+}
+
+/* =========================================================
+   CARTNOVA - PROFILE SCREEN
+   ========================================================= */
+
+.cn-profile-page {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 18px 20px 60px;
+  color: #0f172a;
+}
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.cn-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-bottom: 24px;
+}
+
+.cn-profile-eyebrow {
+  display: inline-block;
+  color: #1677c8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.cn-profile-header h1 {
+  margin: 6px 0 5px;
+  color: #0f172a;
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 750;
+}
+
+.cn-profile-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.cn-profile-header-icon {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  background: #eff6ff;
+  color: #1677c8;
+  font-size: 20px;
+}
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.cn-profile-loading {
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
+
+.cn-profile-main-grid {
+  display: grid;
+  grid-template-columns: minmax(330px, 0.9fr) minmax(0, 1.45fr);
+  gap: 22px;
+  align-items: start;
+}
+
+/* =========================================================
+   PROFILE OVERVIEW CARD
+   ========================================================= */
+
+.cn-profile-overview-card {
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.055);
+}
+
+.cn-profile-overview-top {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 23px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.cn-profile-avatar {
+  width: 62px;
+  height: 62px;
+  flex: 0 0 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: #1677c8;
+  color: #ffffff;
+  font-size: 24px;
+  box-shadow: 0 8px 20px rgba(22, 119, 200, 0.18);
+}
+
+.cn-profile-overview-heading {
+  min-width: 0;
+}
+
+.cn-profile-small-label {
+  display: block;
+  margin-bottom: 4px;
+  color: #94a3b8;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.cn-profile-overview-heading h2 {
+  overflow: hidden;
+  margin: 0;
+  color: #111827;
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cn-profile-overview-heading p {
+  margin: 3px 0 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* =========================================================
+   PROFILE INFO
+   ========================================================= */
+
+.cn-profile-info-list {
+  padding: 6px 23px;
+}
+
+.cn-profile-info-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 17px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.cn-profile-info-item:last-child {
+  border-bottom: 0;
+}
+
+.cn-profile-info-icon {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #f1f7fd;
+  color: #1677c8;
+  font-size: 14px;
+}
+
+.cn-profile-info-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.cn-profile-info-content > span {
+  margin-bottom: 3px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cn-profile-info-content strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cn-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  color: #15803d;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.cn-verified-badge i {
+  font-size: 10px;
+}
+
+/* =========================================================
+   PROFILE FOOTER
+   ========================================================= */
+
+.cn-profile-overview-footer {
+  padding: 18px 23px 23px;
+}
+
+.cn-edit-profile-button {
+  width: 100%;
+  min-height: 45px;
+  border: 0 !important;
+  border-radius: 9px !important;
+  background: #1677c8 !important;
+  color: #ffffff !important;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: none !important;
+  transition: 0.2s ease;
+}
+
+.cn-edit-profile-button:hover,
+.cn-edit-profile-button:focus,
+.cn-edit-profile-button:active {
+  background: #1268ae !important;
+  transform: translateY(-1px);
+}
+
+.cn-edit-profile-button i {
+  margin-right: 8px;
+}
+
+/* =========================================================
+   MY ORDERS WRAPPER
+   ========================================================= */
+
+.cn-profile-orders-wrapper {
+  min-width: 0;
+}
+
+.cn-profile-orders-wrapper
+.cartnova-profile-orders-card {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+/* =========================================================
+   SETTINGS CARD
+   ========================================================= */
+
+.cn-settings-card {
+  margin-top: 22px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 6px 25px rgba(15, 23, 42, 0.06);
+}
+
+.cn-settings-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 25px;
+  border-bottom: 1px solid #e9eef5;
+  background: #fbfdff;
+}
+
+.cn-settings-header h2 {
+  margin: 5px 0 5px;
+  color: #111827;
+  font-size: 23px;
+  font-weight: 750;
+}
+
+.cn-settings-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.cn-settings-close {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border: 1px solid #e2e8f0;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.cn-settings-close:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+/* =========================================================
+   SETTINGS TABS
+   ========================================================= */
+
+.cn-settings-tabs {
+  display: flex;
+  overflow-x: auto;
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+}
+
+.cn-settings-tabs button {
+  position: relative;
+  min-height: 52px;
+  padding: 0 20px;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.cn-settings-tabs button i {
+  margin-right: 7px;
+  font-size: 12px;
+}
+
+.cn-settings-tabs button:hover {
+  color: #1677c8;
+  background: #f8fbff;
+}
+
+.cn-settings-tabs button.active {
+  color: #1677c8;
+}
+
+.cn-settings-tabs button.active::after {
+  position: absolute;
+  right: 15px;
+  bottom: 0;
+  left: 15px;
+  height: 2px;
+  border-radius: 5px 5px 0 0;
+  background: #1677c8;
+  content: '';
+}
+
+/* =========================================================
+   SETTINGS CONTENT
+   ========================================================= */
+
+.cn-settings-content {
+  padding: 25px;
+}
+
+.cn-settings-content > .alert {
+  margin-bottom: 20px;
+}
+
+.cn-settings-section {
+  width: 100%;
+}
+
+.cn-settings-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.cn-settings-section-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: #eff6ff;
+  color: #1677c8;
+  font-size: 15px;
+}
+
+.cn-settings-section-icon.security {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.cn-settings-section-icon.address {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.cn-settings-section-heading h3 {
+  margin: 0 0 3px;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.cn-settings-section-heading p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+/* =========================================================
+   SETTINGS FORM
+   ========================================================= */
+
+.cn-settings-form {
+  margin-top: 24px;
+}
+
+.cn-form-field {
+  margin-bottom: 20px;
+}
+
+.cn-form-field label,
+.cn-settings-change-header label {
+  display: block;
+  margin-bottom: 7px;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cn-form-field .form-control,
+.cn-change-input-row .form-control {
+  min-height: 44px;
+  border: 1px solid #dbe2ea;
+  border-radius: 8px;
+  color: #1e293b;
+  background: #ffffff;
+  font-size: 13px;
+  box-shadow: none;
+}
+
+.cn-form-field .form-control:focus,
+.cn-change-input-row .form-control:focus {
+  border-color: #1677c8;
+  box-shadow: 0 0 0 3px rgba(22, 119, 200, 0.09);
+}
+
+/* =========================================================
+   CHANGE EMAIL / PHONE
+   ========================================================= */
+
+.cn-settings-change-block {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+
+.cn-settings-change-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 13px;
+}
+
+.cn-settings-change-header label {
+  margin-bottom: 3px;
+}
+
+.cn-settings-change-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.cn-change-input-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.cn-change-input-row .form-control {
+  flex: 1;
+}
+
+.cn-secondary-action,
+.cn-verify-button,
+.cn-cancel-button {
+  min-height: 44px;
+  border-radius: 8px !important;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cn-secondary-action {
+  border: 0 !important;
+  background: #1677c8 !important;
+  color: #ffffff !important;
+}
+
+.cn-secondary-action:hover {
+  background: #1268ae !important;
+}
+
+.cn-verify-button {
+  border: 0 !important;
+  background: #15803d !important;
+  color: #ffffff !important;
+}
+
+.cn-verify-button:hover {
+  background: #166534 !important;
+}
+
+.cn-cancel-button {
+  border: 1px solid #dbe2ea !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+}
+
+.cn-inline-message {
+  margin-top: 9px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cn-inline-message.error {
+  color: #dc2626;
+}
+
+.cn-inline-message.success {
+  color: #15803d;
+}
+
+/* =========================================================
+   OTP BOX
+   ========================================================= */
+
+.cn-otp-box {
+  margin-top: 15px;
+  padding: 16px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #f8fbff;
+}
+
+.cn-otp-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  margin-bottom: 13px;
+}
+
+.cn-otp-heading > i {
+  margin-top: 2px;
+  color: #1677c8;
+  font-size: 16px;
+}
+
+.cn-otp-heading strong {
+  display: block;
+  margin-bottom: 2px;
+  color: #1e293b;
+  font-size: 13px;
+}
+
+.cn-otp-heading span {
+  display: block;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.cn-verification-success {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+/* =========================================================
+   PROFILE SAVE
+   ========================================================= */
+
+.cn-settings-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 25px;
+  padding-top: 20px;
+  border-top: 1px solid #eef2f7;
+}
+
+.cn-save-profile-button {
+  min-height: 44px;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: #1677c8 !important;
+  color: #ffffff !important;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: none !important;
+}
+
+.cn-save-profile-button:hover {
+  background: #1268ae !important;
+}
+
+.cn-save-profile-button i {
+  margin-right: 7px;
+}
+
+/* =========================================================
+   SECURITY
+   ========================================================= */
+
+.cn-security-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.cn-security-icon {
+  width: 45px;
+  height: 45px;
+  flex: 0 0 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 16px;
+}
+
+.cn-security-content {
+  flex: 1;
+}
+
+.cn-security-content h4 {
+  margin: 0 0 4px;
+  color: #1e293b;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cn-security-content p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.cn-security-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  background: #eff6ff;
+  color: #1677c8 !important;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none !important;
+  transition: 0.2s ease;
+}
+
+.cn-security-button:hover {
+  border-color: #bfdbfe;
+  background: #dbeafe;
+}
+
+.cn-security-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 15px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.cn-security-info i {
+  color: #1677c8;
+}
+
+/* =========================================================
+   ADDRESS HEADER
+   ========================================================= */
+
+.cn-address-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cn-add-address-button {
+  min-height: 41px;
+  padding: 0 15px !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: #1677c8 !important;
+  color: #ffffff !important;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cn-add-address-button:hover {
+  background: #1268ae !important;
+}
+
+.cn-add-address-button i {
+  margin-right: 7px;
+}
+
+/* =========================================================
+   ADDRESS FORM
+   ========================================================= */
+
+.cn-address-form-card {
+  margin-top: 22px;
+  padding: 20px;
+  border: 1px solid #dbe5ef;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+
+.cn-address-form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.cn-address-form-header h4 {
+  margin: 0 0 4px;
+  color: #1e293b;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cn-address-form-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.cn-form-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.cn-form-close:hover {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+.cn-address-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.cn-address-grid .cn-form-field {
+  margin-bottom: 0;
+}
+
+.cn-default-address-check {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e8eef5;
+}
+
+.cn-default-address-check .form-check {
+  margin: 0;
+}
+
+.cn-default-address-check label {
+  color: #475569;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cn-address-form-actions {
+  display: flex;
+  gap: 9px;
+  margin-top: 20px;
+}
+
+.cn-save-address-button,
+.cn-cancel-address-button {
+  min-height: 42px;
+  border-radius: 8px !important;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cn-save-address-button {
+  border: 0 !important;
+  background: #1677c8 !important;
+  color: #ffffff !important;
+}
+
+.cn-save-address-button:hover {
+  background: #1268ae !important;
+}
+
+.cn-save-address-button i {
+  margin-right: 7px;
+}
+
+.cn-cancel-address-button {
+  border: 1px solid #dbe2ea !important;
+  background: #ffffff !important;
+  color: #475569 !important;
+}
+
+/* =========================================================
+   ADDRESS LIST
+   ========================================================= */
+
+.cn-address-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 22px;
+}
+
+.cn-address-card {
+  min-width: 0;
+  padding: 17px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+  transition: 0.2s ease;
+}
+
+.cn-address-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 5px 16px rgba(15, 23, 42, 0.045);
+}
+
+.cn-address-card.default {
+  border-color: #86efac;
+  background: #fbfffc;
+}
+
+.cn-address-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cn-address-card-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cn-address-type-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 13px;
+}
+
+.cn-address-card-title h4 {
+  overflow: hidden;
+  margin: 0 0 2px;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cn-address-card-title span {
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.cn-default-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 7px;
+  border-radius: 5px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 9px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.cn-address-details {
+  margin-top: 14px;
+}
+
+.cn-address-details p {
+  margin: 0 0 8px;
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+.cn-address-details span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-size: 10px;
+}
+
+.cn-address-details span i {
+  color: #1677c8;
+}
+
+.cn-address-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.cn-address-actions button {
+  min-height: 31px;
+  padding: 0 9px !important;
+  border-radius: 6px !important;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.cn-address-default-button {
+  border: 1px solid #bbf7d0 !important;
+  background: #f0fdf4 !important;
+  color: #15803d !important;
+}
+
+.cn-address-edit-button {
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #1677c8 !important;
+}
+
+.cn-address-delete-button {
+  border: 1px solid #fecaca !important;
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
+.cn-address-actions button i {
+  margin-right: 5px;
+}
+
+/* =========================================================
+   NO ADDRESS
+   ========================================================= */
+
+.cn-no-addresses {
+  margin-top: 22px;
+  padding: 38px 20px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  text-align: center;
+  background: #fbfdff;
+}
+
+.cn-no-address-icon {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: #eff6ff;
+  color: #1677c8;
+  font-size: 18px;
+}
+
+.cn-no-addresses h4 {
+  margin: 0 0 5px;
+  color: #1e293b;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cn-no-addresses p {
+  max-width: 350px;
+  margin: 0 auto 17px;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.cn-add-first-address {
+  min-height: 39px;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: #1677c8 !important;
+  color: #ffffff !important;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cn-add-first-address i {
+  margin-right: 6px;
+}
+
+/* =========================================================
+   EXISTING ORDER CARD - SAFE OVERRIDES
+   ========================================================= */
+
+.cn-profile-orders-wrapper
+.cartnova-profile-orders-header {
+  min-width: 0;
+}
+
+.cn-profile-orders-wrapper
+.cartnova-profile-orders-list {
+  width: 100%;
+}
+
+/* =========================================================
+   RESPONSIVE - TABLET
+   ========================================================= */
+
+@media (max-width: 950px) {
+
+  .cn-profile-main-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cn-profile-overview-card {
+    width: 100%;
+  }
+
+  .cn-address-list {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+   ========================================================= */
+
+@media (max-width: 650px) {
+
+  .cn-profile-page {
+    padding: 12px 12px 40px;
+  }
+
+  .cn-profile-header {
+    margin-bottom: 17px;
+  }
+
+  .cn-profile-header h1 {
+    font-size: 24px;
+  }
+
+  .cn-profile-header p {
+    max-width: 270px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .cn-profile-header-icon {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+    border-radius: 11px;
+    font-size: 17px;
+  }
+
+  .cn-profile-overview-top {
+    padding: 18px;
+  }
+
+  .cn-profile-avatar {
+    width: 54px;
+    height: 54px;
+    flex-basis: 54px;
+    border-radius: 14px;
+    font-size: 20px;
+  }
+
+  .cn-profile-overview-heading h2 {
+    font-size: 17px;
+  }
+
+  .cn-profile-info-list {
+    padding: 4px 18px;
+  }
+
+  .cn-profile-overview-footer {
+    padding: 15px 18px 18px;
+  }
+
+  .cn-settings-header {
+    padding: 19px;
+  }
+
+  .cn-settings-header h2 {
+    font-size: 20px;
+  }
+
+  .cn-settings-header p {
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .cn-settings-content {
+    padding: 18px;
+  }
+
+  .cn-settings-tabs {
+    scrollbar-width: thin;
+  }
+
+  .cn-settings-tabs button {
+    padding: 0 14px;
+    font-size: 11px;
+  }
+
+  .cn-settings-tabs button.active::after {
+    right: 10px;
+    left: 10px;
+  }
+
+  .cn-settings-change-block {
+    padding: 15px;
+  }
+
+  .cn-settings-change-header {
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .cn-change-input-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cn-change-input-row .form-control,
+  .cn-secondary-action,
+  .cn-verify-button,
+  .cn-cancel-button {
+    width: 100%;
+  }
+
+  .cn-otp-box {
+    padding: 13px;
+  }
+
+  .cn-settings-form-footer {
+    justify-content: stretch;
+  }
+
+  .cn-save-profile-button {
+    width: 100%;
+  }
+
+  .cn-security-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .cn-security-content {
+    min-width: calc(100% - 60px);
+  }
+
+  .cn-security-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cn-address-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cn-add-address-button {
+    width: 100%;
+  }
+
+  .cn-address-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .cn-address-actions {
+    flex-direction: column;
+  }
+
+  .cn-address-actions button {
+    width: 100%;
+  }
+
+}
+
+/* =========================================================
+   RESPONSIVE - SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+  .cn-profile-header-icon {
+    display: none;
+  }
+
+  .cn-profile-info-item {
+    gap: 10px;
+  }
+
+  .cn-profile-info-icon {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+    font-size: 12px;
+  }
+
+  .cn-profile-info-content strong {
+    font-size: 12px;
+  }
+
+  .cn-settings-section-heading {
+    align-items: flex-start;
+  }
+
+  .cn-settings-section-icon {
+    width: 38px;
+    height: 38px;
+    flex-basis: 38px;
+  }
+
+  .cn-address-form-actions {
+    flex-direction: column;
+  }
+
+  .cn-save-address-button,
+  .cn-cancel-address-button {
+    width: 100%;
+  }
+
+}
+
+
+/* =========================================================
+   CARTNOVA - PROFILE PHOTO
+   Moved from ProfileScreen.js
+   ========================================================= */
+
+.cn-profile-avatar {
+  position: relative;
+  overflow: visible;
+}
+
+.cn-profile-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.cn-profile-photo-button {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+  border: 1px solid #dddddd;
+  z-index: 2;
+}
+
+.cn-profile-photo-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+/* =========================================================
+   CARTNOVA - PROFILE ORDERS
+   Final structured desktop layout
+   ========================================================= */
+
+.cartnova-profile-orders-card {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.cartnova-profile-orders-list {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 18px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.cartnova-profile-order-row {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 68px !important;
+  padding: 11px 0 !important;
+  margin: 0 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 68px 78px 82px 94px 82px !important;
+  gap: 8px !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  border-bottom: 1px solid #edf0f4 !important;
+  overflow: hidden !important;
+}
+
+.cartnova-profile-order-row:last-child {
+  border-bottom: none !important;
+}
+
+.cartnova-profile-order-product {
+  min-width: 0 !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+}
+
+.cartnova-profile-order-product img,
+.cartnova-order-item-image {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  max-width: 46px !important;
+  object-fit: cover !important;
+  border-radius: 8px !important;
+  border: 1px solid #e5e7eb !important;
+  background: #f8fafc !important;
+}
+
+.cartnova-profile-order-product > div {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.cartnova-profile-order-product strong {
+  display: block !important;
+  max-width: 145px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+}
+
+.cartnova-profile-order-product small {
+  display: block !important;
+  margin-top: 4px !important;
+  color: #64748b !important;
+  font-size: 10px !important;
+  white-space: nowrap !important;
+}
+
+.cartnova-profile-order-id-box,
+.cartnova-profile-order-date,
+.cartnova-profile-order-total,
+.cartnova-profile-order-status {
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.cartnova-profile-order-id-box,
+.cartnova-profile-order-date,
+.cartnova-profile-order-total {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+
+.cartnova-profile-order-id-box span,
+.cartnova-profile-order-date span,
+.cartnova-profile-order-total span {
+  display: block !important;
+  color: #94a3b8 !important;
+  font-size: 7px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.35px !important;
+}
+
+.cartnova-profile-order-id-box strong,
+.cartnova-profile-order-date strong,
+.cartnova-profile-order-total strong {
+  display: block !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  font-size: 9px !important;
+}
+
+.cartnova-profile-order-id-box strong {
+  color: #1677c8 !important;
+}
+
+.cartnova-profile-order-date strong {
+  color: #64748b !important;
+  font-weight: 500 !important;
+}
+
+.cartnova-profile-order-total strong {
+  color: #1e293b !important;
+  font-size: 10px !important;
+}
+
+.cartnova-profile-order-status {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 3px !important;
+}
+
+.cartnova-profile-status {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  padding: 4px 5px !important;
+  border-radius: 999px !important;
+  font-size: 7px !important;
+  line-height: 1 !important;
+  font-weight: 600 !important;
+  white-space: nowrap !important;
+  box-sizing: border-box !important;
+}
+
+.cartnova-profile-status i {
+  font-size: 7px !important;
+}
+
+.cartnova-profile-order-actions {
+  position: static !important;
+  inset: auto !important;
+  float: none !important;
+  transform: none !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 5px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+.cartnova-profile-order-details {
+  width: 32px !important;
+  min-width: 32px !important;
+  height: 32px !important;
+  flex: 0 0 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  background: #eff6ff !important;
+  color: #1677c8 !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+}
+
+.cartnova-profile-order-details:hover {
+  background: #1677c8 !important;
+  color: #ffffff !important;
+}
+
+.cartnova-profile-order-invoice {
+  width: 42px !important;
+  min-width: 42px !important;
+  height: 32px !important;
+  flex: 0 0 42px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 5px !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 8px !important;
+  background: #eff6ff !important;
+  color: #1677c8 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+.cartnova-profile-order-invoice:hover {
+  background: #1677c8 !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 1050px) {
+  .cartnova-profile-order-row {
+    grid-template-columns: minmax(0, 1fr) 62px 72px 76px 88px 78px !important;
+    gap: 6px !important;
+  }
+
+  .cartnova-profile-order-product strong {
+    max-width: 125px !important;
+  }
+}
+
+@media (max-width: 850px) {
+  .cartnova-profile-order-row {
+    grid-template-columns: minmax(0, 1fr) 62px 72px 76px !important;
+    gap: 8px !important;
+  }
+
+  .cartnova-profile-order-status {
+    grid-column: 1 / 4 !important;
+    grid-row: 2 !important;
+  }
+
+  .cartnova-profile-order-actions {
+    grid-column: 4 !important;
+    grid-row: 1 / 3 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .cartnova-profile-orders-list {
+    padding: 0 14px !important;
+  }
+
+  .cartnova-profile-order-row {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+    padding: 13px 0 !important;
+  }
+
+  .cartnova-profile-order-product {
+    grid-column: 1 / -1 !important;
+  }
+
+  .cartnova-profile-order-id-box,
+  .cartnova-profile-order-date,
+  .cartnova-profile-order-total {
+    grid-column: auto !important;
+  }
+
+  .cartnova-profile-order-status {
+    grid-column: 1 / 2 !important;
+    grid-row: auto !important;
+  }
+
+  .cartnova-profile-order-actions {
+    grid-column: 2 / 3 !important;
+    grid-row: auto !important;
+    justify-content: flex-end !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .cartnova-profile-order-row {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .cartnova-profile-order-product strong {
+    max-width: 170px !important;
+  }
+
+  .cartnova-profile-order-id-box strong,
+  .cartnova-profile-order-date strong,
+  .cartnova-profile-order-total strong {
+    font-size: 9px !important;
+  }
+}
+
+
+.cn-profile-avatar {
+  border-radius: 50% !important;
+  overflow: visible !important;
+}
+
+.cn-profile-avatar > img,
+.cn-profile-avatar-image {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  border: 3px solid #ffffff !important;
+}
+
+.cn-profile-photo-button {
+  border-radius: 50% !important;
+}
+
+/* WHITE CIRCLE / CAMERA BUTTON HIDE */
+
+.cn-profile-photo-button {
+  display: none !important;
+}
+
+
+/* =========================================================
+   CARTNOVA - PROFESSIONAL HEADER + SEARCH BAR
+   Final UI Upgrade
+   ========================================================= */
+
+/* ================= HEADER ================= */
+
+.cartnova-navbar {
+  background: #ffffff !important;
+  min-height: 72px !important;
+  padding: 10px 0 !important;
+  border-bottom: 1px solid #eef2f7 !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.07) !important;
+  position: relative;
+  z-index: 1000;
+}
+
+.cartnova-navbar > .container {
+  max-width: 1280px !important;
+}
+
+/* ================= BRAND ================= */
+
+.cartnova-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  text-decoration: none !important;
+}
+
+.cartnova-logo {
+  width: 46px !important;
+  height: 46px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.cartnova-brand span {
+  font-size: 25px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.5px !important;
+  color: #0f172a !important;
+}
+
+/* ================= SEARCH AREA ================= */
+
+.cartnova-search-wrapper {
+  flex: 1 !important;
+  min-width: 0 !important;
+  max-width: 620px !important;
+  margin: 0 28px !important;
+}
+
+/* Search form */
+
+.cartnova-search-wrapper .searchbox {
+  position: relative !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 46px !important;
+}
+
+/* Search input */
+
+.cartnova-search-wrapper .searchbox input {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 46px !important;
+
+  padding: 0 118px 0 46px !important;
+
+  border: 1px solid #dbe4ef !important;
+  border-radius: 12px !important;
+
+  background: #f8fafc !important;
+  color: #0f172a !important;
+
+  font-size: 14px !important;
+  font-weight: 500 !important;
+
+  outline: none !important;
+
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.02) !important;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+/* Search icon */
+
+.cartnova-search-wrapper .searchbox::before {
+  content: "\f002";
+
+  position: absolute;
+  left: 17px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+
+  color: #64748b;
+  font-size: 15px;
+
+  z-index: 3;
+
+  pointer-events: none;
+}
+
+/* Input placeholder */
+
+.cartnova-search-wrapper .searchbox input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+/* Focus */
+
+.cartnova-search-wrapper .searchbox input:focus {
+  background: #ffffff !important;
+  border-color: #1677c8 !important;
+
+  box-shadow:
+    0 0 0 3px rgba(22, 119, 200, 0.10),
+    0 5px 16px rgba(15, 23, 42, 0.06) !important;
+}
+
+/* ================= SEARCH BUTTON ================= */
+
+.cartnova-search-wrapper .searchbox button {
+  position: absolute !important;
+  right: 4px !important;
+  top: 4px !important;
+
+  height: 38px !important;
+  min-width: 86px !important;
+
+  padding: 0 17px !important;
+
+  border: none !important;
+  border-radius: 9px !important;
+
+  background: #1677c8 !important;
+  color: #ffffff !important;
+
+  font-size: 13px !important;
+  font-weight: 700 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  box-shadow: 0 3px 8px rgba(22, 119, 200, 0.20) !important;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease !important;
+
+  z-index: 4;
+}
+
+.cartnova-search-wrapper .searchbox button:hover {
+  background: #0f63aa !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 5px 12px rgba(22, 119, 200, 0.25) !important;
+}
+
+.cartnova-search-wrapper .searchbox button:active {
+  transform: translateY(0) !important;
+}
+
+/* ================= RIGHT MENU ================= */
+
+.cartnova-menu-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.cartnova-menu-right > .nav {
+  margin: 0 !important;
+}
+
+.cartnova-menu-right .nav-link,
+.cartnova-menu-right .dropdown-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  min-height: 42px !important;
+
+  color: #334155 !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+
+  border-radius: 9px !important;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease !important;
+}
+
+.cartnova-menu-right .nav-link:hover,
+.cartnova-menu-right .dropdown-toggle:hover {
+  background: #f1f7ff !important;
+  color: #1677c8 !important;
+}
+
+/* ================= CART ================= */
+
+.cartnova-menu-right .fa-shopping-cart {
+  margin-right: 6px !important;
+  font-size: 15px !important;
+}
+
+/* ================= USER ================= */
+
+.cartnova-header-user-title {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  vertical-align: middle !important;
+}
+
+.cartnova-header-profile-image {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  min-height: 34px !important;
+
+  display: block !important;
+
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+
+  border: 2px solid #ffffff !important;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.14) !important;
+
+  background: #eff6ff !important;
+}
+
+.cartnova-header-user-name {
+  display: inline-block !important;
+  white-space: nowrap !important;
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+
+/* ================= DROPDOWN ================= */
+
+.cartnova-menu-right .dropdown-menu {
+  min-width: 210px !important;
+
+  margin-top: 8px !important;
+
+  padding: 7px !important;
+
+  border: 1px solid #e8eef5 !important;
+  border-radius: 12px !important;
+
+  background: #ffffff !important;
+
+  box-shadow:
+    0 14px 35px rgba(15, 23, 42, 0.13) !important;
+}
+
+.cartnova-menu-right .dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+
+  gap: 10px !important;
+
+  padding: 10px 12px !important;
+
+  border-radius: 8px !important;
+
+  color: #475569 !important;
+
+  font-size: 13px !important;
+  font-weight: 500 !important;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease !important;
+}
+
+.cartnova-menu-right .dropdown-item:hover {
+  background: #eff6ff !important;
+  color: #1677c8 !important;
+}
+
+.cartnova-menu-right .dropdown-item i {
+  width: 18px !important;
+  color: #1677c8 !important;
+  text-align: center !important;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 991px) {
+
+  .cartnova-navbar {
+    padding: 8px 12px !important;
+  }
+
+  .cartnova-search-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 10px 0 !important;
+  }
+
+  .cartnova-search-wrapper .searchbox {
+    width: 100% !important;
+    height: 44px !important;
+  }
+
+  .cartnova-search-wrapper .searchbox input {
+    height: 44px !important;
+    padding-left: 44px !important;
+    padding-right: 100px !important;
+    font-size: 13px !important;
+  }
+
+  .cartnova-search-wrapper .searchbox button {
+    height: 36px !important;
+    top: 4px !important;
+    right: 4px !important;
+    min-width: 78px !important;
+  }
+
+  .cartnova-menu-right {
+    gap: 0 !important;
+  }
+}
+
+/* ================= SMALL MOBILE ================= */
+
+@media (max-width: 480px) {
+
+  .cartnova-logo {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .cartnova-brand span {
+    font-size: 21px !important;
+  }
+
+  .cartnova-search-wrapper .searchbox input {
+    height: 42px !important;
+    font-size: 12px !important;
+  }
+
+  .cartnova-search-wrapper .searchbox button {
+    height: 34px !important;
+    min-width: 70px !important;
+    font-size: 12px !important;
+    padding: 0 12px !important;
+  }
+
+  .cartnova-header-user-name {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   CARTNOVA - PREMIUM SEARCH BAR
+   ========================================================= */
+
+.cartnova-search-form {
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cartnova-search-box {
+  position: relative !important;
+
+  width: 100% !important;
+  height: 48px !important;
+
+  display: flex !important;
+  align-items: center !important;
+
+  background: #ffffff !important;
+
+  border: 1px solid #dce5ef !important;
+  border-radius: 13px !important;
+
+  overflow: hidden !important;
+
+  box-shadow:
+    0 3px 12px rgba(15, 23, 42, 0.06) !important;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+/* Search bar hover */
+
+.cartnova-search-box:hover {
+  border-color: #c7d5e5 !important;
+
+  box-shadow:
+    0 5px 18px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Search icon */
+
+.cartnova-search-icon {
+  position: absolute !important;
+
+  left: 17px !important;
+  top: 50% !important;
+
+  transform: translateY(-50%) !important;
+
+  color: #64748b !important;
+
+  font-size: 15px !important;
+
+  z-index: 5 !important;
+
+  pointer-events: none !important;
+}
+
+/* Input */
+
+.cartnova-search-input {
+  width: 100% !important;
+  height: 100% !important;
+
+  border: none !important;
+  outline: none !important;
+
+  background: transparent !important;
+
+  padding:
+    0 125px 0 45px !important;
+
+  margin: 0 !important;
+
+  color: #0f172a !important;
+
+  font-size: 14px !important;
+  font-weight: 500 !important;
+
+  box-shadow: none !important;
+}
+
+/* Remove Bootstrap focus */
+
+.cartnova-search-input:focus {
+  border: none !important;
+  outline: none !important;
+
+  background: transparent !important;
+
+  box-shadow: none !important;
+}
+
+/* Placeholder */
+
+.cartnova-search-input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+/* Search button */
+
+.cartnova-search-button {
+  position: absolute !important;
+
+  right: 5px !important;
+  top: 5px !important;
+
+  height: 38px !important;
+  min-width: 102px !important;
+
+  padding: 0 15px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 8px !important;
+
+  border: none !important;
+  border-radius: 9px !important;
+
+  background: #1677c8 !important;
+  color: #ffffff !important;
+
+  font-size: 13px !important;
+  font-weight: 700 !important;
+
+  cursor: pointer !important;
+
+  box-shadow:
+    0 4px 10px rgba(22, 119, 200, 0.20) !important;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease !important;
+}
+
+/* Button hover */
+
+.cartnova-search-button:hover {
+  background: #0f63aa !important;
+
+  transform: translateY(-1px) !important;
+
+  box-shadow:
+    0 6px 14px rgba(22, 119, 200, 0.27) !important;
+}
+
+/* Button click */
+
+.cartnova-search-button:active {
+  transform: translateY(0) !important;
+}
+
+/* Button arrow */
+
+.cartnova-search-button i {
+  font-size: 11px !important;
+
+  transition:
+    transform 0.2s ease !important;
+}
+
+.cartnova-search-button:hover i {
+  transform: translateX(3px) !important;
+}
+
+
+/* =========================================================
+   DESKTOP HEADER SEARCH WIDTH
+   ========================================================= */
+
+.cartnova-search-wrapper {
+  flex: 1 !important;
+
+  width: 100% !important;
+  max-width: 620px !important;
+
+  margin-left: 30px !important;
+  margin-right: 30px !important;
+}
+
+
+/* =========================================================
+   SEARCH FOCUS EFFECT
+   ========================================================= */
+
+.cartnova-search-box:focus-within {
+  border-color: #1677c8 !important;
+
+  box-shadow:
+    0 0 0 3px rgba(22, 119, 200, 0.09),
+    0 6px 18px rgba(15, 23, 42, 0.08) !important;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+  .cartnova-search-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin:
+      10px 0 12px !important;
+  }
+
+  .cartnova-search-box {
+    height: 45px !important;
+  }
+
+  .cartnova-search-input {
+    font-size: 13px !important;
+
+    padding:
+      0 105px 0 42px !important;
+  }
+
+  .cartnova-search-button {
+    min-width: 82px !important;
+
+    height: 35px !important;
+
+    top: 5px !important;
+    right: 5px !important;
+
+    font-size: 12px !important;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .cartnova-search-box {
+    height: 43px !important;
+
+    border-radius: 11px !important;
+  }
+
+  .cartnova-search-icon {
+    left: 14px !important;
+    font-size: 14px !important;
+  }
+
+  .cartnova-search-input {
+    font-size: 12px !important;
+
+    padding:
+      0 92px 0 38px !important;
+  }
+
+  .cartnova-search-input::placeholder {
+    font-size: 12px !important;
+  }
+
+  .cartnova-search-button {
+    min-width: 72px !important;
+
+    height: 33px !important;
+
+    top: 5px !important;
+    right: 5px !important;
+
+    padding: 0 10px !important;
+
+    font-size: 11px !important;
+  }
+
+  .cartnova-search-button i {
+    display: none !important;
+  }
+}
+
+
+/* =========================================================
+   CARTNOVA - FINAL PREMIUM HEADER
+   ========================================================= */
+
+/* Header */
+.cartnova-navbar {
+  background: #ffffff !important;
+  min-height: 70px !important;
+  padding: 8px 0 !important;
+
+  border-bottom: 1px solid #edf2f7 !important;
+
+  box-shadow:
+    0 4px 18px rgba(15, 23, 42, 0.07) !important;
+
+  position: relative;
+  z-index: 1000;
+}
+
+.cartnova-navbar > .container {
+  max-width: 1280px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.cartnova-header-top {
+  display: flex !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+}
+
+.cartnova-brand {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  text-decoration: none !important;
+}
+
+.cartnova-logo {
+  width: 44px !important;
+  height: 44px !important;
+  object-fit: contain !important;
+}
+
+.cartnova-brand span {
+  color: #0f172a !important;
+
+  font-size: 25px !important;
+  font-weight: 800 !important;
+
+  letter-spacing: -0.6px !important;
+}
+
+/* =========================================================
+   RIGHT MENU
+   ========================================================= */
+
+.cartnova-menu-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+
+  flex-shrink: 0 !important;
+}
+
+/* All links */
+
+.cartnova-menu-right .nav-link,
+.cartnova-menu-right .dropdown-toggle {
+  display: inline-flex !important;
+  align-items: center !important;
+
+  min-height: 42px !important;
+
+  padding: 8px 11px !important;
+  margin: 0 !important;
+
+  border-radius: 9px !important;
+
+  color: #334155 !important;
+
+  font-size: 14px !important;
+  font-weight: 650 !important;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease !important;
+}
+
+/* Hover */
+
+.cartnova-menu-right .nav-link:hover,
+.cartnova-menu-right .dropdown-toggle:hover {
+  background: #f1f7ff !important;
+  color: #1677c8 !important;
+
+  transform: translateY(-1px) !important;
+}
+
+/* =========================================================
+   SHOPPING CART
+   ========================================================= */
+
+.cartnova-menu-right .fa-shopping-cart {
+  color: #334155 !important;
+  font-size: 15px !important;
+
+  margin-right: 7px !important;
+
+  transition: color 0.2s ease !important;
+}
+
+.cartnova-menu-right .nav-link:hover .fa-shopping-cart {
+  color: #1677c8 !important;
+}
+
+/* =========================================================
+   USER PROFILE
+   ========================================================= */
+
+.cartnova-header-right {
+  display: flex !important;
+  align-items: center !important;
+
+  margin-left: 2px !important;
+}
+
+.cartnova-header-user-title {
+  display: inline-flex !important;
+  align-items: center !important;
+
+  gap: 8px !important;
+
+  white-space: nowrap !important;
+}
+
+.cartnova-header-profile-image {
+  width: 34px !important;
+  height: 34px !important;
+
+  min-width: 34px !important;
+  min-height: 34px !important;
+
+  display: block !important;
+
+  border-radius: 50% !important;
+
+  object-fit: cover !important;
+  object-position: center !important;
+
+  border: 2px solid #ffffff !important;
+
+  background: #f1f5f9 !important;
+
+  box-shadow:
+    0 2px 8px rgba(15, 23, 42, 0.15) !important;
+}
+
+.cartnova-header-user-name {
+  color: #1e293b !important;
+
+  font-size: 13.5px !important;
+  font-weight: 650 !important;
+
+  white-space: nowrap !important;
+}
+
+/* =========================================================
+   USER DROPDOWN
+   ========================================================= */
+
+.cartnova-user-dropdown .dropdown-menu {
+  min-width: 215px !important;
+
+  margin-top: 9px !important;
+  padding: 7px !important;
+
+  background: #ffffff !important;
+
+  border: 1px solid #e8eef5 !important;
+  border-radius: 12px !important;
+
+  box-shadow:
+    0 15px 35px rgba(15, 23, 42, 0.13) !important;
+}
+
+.cartnova-user-dropdown .dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+
+  gap: 10px !important;
+
+  padding: 10px 12px !important;
+
+  border-radius: 8px !important;
+
+  color: #475569 !important;
+
+  font-size: 13px !important;
+  font-weight: 550 !important;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease !important;
+}
+
+.cartnova-user-dropdown .dropdown-item:hover {
+  background: #eff6ff !important;
+  color: #1677c8 !important;
+}
+
+.cartnova-user-dropdown .dropdown-item i {
+  width: 18px !important;
+
+  color: #1677c8 !important;
+
+  text-align: center !important;
+}
+
+/* =========================================================
+   ADMIN DROPDOWN
+   ========================================================= */
+
+.cartnova-admin-dropdown .dropdown-menu {
+  margin-top: 9px !important;
+  padding: 7px !important;
+
+  border: 1px solid #e8eef5 !important;
+  border-radius: 12px !important;
+
+  box-shadow:
+    0 15px 35px rgba(15, 23, 42, 0.13) !important;
+}
+
+.cartnova-admin-dropdown .dropdown-item {
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+
+  font-size: 13px !important;
+  font-weight: 550 !important;
+}
+
+.cartnova-admin-dropdown .dropdown-item i {
+  width: 18px !important;
+  margin-right: 8px !important;
+
+  color: #1677c8 !important;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+  .cartnova-navbar {
+    min-height: 64px !important;
+    padding: 7px 10px !important;
+  }
+
+  .cartnova-navbar > .container {
+    flex-wrap: wrap !important;
+  }
+
+  .cartnova-brand span {
+    font-size: 22px !important;
+  }
+
+  .cartnova-logo {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .cartnova-search-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 10px 0 !important;
+  }
+
+  .cartnova-menu-right {
+    width: 100% !important;
+
+    flex-direction: column !important;
+    align-items: stretch !important;
+
+    gap: 2px !important;
+  }
+
+  .cartnova-menu-right .nav-link,
+  .cartnova-menu-right .dropdown-toggle {
+    justify-content: flex-start !important;
+  }
+
+  .cartnova-header-right {
+    width: 100% !important;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .cartnova-brand span {
+    font-size: 20px !important;
+  }
+
+  .cartnova-logo {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .cartnova-header-user-name {
+    display: none !important;
+  }
+}
+
+
+
+
+

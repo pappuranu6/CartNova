@@ -13,7 +13,12 @@ const LoginScreen = ({ location, history }) => {
   const dispatch = useDispatch()
 
   const userLogin = useSelector((state) => state.userLogin)
-  const { loading, error, userInfo } = userLogin
+
+  const {
+    loading,
+    error,
+    userInfo,
+  } = userLogin
 
   const redirect = location.search
     ? location.search.split('=')[1]
@@ -27,6 +32,7 @@ const LoginScreen = ({ location, history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault()
+
     dispatch(login(email, password))
   }
 
@@ -36,6 +42,7 @@ const LoginScreen = ({ location, history }) => {
       <div className='cartnova-login-card'>
 
         {/* ================= LEFT SIDE ================= */}
+
         <div className='cartnova-login-left'>
 
           <div className='cartnova-login-icon'>
@@ -51,6 +58,7 @@ const LoginScreen = ({ location, history }) => {
           </p>
 
           <div className='cartnova-login-features'>
+
             <div>
               <i className='fas fa-check-circle'></i>
               Quality Products
@@ -65,20 +73,26 @@ const LoginScreen = ({ location, history }) => {
               <i className='fas fa-check-circle'></i>
               Fast & Reliable
             </div>
+
           </div>
 
         </div>
 
         {/* ================= RIGHT SIDE ================= */}
+
         <div className='cartnova-login-right'>
 
           <div className='cartnova-login-heading'>
+
             <h2>Welcome Back!</h2>
 
             <p>
               Sign in to continue shopping with CartNova.
             </p>
+
           </div>
+
+          {/* ================= ERROR ================= */}
 
           {error && (
             <Message variant='danger'>
@@ -86,15 +100,21 @@ const LoginScreen = ({ location, history }) => {
             </Message>
           )}
 
+          {/* ================= LOADER ================= */}
+
           {loading && <Loader />}
+
+          {/* ================= LOGIN FORM ================= */}
 
           <Form onSubmit={submitHandler}>
 
-            {/* Email */}
+            {/* ================= EMAIL ================= */}
+
             <Form.Group
               controlId='email'
               className='cartnova-login-form-group'
             >
+
               <Form.Label>
                 <i className='fas fa-envelope'></i>{' '}
                 Email Address
@@ -104,16 +124,21 @@ const LoginScreen = ({ location, history }) => {
                 type='email'
                 placeholder='Enter your email'
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) =>
+                  setEmail(e.target.value)
+                }
                 required
               />
+
             </Form.Group>
 
-            {/* Password */}
+            {/* ================= PASSWORD ================= */}
+
             <Form.Group
               controlId='password'
               className='cartnova-login-form-group'
             >
+
               <Form.Label>
                 <i className='fas fa-lock'></i>{' '}
                 Password
@@ -123,32 +148,46 @@ const LoginScreen = ({ location, history }) => {
                 type='password'
                 placeholder='Enter your password'
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) =>
+                  setPassword(e.target.value)
+                }
                 required
               />
+
             </Form.Group>
 
-            {/* Forgot Password */}
+            {/* ================= FORGOT PASSWORD ================= */}
+
             <div className='cartnova-forgot'>
+
               <Link to='/forgotpassword'>
                 Forgot Password?
               </Link>
+
             </div>
 
-            {/* Sign In */}
+            {/* ================= SIGN IN ================= */}
+
             <Button
               type='submit'
               className='cartnova-signin-btn'
               disabled={loading}
             >
+
               <i className='fas fa-sign-in-alt'></i>{' '}
-              {loading ? 'Signing In...' : 'Sign In'}
+
+              {loading
+                ? 'Signing In...'
+                : 'Sign In'}
+
             </Button>
 
           </Form>
 
-          {/* Register */}
+          {/* ================= REGISTER ================= */}
+
           <div className='cartnova-register'>
+
             New to CartNova?{' '}
 
             <Link
@@ -160,20 +199,25 @@ const LoginScreen = ({ location, history }) => {
             >
               Create an Account
             </Link>
+
           </div>
 
-          {/* Divider */}
+          {/* ================= DIVIDER ================= */}
+
           <div className='cartnova-login-divider'>
             <span>OR</span>
           </div>
 
-          {/* Admin Login */}
+          {/* ================= ADMIN LOGIN ================= */}
+
           <Link
             to='/admin/login'
             className='cartnova-admin-btn'
           >
+
             <i className='fas fa-user-shield'></i>{' '}
             Admin Login
+
           </Link>
 
         </div>

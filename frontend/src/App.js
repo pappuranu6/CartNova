@@ -98,9 +98,19 @@ const App = () => {
             exact
           />
 
+          {/* ================= PROFILE ================= */}
+
           <Route
             path='/profile'
             component={ProfileScreen}
+            exact
+          />
+
+          {/* ================= ACCOUNT SETTINGS ================= */}
+
+          <Route
+            path='/account-settings'
+            render={() => <ProfileScreen settingsOnly={true} />}
             exact
           />
 
@@ -122,15 +132,13 @@ const App = () => {
 
           {/* ================= ADMIN ================= */}
 
-          {/* Admin Dashboard */}
-
           <Route
             path='/admin/dashboard'
             component={DashboardScreen}
             exact
           />
 
-          {/* Admin Users */}
+          {/* ================= ADMIN USERS ================= */}
 
           <Route
             path='/admin/userlist'
@@ -144,7 +152,7 @@ const App = () => {
             exact
           />
 
-          {/* Admin Products */}
+          {/* ================= ADMIN PRODUCTS ================= */}
 
           <Route
             path='/admin/productlist'
@@ -164,7 +172,7 @@ const App = () => {
             exact
           />
 
-          {/* Admin Orders */}
+          {/* ================= ADMIN ORDERS ================= */}
 
           <Route
             path='/admin/orderlist'

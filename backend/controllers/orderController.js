@@ -1,10 +1,16 @@
 import asyncHandler from 'express-async-handler'
+import mongoose from 'mongoose'
 import Order from '../models/orderModel.js'
 import Product from '../models/productModel.js'
+
+// ======================================================
+// CREATE NEW ORDER
+// ======================================================
 
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
+
 const addOrderItems = asyncHandler(async (req, res) => {
   const {
     orderItems,
@@ -19,167 +25,282 @@ const addOrderItems = asyncHandler(async (req, res) => {
     throw new Error('No order items')
   }
 
-  /*
-    ==================================================
-    SECURE PRODUCT PRICE + TODAY'S DEAL CALCULATION
-    ==================================================
+  if (!shippingAddress) {
+    res.status(400)
+    throw new Error('Shipping address is required')
+  }
 
-    Price frontend se trust nahi karenge.
-
-    Backend database se:
-    - Product price
-    - Deal ON/OFF
-    - Deal discount
-    - Deal expiry
-
-    verify karega.
-  */
-
-  const verifiedOrderItems = []
-
-  for (const item of orderItems) {
-    const product = await Product.findById(item.product)
-
-    if (!product) {
-      res.status(404)
-      throw new Error(
-        `Product not found: ${item.product}`
-      )
-    }
-
-    const quantity = Number(item.qty)
-
-    if (!quantity || quantity < 1) {
-      res.status(400)
-      throw new Error(
-        `Invalid quantity for ${product.name}`
-      )
-    }
-
-    if (quantity > product.countInStock) {
-      res.status(400)
-      throw new Error(
-        `${product.name} has only ${product.countInStock} item(s) in stock`
-      )
-    }
-
-    // Original database price
-    const originalPrice = Number(
-      product.price || 0
-    )
-
-    /*
-      Check whether Today's Deal is currently live.
-    */
-
-    const discount = Number(
-      product.dealDiscount || 0
-    )
-
-    const dealIsLive =
-      Boolean(product.isDealActive) &&
-      discount > 0 &&
-      discount <= 100 &&
-      product.dealExpiresAt &&
-      new Date(product.dealExpiresAt).getTime() >
-        Date.now()
-
-    /*
-      Calculate actual price.
-
-      Example:
-      Product price = ₹1000
-      Deal = 20%
-
-      Customer price = ₹800
-    */
-
-    let finalPrice = originalPrice
-
-    if (dealIsLive) {
-      finalPrice =
-        Math.round(
-          originalPrice *
-            (1 - discount / 100)
-        )
-    }
-
-    verifiedOrderItems.push({
-      name: product.name,
-      qty: quantity,
-      image: product.image,
-      price: finalPrice,
-      product: product._id,
-    })
+  if (!paymentMethod) {
+    res.status(400)
+    throw new Error('Payment method is required')
   }
 
   /*
-    =========================
-    CALCULATE ITEM TOTAL
-    =========================
+    ==================================================
+    MONGODB TRANSACTION
+    ==================================================
+
+    Order create + stock deduction ek transaction
+    ke andar hoga.
+
+    Agar koi step fail hua:
+    - Order create nahi hoga
+    - Stock bhi rollback ho jayega
   */
 
-  const calculatedItemsPrice =
-    verifiedOrderItems.reduce(
-      (acc, item) =>
-        acc +
-        Number(item.price) *
-          Number(item.qty),
-      0
-    )
+  const session = await mongoose.startSession()
 
-  /*
-    =========================
-    TAX + SHIPPING
-    =========================
+  try {
+    session.startTransaction()
 
-    Existing frontend tax/shipping
-    functionality is preserved.
-  */
+    const verifiedOrderItems = []
 
-  const finalTaxPrice =
-    Number(taxPrice || 0)
+    /*
+      ==================================================
+      VERIFY PRODUCTS + ATOMIC STOCK DEDUCTION
+      ==================================================
+    */
 
-  const finalShippingPrice =
-    Number(shippingPrice || 0)
+    for (const item of orderItems) {
+      if (!item.product) {
+        res.status(400)
+        throw new Error('Product ID is required')
+      }
 
-  /*
-    =========================
-    FINAL TOTAL
-    =========================
-  */
+      const quantity = Number(item.qty)
 
-  const calculatedTotalPrice =
-    calculatedItemsPrice +
-    finalTaxPrice +
-    finalShippingPrice
+      if (!Number.isInteger(quantity) || quantity < 1) {
+        res.status(400)
+        throw new Error(
+          'Invalid product quantity'
+        )
+      }
 
-  /*
-    =========================
-    CREATE ORDER
-    =========================
-  */
+      /*
+        IMPORTANT:
 
-  const order = new Order({
-    orderItems: verifiedOrderItems,
-    user: req.user._id,
-    shippingAddress,
-    paymentMethod,
+        Stock ko atomically decrease kar rahe hain.
 
-    itemsPrice: calculatedItemsPrice,
-    taxPrice: finalTaxPrice,
-    shippingPrice: finalShippingPrice,
-    totalPrice: calculatedTotalPrice,
-  })
+        Condition:
+        countInStock >= quantity
 
-  const createdOrder = await order.save()
+        Iska matlab:
+        Agar stock enough nahi hai,
+        update nahi hoga.
+      */
 
-  res.status(201).json(createdOrder)
+      const product =
+        await Product.findOneAndUpdate(
+          {
+            _id: item.product,
+            countInStock: {
+              $gte: quantity,
+            },
+          },
+          {
+            $inc: {
+              countInStock: -quantity,
+            },
+          },
+          {
+            new: true,
+            session,
+          }
+        )
+
+      if (!product) {
+        /*
+          Product exist karta hai lekin
+          stock enough nahi hai,
+          ya product exist hi nahi karta.
+        */
+
+        const existingProduct =
+          await Product.findById(
+            item.product
+          ).session(session)
+
+        if (!existingProduct) {
+          res.status(404)
+          throw new Error(
+            `Product not found: ${item.product}`
+          )
+        }
+
+        res.status(400)
+        throw new Error(
+          `${existingProduct.name} does not have enough stock`
+        )
+      }
+
+      /*
+        ==================================================
+        TODAY'S DEAL
+        ==================================================
+      */
+
+      const originalPrice = Number(
+        product.price || 0
+      )
+
+      const discount = Number(
+        product.dealDiscount || 0
+      )
+
+      const dealIsLive =
+        Boolean(product.isDealActive) &&
+        discount > 0 &&
+        discount <= 100 &&
+        product.dealExpiresAt &&
+        new Date(
+          product.dealExpiresAt
+        ).getTime() > Date.now()
+
+      /*
+        ==================================================
+        FINAL PRODUCT PRICE
+        ==================================================
+      */
+
+      let finalPrice = originalPrice
+
+      if (dealIsLive) {
+        finalPrice = Math.round(
+          originalPrice *
+            (1 - discount / 100)
+        )
+      }
+
+      /*
+        IMPORTANT:
+
+        Price frontend se nahi liya ja raha.
+        Database product price use ho raha hai.
+      */
+
+      verifiedOrderItems.push({
+        name: product.name,
+        qty: quantity,
+        image: product.image,
+        price: finalPrice,
+        product: product._id,
+      })
+    }
+
+    /*
+      ==================================================
+      CALCULATE ITEMS PRICE
+      ==================================================
+    */
+
+    const calculatedItemsPrice =
+      verifiedOrderItems.reduce(
+        (acc, item) =>
+          acc +
+          Number(item.price) *
+            Number(item.qty),
+        0
+      )
+
+    /*
+      ==================================================
+      TAX + SHIPPING
+      ==================================================
+    */
+
+    const finalTaxPrice =
+      Number(taxPrice || 0)
+
+    const finalShippingPrice =
+      Number(shippingPrice || 0)
+
+    /*
+      Basic protection against invalid
+      negative tax/shipping values.
+    */
+
+    if (
+      finalTaxPrice < 0 ||
+      finalShippingPrice < 0
+    ) {
+      res.status(400)
+      throw new Error(
+        'Invalid tax or shipping price'
+      )
+    }
+
+    /*
+      ==================================================
+      FINAL TOTAL
+      ==================================================
+    */
+
+    const calculatedTotalPrice =
+      calculatedItemsPrice +
+      finalTaxPrice +
+      finalShippingPrice
+
+    /*
+      ==================================================
+      CREATE ORDER
+      ==================================================
+    */
+
+    const order = new Order({
+      orderItems: verifiedOrderItems,
+
+      user: req.user._id,
+
+      shippingAddress,
+      paymentMethod,
+
+      itemsPrice: calculatedItemsPrice,
+      taxPrice: finalTaxPrice,
+      shippingPrice: finalShippingPrice,
+      totalPrice: calculatedTotalPrice,
+    })
+
+    /*
+      Save order inside same transaction.
+    */
+
+    const createdOrder =
+      await order.save({
+        session,
+      })
+
+    /*
+      ==================================================
+      COMMIT TRANSACTION
+      ==================================================
+    */
+
+    await session.commitTransaction()
+
+    res.status(201).json(createdOrder)
+  } catch (error) {
+    /*
+      ==================================================
+      ROLLBACK
+      ==================================================
+    */
+
+    await session.abortTransaction()
+
+    throw error
+  } finally {
+    await session.endSession()
+  }
 })
+
+// ======================================================
+// GET ORDER BY ID
+// ======================================================
 
 // @desc    Get order by ID
 // @route   GET /api/orders/:id
 // @access  Private
+
 const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(
     req.params.id
@@ -188,52 +309,103 @@ const getOrderById = asyncHandler(async (req, res) => {
     'name email'
   )
 
-  if (order) {
-    res.json(order)
-  } else {
+  if (!order) {
     res.status(404)
     throw new Error('Order not found')
   }
+
+  /*
+    ==================================================
+    SECURITY CHECK
+    ==================================================
+  */
+
+  const isOwner =
+    order.user &&
+    order.user._id.toString() ===
+      req.user._id.toString()
+
+  if (!isOwner && !req.user.isAdmin) {
+    res.status(403)
+    throw new Error(
+      'Not authorized to view this order'
+    )
+  }
+
+  res.json(order)
 })
 
+// ======================================================
+// UPDATE ORDER TO PAID
+// ======================================================
+
 // @desc    Update order to paid
-// @route   GET /api/orders/:id/pay
+// @route   PUT /api/orders/:id/pay
 // @access  Private
+
 const updateOrderToPaid = asyncHandler(
   async (req, res) => {
     const order = await Order.findById(
       req.params.id
     )
 
-    if (order) {
-      order.isPaid = true
-      order.paidAt = Date.now()
-
-      order.paymentResult = {
-        id: req.body.id,
-        status: req.body.status,
-        update_time:
-          req.body.update_time,
-        email_address:
-          req.body.payer?.email_address,
-      }
-
-      const updatedOrder =
-        await order.save()
-
-      res.json(updatedOrder)
-    } else {
+    if (!order) {
       res.status(404)
+      throw new Error('Order not found')
+    }
+
+    /*
+      ==================================================
+      SECURITY CHECK
+      ==================================================
+    */
+
+    const isOwner =
+      order.user.toString() ===
+      req.user._id.toString()
+
+    if (!isOwner && !req.user.isAdmin) {
+      res.status(403)
       throw new Error(
-        'Order not found'
+        'Not authorized to update this order'
       )
     }
+
+    /*
+      Already paid
+    */
+
+    if (order.isPaid) {
+      return res.json(order)
+    }
+
+    order.isPaid = true
+    order.paidAt = Date.now()
+
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time:
+        req.body.update_time,
+      email_address:
+        req.body.payer?.email_address,
+    }
+
+    const updatedOrder =
+      await order.save()
+
+    res.json(updatedOrder)
   }
 )
 
+// ======================================================
+// UPDATE ORDER TO DELIVERED
+// ======================================================
+
 // @desc    Update order to delivered
-// @route   GET /api/orders/:id/deliver
+// @route   PUT /api/orders/:id/deliver
 // @access  Private/Admin
+
 const updateOrderToDelivered =
   asyncHandler(async (req, res) => {
     const order =
@@ -241,51 +413,89 @@ const updateOrderToDelivered =
         req.params.id
       )
 
-    if (order) {
-      order.isDelivered = true
-      order.deliveredAt = Date.now()
-
-      const updatedOrder =
-        await order.save()
-
-      res.json(updatedOrder)
-    } else {
+    if (!order) {
       res.status(404)
       throw new Error(
         'Order not found'
       )
     }
+
+    /*
+      Extra admin protection.
+    */
+
+    if (!req.user.isAdmin) {
+      res.status(403)
+      throw new Error(
+        'Admin access required'
+      )
+    }
+
+    order.isDelivered = true
+    order.deliveredAt = Date.now()
+
+    const updatedOrder =
+      await order.save()
+
+    res.json(updatedOrder)
   })
+
+// ======================================================
+// GET MY ORDERS
+// ======================================================
 
 // @desc    Get logged in user orders
 // @route   GET /api/orders/myorders
 // @access  Private
+
 const getMyOrders = asyncHandler(
   async (req, res) => {
     const orders =
       await Order.find({
         user: req.user._id,
       })
+        .sort({
+          createdAt: -1,
+        })
 
     res.json(orders)
   }
 )
+
+// ======================================================
+// GET ALL ORDERS
+// ======================================================
 
 // @desc    Get all orders
 // @route   GET /api/orders
 // @access  Private/Admin
+
 const getOrders = asyncHandler(
   async (req, res) => {
+    if (!req.user.isAdmin) {
+      res.status(403)
+      throw new Error(
+        'Admin access required'
+      )
+    }
+
     const orders =
       await Order.find({})
         .populate(
           'user',
-          'id name'
+          'id name email'
         )
+        .sort({
+          createdAt: -1,
+        })
 
     res.json(orders)
   }
 )
+
+// ======================================================
+// EXPORTS
+// ======================================================
 
 export {
   addOrderItems,

@@ -67,16 +67,12 @@ export const login = (email, password) => async (dispatch) => {
       payload: data,
     })
 
-    localStorage.setItem(
-      'userInfo',
-      JSON.stringify(data)
-    )
+    localStorage.setItem('userInfo', JSON.stringify(data))
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAIL,
       payload:
-        error.response &&
-        error.response.data.message
+        error.response && error.response.data.message
           ? error.response.data.message
           : error.message,
     })
@@ -132,26 +128,18 @@ export const register =
         config
       )
 
+      // Registration successful.
+      // Do NOT automatically log the user in.
+      // Email and mobile OTP verification must happen first.
       dispatch({
         type: USER_REGISTER_SUCCESS,
         payload: data,
       })
-
-      dispatch({
-        type: USER_LOGIN_SUCCESS,
-        payload: data,
-      })
-
-      localStorage.setItem(
-        'userInfo',
-        JSON.stringify(data)
-      )
     } catch (error) {
       dispatch({
         type: USER_REGISTER_FAIL,
         payload:
-          error.response &&
-          error.response.data.message
+          error.response && error.response.data.message
             ? error.response.data.message
             : error.message,
       })
@@ -190,8 +178,7 @@ export const getUserDetails =
       dispatch({
         type: USER_DETAILS_FAIL,
         payload:
-          error.response &&
-          error.response.data.message
+          error.response && error.response.data.message
             ? error.response.data.message
             : error.message,
       })
@@ -228,15 +215,280 @@ export const updateUserProfile =
         type: USER_UPDATE_PROFILE_SUCCESS,
         payload: data,
       })
+
+      return data
     } catch (error) {
+      const message =
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+          ? error.response.data.message
+          : error.message
+
       dispatch({
         type: USER_UPDATE_PROFILE_FAIL,
-        payload:
-          error.response &&
-          error.response.data.message
-            ? error.response.data.message
-            : error.message,
+        payload: message,
       })
+
+      throw error
+    }
+  }
+
+// ================= SEND EMAIL CHANGE OTP =================
+
+export const sendEmailChangeOtp =
+  (email) => async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        '/api/users/profile/change-email/send-otp',
+        {
+          email,
+        },
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+// ================= VERIFY EMAIL CHANGE OTP =================
+
+export const verifyEmailChangeOtp =
+  (email, otp) => async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        '/api/users/profile/change-email/verify-otp',
+        {
+          email,
+          otp,
+        },
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+// ================= SEND PHONE CHANGE OTP =================
+
+export const sendPhoneChangeOtp =
+  (phone) => async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        '/api/users/profile/change-phone/send-otp',
+        {
+          phone,
+        },
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+// ================= VERIFY PHONE CHANGE OTP =================
+
+export const verifyPhoneChangeOtp =
+  (phone, otp) => async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        '/api/users/profile/change-phone/verify-otp',
+        {
+          phone,
+          otp,
+        },
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+// ================= GET ADDRESSES =================
+
+export const getAddresses =
+  () => async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.get(
+        '/api/users/profile/addresses',
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+// ================= ADD ADDRESS =================
+
+export const addAddress =
+  (address) => async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.post(
+        '/api/users/profile/addresses',
+        address,
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+// ================= UPDATE ADDRESS =================
+
+export const updateAddress =
+  (addressId, address) =>
+  async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.put(
+        `/api/users/profile/addresses/${addressId}`,
+        address,
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+// ================= DELETE ADDRESS =================
+
+export const deleteAddress =
+  (addressId) => async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.delete(
+        `/api/users/profile/addresses/${addressId}`,
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
+    }
+  }
+
+// ================= SET DEFAULT ADDRESS =================
+
+export const setDefaultAddress =
+  (addressId) => async (dispatch, getState) => {
+    try {
+      const {
+        userLogin: { userInfo },
+      } = getState()
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      const { data } = await axios.put(
+        `/api/users/profile/addresses/${addressId}/default`,
+        {},
+        config
+      )
+
+      return data
+    } catch (error) {
+      throw error
     }
   }
 
