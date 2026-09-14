@@ -41,7 +41,7 @@ const PlaceOrderScreen = ({ history }) => {
       (acc, item) =>
         acc +
         Number(item.price || 0) *
-          Number(item.qty || 0),
+        Number(item.qty || 0),
       0
     )
   )
@@ -347,13 +347,13 @@ const PlaceOrderScreen = ({ history }) => {
                       new Date(
                         item.dealExpiresAt
                       ).getTime() >
-                        Date.now()
+                      Date.now()
 
                     const originalPrice =
                       Number(
                         item.originalPrice ??
-                          item.price ??
-                          0
+                        item.price ??
+                        0
                       )
 
                     const finalPrice =
@@ -377,16 +377,20 @@ const PlaceOrderScreen = ({ history }) => {
                           to={`/product/${item.product}`}
                           className='cartnova-place-order-item-image'
                         >
-                          <Image
-                            src={
-                              item.image?.startsWith(
-                                'http'
-                              )
-                                ? item.image
-                                : `https://cartnova-5dvn.onrender.com${item.image}`
-                            }
-                            alt={item.name}
-                          />
+                          {item.image ? (
+                            <Image
+                              src={
+                                item.image?.startsWith('http')
+                                  ? item.image
+                                  : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${item.image}`
+                              }
+                              alt={item.name}
+                            />
+                          ) : (
+                            <div className='cartnova-place-order-item-image-placeholder'>
+                              <i className='fas fa-image'></i>
+                            </div>
+                          )}
                         </Link>
 
                         {/* PRODUCT INFO */}
@@ -428,7 +432,7 @@ const PlaceOrderScreen = ({ history }) => {
 
                           {dealLive &&
                             originalPrice >
-                              finalPrice && (
+                            finalPrice && (
                               <small
                                 style={{
                                   display: 'block',

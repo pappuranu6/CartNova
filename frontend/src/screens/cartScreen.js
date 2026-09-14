@@ -62,8 +62,8 @@ const CartScreen = ({
 
   const qty = location.search
     ? Number(
-        location.search.split('=')[1]
-      )
+      location.search.split('=')[1]
+    )
     : 1
 
   const dispatch = useDispatch()
@@ -165,7 +165,7 @@ const CartScreen = ({
         return (
           acc +
           item.qty *
-            itemPrice
+          itemPrice
         )
       },
       0
@@ -275,8 +275,8 @@ const CartScreen = ({
                     const originalPrice =
                       Number(
                         item.originalPrice ??
-                          item.price ??
-                          0
+                        item.price ??
+                        0
                       )
 
                     /*
@@ -293,13 +293,13 @@ const CartScreen = ({
                     const currentItemPrice =
                       dealLive
                         ? Number(
-                            item.price || 0
-                          )
+                          item.price || 0
+                        )
                         : Number(
-                            item.originalPrice ??
-                              item.price ??
-                              0
-                          )
+                          item.originalPrice ??
+                          item.price ??
+                          0
+                        )
 
                     const itemSubtotal =
                       item.qty *
@@ -320,16 +320,15 @@ const CartScreen = ({
                           {item.image ? (
                             <Image
                               src={
-                                item.image?.startsWith(
-                                  'http'
-                                )
+                                item.image?.startsWith('http')
                                   ? item.image
-                                  : `https://cartnova-5dvn.onrender.com${item.image}`
+                                  : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${item.image}`
                               }
                               alt={item.name}
+                              className='cartnova-cart-image-img'
                             />
                           ) : (
-                            <div>
+                            <div className='cartnova-cart-image-placeholder'>
                               <i className='fas fa-image'></i>
                             </div>
                           )}
@@ -385,7 +384,7 @@ const CartScreen = ({
 
                           {dealLive &&
                             originalPrice >
-                              currentItemPrice && (
+                            currentItemPrice && (
                               <div
                                 style={{
                                   marginTop: '4px',

@@ -26,11 +26,13 @@ const Header = () => {
 
   return (
     <header>
+
       <Navbar
         expand='lg'
         collapseOnSelect
         className='cartnova-navbar'
       >
+
         <Container>
 
           {/* ================= TOP HEADER ================= */}
@@ -41,6 +43,7 @@ const Header = () => {
 
             <LinkContainer to='/'>
               <Navbar.Brand className='cartnova-brand'>
+
                 <img
                   src='/cartnova-logo.png'
                   alt='CartNova'
@@ -48,6 +51,7 @@ const Header = () => {
                 />
 
                 <span>CartNova</span>
+
               </Navbar.Brand>
             </LinkContainer>
 
@@ -64,6 +68,20 @@ const Header = () => {
 
           </div>
 
+          {/* ================= SEARCH ================= */}
+          {/* Search is OUTSIDE Navbar.Collapse
+              so it stays visible on mobile */}
+
+          <div className='cartnova-search-wrapper'>
+
+            <Route
+              render={({ history }) => (
+                <SearchBox history={history} />
+              )}
+            />
+
+          </div>
+
           {/* ================= NAVBAR MENU ================= */}
 
           <Navbar.Collapse
@@ -71,85 +89,139 @@ const Header = () => {
             className='cartnova-navbar-menu'
           >
 
-            {/* SEARCH */}
-
-            <div className='cartnova-search-wrapper'>
-              <Route
-                render={({ history }) => (
-                  <SearchBox history={history} />
-                )}
-              />
-            </div>
-
-            {/* RIGHT SIDE MENU */}
+            {/* ================= RIGHT SIDE MENU ================= */}
 
             <div className='cartnova-menu-right'>
 
-              {/* SHOPPING CART */}
+              {/* =================================================
+                  SHOPPING CART
+                  ONLY VISIBLE AFTER LOGIN
+              ================================================= */}
 
-              <Nav>
-                <LinkContainer to='/cart'>
-                  <Nav.Link className='cartnova-main-link'>
-                    <i className='fas fa-shopping-cart'></i>
-                    <span>Shopping cart</span>
-                  </Nav.Link>
-                </LinkContainer>
-              </Nav>
+              {userInfo && (
 
-              {/* ADMIN */}
+                <Nav>
+
+                  <LinkContainer to='/cart'>
+
+                    <Nav.Link className='cartnova-main-link'>
+
+                      <i className='fas fa-shopping-cart'></i>
+
+                      <span>
+                        Shopping cart
+                      </span>
+
+                    </Nav.Link>
+
+                  </LinkContainer>
+
+                </Nav>
+
+              )}
+
+              {/* =================================================
+                  ADMIN MENU
+                  ONLY VISIBLE FOR ADMIN
+              ================================================= */}
 
               {userInfo && userInfo.isAdmin && (
+
                 <Nav>
+
                   <NavDropdown
                     title={
                       <>
                         <i className='fas fa-user-shield'></i>{' '}
-                        Admin
+                        <span>Admin</span>
                       </>
                     }
                     id='adminmenu'
                     className='cartnova-admin-dropdown'
                   >
 
+                    {/* DASHBOARD */}
+
                     <LinkContainer to='/admin/dashboard'>
+
                       <NavDropdown.Item>
-                        <i className='fas fa-chart-line'></i>
-                        <span>Dashboard</span>
+
+                        <i className='fas fa-chart-line'></i>{' '}
+
+                        <span>
+                          Dashboard
+                        </span>
+
                       </NavDropdown.Item>
+
                     </LinkContainer>
+
+                    {/* USERS */}
 
                     <LinkContainer to='/admin/userlist'>
+
                       <NavDropdown.Item>
-                        <i className='fas fa-users'></i>
-                        <span>Users</span>
+
+                        <i className='fas fa-users'></i>{' '}
+
+                        <span>
+                          Users
+                        </span>
+
                       </NavDropdown.Item>
+
                     </LinkContainer>
+
+                    {/* PRODUCTS */}
 
                     <LinkContainer to='/admin/productlist'>
+
                       <NavDropdown.Item>
-                        <i className='fas fa-boxes'></i>
-                        <span>Products</span>
+
+                        <i className='fas fa-boxes'></i>{' '}
+
+                        <span>
+                          Products
+                        </span>
+
                       </NavDropdown.Item>
+
                     </LinkContainer>
 
+                    {/* ORDERS */}
+
                     <LinkContainer to='/admin/orderlist'>
+
                       <NavDropdown.Item>
-                        <i className='fas fa-shopping-bag'></i>
-                        <span>Orders</span>
+
+                        <i className='fas fa-shopping-bag'></i>{' '}
+
+                        <span>
+                          Orders
+                        </span>
+
                       </NavDropdown.Item>
+
                     </LinkContainer>
 
                   </NavDropdown>
+
                 </Nav>
+
               )}
 
-              {/* USER / LOGIN */}
+              {/* =================================================
+                  USER / LOGIN
+              ================================================= */}
 
               <div className='cartnova-header-right'>
 
                 {userInfo ? (
 
+                  /* ================= LOGGED IN USER ================= */
+
                   <Nav>
+
                     <NavDropdown
                       title={
                         <>
@@ -162,50 +234,92 @@ const Header = () => {
                       className='cartnova-user-dropdown'
                     >
 
+                      {/* PROFILE */}
+
                       <LinkContainer to='/profile'>
+
                         <NavDropdown.Item>
-                          <i className='fas fa-user'></i>
-                          <span>Profile</span>
+
+                          <i className='fas fa-user'></i>{' '}
+
+                          <span>
+                            Profile
+                          </span>
+
                         </NavDropdown.Item>
+
                       </LinkContainer>
 
+                      {/* MY ORDERS */}
+
                       <LinkContainer to='/myorders'>
+
                         <NavDropdown.Item>
-                          <i className='fas fa-box'></i>
-                          <span>My Orders</span>
+
+                          <i className='fas fa-box'></i>{' '}
+
+                          <span>
+                            My Orders
+                          </span>
+
                         </NavDropdown.Item>
+
                       </LinkContainer>
+
+                      {/* LOGOUT */}
 
                       <NavDropdown.Item
                         onClick={logoutHandler}
                       >
-                        <i className='fas fa-sign-out-alt'></i>
-                        <span>Logout</span>
+
+                        <i className='fas fa-sign-out-alt'></i>{' '}
+
+                        <span>
+                          Logout
+                        </span>
+
                       </NavDropdown.Item>
 
                     </NavDropdown>
+
                   </Nav>
 
                 ) : (
 
+                  /* ================= LOGGED OUT USER ================= */
+
                   <Nav className='cartnova-login-links'>
 
-                    {/* CUSTOMER LOGIN */}
+                    {/* LOGIN */}
 
                     <LinkContainer to='/login'>
-                      <Nav.Link>
+
+                      <Nav.Link className='cartnova-login-btn'>
+
                         <i className='fas fa-user'></i>
-                        <span>Login</span>
+
+                        <span>
+                          Login
+                        </span>
+
                       </Nav.Link>
+
                     </LinkContainer>
 
-                    {/* ADMIN LOGIN */}
+                    {/* SIGN UP */}
 
-                    <LinkContainer to='/admin/login'>
-                      <Nav.Link>
-                        <i className='fas fa-user-shield'></i>
-                        <span>Admin Login</span>
+                    <LinkContainer to='/register'>
+
+                      <Nav.Link className='cartnova-signup-btn'>
+
+                        <span>
+                          Sign Up
+                        </span>
+
+                  
+
                       </Nav.Link>
+
                     </LinkContainer>
 
                   </Nav>
@@ -219,7 +333,9 @@ const Header = () => {
           </Navbar.Collapse>
 
         </Container>
+
       </Navbar>
+
     </header>
   )
 }

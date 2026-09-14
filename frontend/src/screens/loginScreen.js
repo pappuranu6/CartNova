@@ -12,7 +12,9 @@ const LoginScreen = ({ location, history }) => {
 
   const dispatch = useDispatch()
 
-  const userLogin = useSelector((state) => state.userLogin)
+  const userLogin = useSelector(
+    (state) => state.userLogin
+  )
 
   const {
     loading,
@@ -32,7 +34,6 @@ const LoginScreen = ({ location, history }) => {
 
   const submitHandler = (e) => {
     e.preventDefault()
-
     dispatch(login(email, password))
   }
 
@@ -92,7 +93,7 @@ const LoginScreen = ({ location, history }) => {
 
           </div>
 
-          {/* ================= ERROR ================= */}
+          {/* ERROR */}
 
           {error && (
             <Message variant='danger'>
@@ -100,15 +101,15 @@ const LoginScreen = ({ location, history }) => {
             </Message>
           )}
 
-          {/* ================= LOADER ================= */}
+          {/* LOADER */}
 
           {loading && <Loader />}
 
-          {/* ================= LOGIN FORM ================= */}
+          {/* LOGIN FORM */}
 
           <Form onSubmit={submitHandler}>
 
-            {/* ================= EMAIL ================= */}
+            {/* EMAIL */}
 
             <Form.Group
               controlId='email'
@@ -132,7 +133,7 @@ const LoginScreen = ({ location, history }) => {
 
             </Form.Group>
 
-            {/* ================= PASSWORD ================= */}
+            {/* PASSWORD */}
 
             <Form.Group
               controlId='password'
@@ -156,7 +157,7 @@ const LoginScreen = ({ location, history }) => {
 
             </Form.Group>
 
-            {/* ================= FORGOT PASSWORD ================= */}
+            {/* FORGOT PASSWORD */}
 
             <div className='cartnova-forgot'>
 
@@ -166,7 +167,7 @@ const LoginScreen = ({ location, history }) => {
 
             </div>
 
-            {/* ================= SIGN IN ================= */}
+            {/* SIGN IN */}
 
             <Button
               type='submit'
@@ -184,7 +185,7 @@ const LoginScreen = ({ location, history }) => {
 
           </Form>
 
-          {/* ================= REGISTER ================= */}
+          {/* USER SIGNUP LINK */}
 
           <div className='cartnova-register'>
 
