@@ -202,24 +202,6 @@ const LoginScreen = ({ location, history }) => {
 
           </div>
 
-          {/* ================= DIVIDER ================= */}
-
-          <div className='cartnova-login-divider'>
-            <span>OR</span>
-          </div>
-
-          {/* ================= ADMIN LOGIN ================= */}
-
-          <Link
-            to='/admin/login'
-            className='cartnova-admin-btn'
-          >
-
-            <i className='fas fa-user-shield'></i>{' '}
-            Admin Login
-
-          </Link>
-
         </div>
 
       </div>
