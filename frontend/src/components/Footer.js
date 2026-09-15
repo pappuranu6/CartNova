@@ -28,7 +28,25 @@ const Footer = () => {
 
         </div>
 
-        {/* SOCIAL */}
+        {/* ================= DEVELOPER INFO ================= */}
+
+        <div className='cartnova-footer-developer'>
+
+          <img
+            src='/images/pappu-profile.jpg'
+            alt='Pappu Rana Chauhan'
+            className='cartnova-footer-profile'
+          />
+
+          <div className='cartnova-footer-developer-info'>
+            <h4>Pappu Rana Chauhan</h4>
+
+            <p>Software Engineer</p>
+          </div>
+
+        </div>
+
+        {/* ================= SOCIAL ================= */}
 
         <div className='cartnova-footer-social'>
 
@@ -66,7 +84,13 @@ const Footer = () => {
           </span>
 
         </div>
-pp
+
+        {/* MADE BY */}
+
+        <p className='cartnova-footer-made'>
+          Made by <strong>Pappu Rana Chauhan</strong> (Software Engineer)
+        </p>
+
       </div>
 
     </footer>
