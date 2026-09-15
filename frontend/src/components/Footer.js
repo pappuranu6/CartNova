@@ -1,100 +1,74 @@
-import React from 'react'
-import SocialFollow from './SocialLink'
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faGithub,
+  faLinkedin,
+  faInstagram,
+} from "@fortawesome/free-brands-svg-icons";
 
-const Footer = () => {
+export default function SocialFollow() {
   return (
-    <footer className='cartnova-footer'>
+    <div className="main-footer">
+      <div className="container">
+        <div className="row">
 
-      {/* ================= FOOTER MAIN ================= */}
+          {/* CONTACT & SOCIAL LINKS */}
+          <p className="social_icons text-center">
 
-      <div className='cartnova-footer-inner'>
+            <a
+              href="tel:+919135597153"
+              className="social"
+            >
+              ☎ +91-9135597153
+            </a>
 
-        {/* BRAND */}
+            {" | "}
 
-        <div className='cartnova-footer-brand'>
+            <a
+              href="mailto:pappuranu6@gmail.com"
+              className="social"
+            >
+              ✉ pappuranu6@gmail.com
+            </a>
 
-          <div className='cartnova-footer-logo'>
-            <i className='fas fa-shopping-bag'></i>
-          </div>
+            {" | "}
 
-          <div className='cartnova-footer-brand-content'>
-            <h3>CartNova</h3>
+            <a
+              href="https://www.linkedin.com/in/pappuranu6/"
+              className="social"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FontAwesomeIcon icon={faLinkedin} /> LinkedIn
+            </a>
 
-            <p>
-              Your trusted destination for
-              quality products and easy shopping.
-            </p>
-          </div>
+            {" | "}
+
+            <a
+              href="https://github.com/pappuranu6"
+              className="social"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <FontAwesomeIcon icon={faGithub} /> GitHub
+            </a>
+
+            {" | "}
+
+            <a
+              href="https://www.instagram.com/chouhan_rana_pappu_dikant/"
+              className="social"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram"
+            >
+              <FontAwesomeIcon icon={faInstagram} /> Instagram
+            </a>
+
+          </p>
 
         </div>
-
-        {/* ================= DEVELOPER INFO ================= */}
-
-        <div className='cartnova-footer-developer'>
-
-          <img
-            src='/images/pappu-profile.jpg'
-            alt='Pappu Rana Chauhan'
-            className='cartnova-footer-profile'
-          />
-
-          <div className='cartnova-footer-developer-info'>
-            <h4>Pappu Rana Chauhan</h4>
-
-            <p>Software Engineer</p>
-          </div>
-
-        </div>
-
-        {/* ================= SOCIAL ================= */}
-
-        <div className='cartnova-footer-social'>
-
-          <span className='cartnova-footer-follow-title'>
-            FOLLOW US
-          </span>
-
-          <div className='cartnova-footer-social-links'>
-            <SocialFollow />
-          </div>
-
-        </div>
-
       </div>
-
-      {/* ================= FOOTER BOTTOM ================= */}
-
-      <div className='cartnova-footer-bottom'>
-
-        <p className='cartnova-footer-copyright'>
-          © {new Date().getFullYear()} CartNova.
-          All rights reserved.
-        </p>
-
-        <div className='cartnova-footer-bottom-links'>
-
-          <span>
-            <i className='fas fa-shield-alt'></i>
-            Secure Shopping
-          </span>
-
-          <span>
-            <i className='fas fa-lock'></i>
-            Safe &amp; Trusted
-          </span>
-
-        </div>
-
-        {/* MADE BY */}
-
-        <p className='cartnova-footer-made'>
-          Made by <strong>Pappu Rana Chauhan</strong> (Software Engineer)
-        </p>
-
-      </div>
-
-    </footer>
-  )
+    </div>
+  );
 }
-
-export default Footer
