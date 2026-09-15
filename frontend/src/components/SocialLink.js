@@ -8,80 +8,52 @@ import {
 
 export default function SocialFollow() {
   return (
-    <div className="main-footer">
-      <div className="container">
-        <div className="row">
+    <div className="cartnova-contact-box">
+      <div className="cartnova-contact-links">
 
-          <p className="social_icons text-center">
+        <a href="tel:+919135597153" className="social">
+          ☎ +91-9135597153
+        </a>
 
-            {/* PHONE */}
-            <a
-              href="tel:+919135597153"
-              className="social"
-            >
-              ☎ +91- 9135597153
-            </a>
+        <span>|</span>
 
-            {" | "}
+        <a href="mailto:pappuranu6@gmail.com" className="social">
+          ✉ pappuranu6@gmail.com
+        </a>
 
-            {/* EMAIL */}
-            <a
-              href="mailto:pappuranu6@gmail.com"
-              className="social"
-            >
-              ✉ pappuranu6@gmail.com
-            </a>
+        <span>|</span>
 
-            {" | "}
+        <a
+          href="https://www.linkedin.com/in/pappuranu6/"
+          className="social"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faLinkedin} /> LinkedIn
+        </a>
 
-            {/* LINKEDIN */}
-            <a
-              href="https://www.linkedin.com/in/pappuranu6/"
-              className="social"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FontAwesomeIcon icon={faLinkedin} /> LinkedIn
-            </a>
+        <span>|</span>
 
-            {" | "}
+        <a
+          href="https://github.com/pappuranu6"
+          className="social"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faGithub} /> GitHub
+        </a>
 
-            {/* GITHUB */}
-            <a
-              href="https://github.com/pappuranu6"
-              className="social"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FontAwesomeIcon icon={faGithub} /> GitHub
-            </a>
+        <span>|</span>
 
-            {" | "}
+        <a
+          href="https://www.instagram.com/chouhan_rana_pappu_dikant/"
+          className="social"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <FontAwesomeIcon icon={faInstagram} /> Instagram
+        </a>
 
-            {/* INSTAGRAM */}
-            <a
-              href="https://www.instagram.com/chouhan_rana_pappu_dikant/"
-              className="social"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <FontAwesomeIcon icon={faInstagram} /> Instagram
-            </a>
-
-          </p>
-
-          <p className="col-sm text-center">
-
-            &copy; {new Date().getFullYear()}{" "}
-
-            <span className="footer_name">
-              Made by Pappu Rana Chauhan
-            </span>
-
-            <br />
-          </p>
-
-        </div>
       </div>
     </div>
   );
