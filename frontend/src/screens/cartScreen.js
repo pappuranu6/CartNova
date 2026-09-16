@@ -74,6 +74,9 @@ const CartScreen = ({
 
   const { cartItems } = cart
 
+  const userLogin = useSelector((state) => state.userLogin)
+  const { userInfo } = userLogin
+
   // =========================
   // ADD PRODUCT TO CART
   // =========================
@@ -110,9 +113,11 @@ const CartScreen = ({
   // =========================
 
   const checkoutHandler = () => {
-    history.push(
-      '/login?redirect=shipping'
-    )
+    if (userInfo) {
+      history.push('/shipping')
+    } else {
+      history.push('/login?redirect=shipping')
+    }
   }
 
   // =========================

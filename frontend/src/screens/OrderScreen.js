@@ -15,7 +15,7 @@ import {
   ORDER_DELIVER_RESET,
 } from '../constants/orderConstants'
 
-const OrderScreen = ({ match, history }) => {
+const OrderScreen = ({ match, history, location }) => {
   const orderId = match.params.id
 
   const dispatch = useDispatch()
@@ -53,22 +53,6 @@ const OrderScreen = ({ match, history }) => {
   )
 
   const { userInfo } = userLogin
-
-  if (!loading && order) {
-    const addDecimals = (num) => {
-      return (
-        Math.round(num * 100) / 100
-      ).toFixed(2)
-    }
-
-    order.itemsPrice = addDecimals(
-      order.orderItems.reduce(
-        (acc, item) =>
-          acc + item.price * item.qty,
-        0
-      )
-    )
-  }
 
   // =========================================================
   // LOAD ORDER DETAILS
@@ -173,7 +157,7 @@ const OrderScreen = ({ match, history }) => {
             alert(
               error.response?.data
                 ?.message ||
-                'Payment verification failed'
+              'Payment verification failed'
             )
           }
         },
@@ -201,9 +185,369 @@ const OrderScreen = ({ match, history }) => {
       alert(
         error.response?.data
           ?.message ||
-          'Unable to create payment order'
+        'Unable to create payment order'
       )
     }
+  }
+
+
+  // =========================================================
+  // PROFESSIONAL INVOICE
+  // =========================================================
+  const printInvoice = () => {
+    if (!order || !order.orderItems) return
+
+    const money = (value) =>
+      `₹${Number(value || 0).toFixed(2)}`
+
+    const itemsPrice = order.orderItems.reduce(
+      (total, item) =>
+        total + Number(item.price || 0) * Number(item.qty || 0),
+      0
+    )
+
+    const shippingPrice = Number(order.shippingPrice || 0)
+    const taxPrice = Number(order.taxPrice || 0)
+    const totalPrice = Number(
+      order.totalPrice || itemsPrice + shippingPrice + taxPrice
+    )
+
+    const safe = (value) =>
+      String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+
+    const invoiceWindow = window.open('', '_blank', 'width=900,height=900')
+
+    if (!invoiceWindow) {
+      alert('Please allow pop-ups to print the invoice.')
+      return
+    }
+
+    const rows = order.orderItems
+      .map(
+        (item, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${safe(item.name)}</td>
+            <td class="center">${Number(item.qty || 0)}</td>
+            <td class="right">${money(item.price)}</td>
+            <td class="right">${money(
+          Number(item.price || 0) * Number(item.qty || 0)
+        )}</td>
+          </tr>
+        `
+      )
+      .join('')
+
+    const paidStatus = order.isPaid ? 'PAID' : 'UNPAID'
+    const deliveryStatus = order.isDelivered ? 'DELIVERED' : 'PENDING'
+
+    invoiceWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8" />
+        <title>CartNova Invoice - ${safe(order._id)}</title>
+        <style>
+          * { box-sizing: border-box; }
+          body {
+            margin: 0;
+            padding: 30px;
+            background: #f3f6fa;
+            color: #172033;
+            font-family: Arial, Helvetica, sans-serif;
+          }
+          .invoice {
+            max-width: 850px;
+            margin: 0 auto;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(20, 35, 60, .08);
+          }
+          .top {
+            padding: 28px 30px 22px;
+            display: flex;
+            justify-content: space-between;
+            gap: 25px;
+            border-bottom: 1px solid #e5eaf0;
+          }
+          .brand {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1677c8;
+            margin: 0;
+          }
+          .subtitle {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 13px;
+          }
+          .invoice-title {
+            text-align: right;
+          }
+          .invoice-title h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #172033;
+          }
+          .invoice-title p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: #64748b;
+            word-break: break-all;
+          }
+          .section {
+            padding: 22px 30px;
+          }
+          .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+          }
+          .label {
+            display: block;
+            margin-bottom: 7px;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .8px;
+          }
+          .value {
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.5;
+          }
+          .muted {
+            color: #64748b;
+            font-size: 12px;
+            line-height: 1.5;
+          }
+          .badges {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+          }
+          .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 800;
+          }
+          .paid { background: #e9f8ef; color: #16834a; }
+          .unpaid { background: #fff1f1; color: #c62828; }
+          .delivered { background: #eaf4ff; color: #1677c8; }
+          .pending { background: #fff7e6; color: #a66a00; }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 4px;
+          }
+          th {
+            padding: 11px 10px;
+            background: #f5f7fa;
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+            font-size: 11px;
+            text-align: left;
+          }
+          td {
+            padding: 13px 10px;
+            border-bottom: 1px solid #edf1f5;
+            font-size: 12px;
+          }
+          .center { text-align: center; }
+          .right { text-align: right; }
+          .summary {
+            width: 310px;
+            margin-left: auto;
+          }
+          .summary-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 7px 0;
+            color: #475569;
+            font-size: 12px;
+          }
+          .summary-row strong {
+            color: #172033;
+          }
+          .total {
+            margin-top: 7px;
+            padding-top: 12px;
+            border-top: 2px solid #172033;
+            font-size: 16px;
+            font-weight: 800;
+          }
+          .total strong {
+            color: #1677c8;
+          }
+          .footer {
+            padding: 20px 30px 25px;
+            background: #f8fafc;
+            text-align: center;
+            color: #64748b;
+            font-size: 11px;
+            border-top: 1px solid #e5eaf0;
+          }
+          .secure {
+            margin-top: 7px;
+            color: #16834a;
+            font-weight: 700;
+          }
+          .actions {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+          }
+          .print-btn {
+            border: 0;
+            border-radius: 8px;
+            background: #1677c8;
+            color: white;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+          }
+          @media (max-width: 650px) {
+            body { padding: 10px; }
+            .top { padding: 20px; flex-direction: column; }
+            .invoice-title { text-align: left; }
+            .section { padding: 18px 20px; }
+            .info-grid { grid-template-columns: 1fr; gap: 15px; }
+            .summary { width: 100%; }
+            table { min-width: 600px; }
+            .table-wrap { overflow-x: auto; }
+            .footer { padding: 18px 20px; }
+            .actions { position: static; margin: 0 0 10px; }
+          }
+          @media print {
+            body { padding: 0; background: #fff; }
+            .invoice { max-width: none; border: 0; box-shadow: none; }
+            .actions { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="actions">
+          <button class="print-btn" onclick="window.print()">Print Invoice</button>
+        </div>
+
+        <div class="invoice">
+          <div class="top">
+            <div>
+              <h1 class="brand">CartNova</h1>
+              <p class="subtitle">Order Invoice</p>
+            </div>
+            <div class="invoice-title">
+              <h2>INVOICE</h2>
+              <p>Order #${safe(order._id)}</p>
+              <p>${new Date().toLocaleDateString('en-IN')}</p>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="info-grid">
+              <div>
+                <span class="label">BILL TO</span>
+                <div class="value">${safe(
+      order.user?.name || 'Customer'
+    )}</div>
+                <div class="muted">${safe(
+      order.user?.email || 'Email not available'
+    )}</div>
+              </div>
+
+              <div>
+                <span class="label">DELIVERY ADDRESS</span>
+                <div class="muted">
+                  ${safe(order.shippingAddress?.address || '')}<br />
+                  ${safe(order.shippingAddress?.city || '')}
+                  ${safe(order.shippingAddress?.postalCode || '')}<br />
+                  ${safe(order.shippingAddress?.country || '')}
+                </div>
+              </div>
+            </div>
+
+            <div class="badges">
+              <span class="badge ${order.isPaid ? 'paid' : 'unpaid'}">
+                PAYMENT: ${paidStatus}
+              </span>
+              <span class="badge ${order.isDelivered ? 'delivered' : 'pending'
+      }">
+                DELIVERY: ${deliveryStatus}
+              </span>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Product</th>
+                    <th class="center">Qty</th>
+                    <th class="right">Price</th>
+                    <th class="right">Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rows}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="summary">
+              <div class="summary-row">
+                <span>Items Price</span>
+                <strong>${money(itemsPrice)}</strong>
+              </div>
+              <div class="summary-row">
+                <span>Shipping</span>
+                <strong>${shippingPrice === 0 ? 'FREE' : money(shippingPrice)
+      }</strong>
+              </div>
+              <div class="summary-row">
+                <span>Tax</span>
+                <strong>${money(taxPrice)}</strong>
+              </div>
+              <div class="summary-row total">
+                <span>Total</span>
+                <strong>${money(totalPrice)}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            Thank you for shopping with CartNova.
+            <div class="secure">Secure &amp; protected transaction</div>
+          </div>
+        </div>
+
+        <script>
+          window.onload = function () {
+            setTimeout(function () {
+              window.focus()
+            }, 200)
+          }
+        </script>
+      </body>
+      </html>
+    `)
+
+    invoiceWindow.document.close()
   }
 
   const deliverHandler = () => {
@@ -229,13 +573,26 @@ const OrderScreen = ({ match, history }) => {
 
         <div>
 
-          <Link
-            to='/myorders'
+          <button
+            type='button'
             className='cartnova-order-back'
+            onClick={() => {
+              const fromOrder = location?.state?.fromOrder
+
+              if (fromOrder) {
+                history.replace({
+                  pathname: '/placeorder',
+                  state: { fromOrder: true },
+                })
+              } else {
+                history.replace('/myorders')
+              }
+            }}
+            aria-label='Go back'
           >
             <i className='fas fa-arrow-left'></i>
-            My Orders
-          </Link>
+            Back
+          </button>
 
           <span className='cartnova-order-label'>
             ORDER DETAILS
@@ -636,7 +993,15 @@ const OrderScreen = ({ match, history }) => {
                 </span>
 
                 <strong>
-                  ₹{order.itemsPrice}
+                  ₹{order.orderItems
+                    .reduce(
+                      (acc, item) =>
+                        acc +
+                        Number(item.price || 0) *
+                        Number(item.qty || 0),
+                      0
+                    )
+                    .toFixed(2)}
                 </strong>
               </div>
 
@@ -762,6 +1127,21 @@ const OrderScreen = ({ match, history }) => {
                 </div>
 
               )}
+
+            {/* INVOICE */}
+            {/* INVOICE */}
+            {order.isPaid && (
+              <div className='cartnova-order-invoice-action'>
+                <Button
+                  type='button'
+                  className='cartnova-invoice-button'
+                  onClick={printInvoice}
+                >
+                  <i className='fas fa-file-invoice'></i>
+                  Download Invoice
+                </Button>
+              </div>
+            )}
 
             <div className='cartnova-order-secure-note'>
 

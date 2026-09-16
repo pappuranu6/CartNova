@@ -9,7 +9,7 @@ const Footer = () => {
 
       <div className='cartnova-footer-inner'>
 
-        {/* BRAND */}
+        {/* ================= BRAND ================= */}
 
         <div className='cartnova-footer-brand'>
 
@@ -28,6 +28,7 @@ const Footer = () => {
 
         </div>
 
+
         {/* ================= DEVELOPER INFO ================= */}
 
         <div className='cartnova-footer-developer'>
@@ -39,28 +40,33 @@ const Footer = () => {
           />
 
           <div className='cartnova-footer-developer-info'>
+
             <h4>Pappu Rana Chauhan</h4>
 
             <p>(Software Engineer)</p>
+
+
+            {/* ================= DEVELOPER SOCIAL BOX ================= */}
+
+            <div className='cartnova-developer-social-box'>
+
+              <span className='cartnova-footer-follow-title'>
+                FOLLOW US
+              </span>
+
+              <div className='cartnova-footer-social-links'>
+                <SocialFollow />
+              </div>
+
+            </div>
+
           </div>
 
         </div>
 
-        {/* ================= SOCIAL ================= */}
-
-        <div className='cartnova-footer-social'>
-
-          <span className='cartnova-footer-follow-title'>
-            FOLLOW US
-          </span>
-
-          <div className='cartnova-footer-social-links'>
-            <SocialFollow />
-          </div>
-
-        </div>
 
       </div>
+
 
       {/* ================= FOOTER BOTTOM ================= */}
 
@@ -70,6 +76,7 @@ const Footer = () => {
           © {new Date().getFullYear()} CartNova.
           All rights reserved.
         </p>
+
 
         <div className='cartnova-footer-bottom-links'>
 
@@ -85,7 +92,8 @@ const Footer = () => {
 
         </div>
 
-        {/* MADE BY */}
+
+        {/* ================= MADE BY ================= */}
 
         <p className='cartnova-footer-made'>
           Made by <strong>Pappu Rana Chauhan</strong> (Software Engineer)

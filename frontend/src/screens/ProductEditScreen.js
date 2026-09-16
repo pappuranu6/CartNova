@@ -708,21 +708,6 @@ const ProductEditScreen = ({ match, history }) => {
                     Shoes
                   </option>
 
-                  <option value='Accessories'>
-                    Accessories
-                  </option>
-
-                  <option value='Beauty'>
-                    Beauty
-                  </option>
-
-                  <option value='Sports'>
-                    Sports
-                  </option>
-
-                  <option value='Toys & Games'>
-                    Toys & Games
-                  </option>
 
                   <option value='Books'>
                     Books

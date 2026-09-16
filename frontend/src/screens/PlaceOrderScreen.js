@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Image } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,12 +7,15 @@ import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { createOrder } from '../actions/orderActions'
 
-const PlaceOrderScreen = ({ history }) => {
+const PlaceOrderScreen = ({ history, location }) => {
   const dispatch = useDispatch()
 
-  const cart = useSelector(
-    (state) => state.cart
-  )
+  // Track only a NEW Place Order click.
+  // This prevents an old Redux success state from redirecting again
+  // when returning from Order Details.
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false)
+
+  const cart = useSelector((state) => state.cart)
 
   // =========================
   // PRICE CALCULATION
@@ -20,21 +23,9 @@ const PlaceOrderScreen = ({ history }) => {
 
   const addDecimals = (num) => {
     return (
-      Math.round(
-        Number(num || 0) * 100
-      ) / 100
+      Math.round(Number(num || 0) * 100) / 100
     ).toFixed(2)
   }
-
-  /*
-    Cart mein item.price already final
-    customer price hai.
-
-    Example:
-    Original = ₹1000
-    Deal 20%
-    item.price = ₹800
-  */
 
   const itemsPrice = addDecimals(
     cart.cartItems.reduce(
@@ -47,17 +38,12 @@ const PlaceOrderScreen = ({ history }) => {
   )
 
   const shippingPrice = addDecimals(
-    Number(itemsPrice) > 100
-      ? 0
-      : 100
+    Number(itemsPrice) > 100 ? 0 : 100
   )
 
   const taxPrice = addDecimals(
     Number(
-      (
-        0.08 *
-        Number(itemsPrice)
-      ).toFixed(2)
+      (0.08 * Number(itemsPrice)).toFixed(2)
     )
   )
 
@@ -82,28 +68,26 @@ const PlaceOrderScreen = ({ history }) => {
   } = orderCreate
 
   useEffect(() => {
-    if (success) {
-      history.push(
-        `/order/${order._id}`
-      )
+    if (isPlacingOrder && success && order) {
+      history.replace({
+        pathname: `/order/${order._id}`,
+        state: { fromOrder: true },
+      })
     }
-
-    // eslint-disable-next-line
-  }, [history, success])
+  }, [history, success, order, isPlacingOrder])
 
   // =========================
   // PLACE ORDER
   // =========================
 
   const placeOrderHandler = () => {
+    setIsPlacingOrder(true)
+
     dispatch(
       createOrder({
         orderItems: cart.cartItems,
-        shippingAddress:
-          cart.shippingAddress,
-        paymentMethod:
-          cart.paymentMethod,
-
+        shippingAddress: cart.shippingAddress,
+        paymentMethod: cart.paymentMethod,
         itemsPrice,
         shippingPrice,
         taxPrice,
@@ -115,10 +99,7 @@ const PlaceOrderScreen = ({ history }) => {
   return (
     <div className='cartnova-place-order-page'>
 
-      {/* =========================
-          CHECKOUT STEPS
-      ========================= */}
-
+      {/* CHECKOUT STEPS */}
       <div className='cartnova-checkout-steps-wrapper'>
         <CheckoutSteps
           step1
@@ -128,16 +109,11 @@ const PlaceOrderScreen = ({ history }) => {
         />
       </div>
 
-      {/* =========================
-          PAGE HEADER
-      ========================= */}
-
+      {/* PAGE HEADER */}
       <div className='cartnova-place-order-header'>
 
         <div>
-          <span>
-            FINAL STEP
-          </span>
+          <span>FINAL STEP</span>
 
           <h1>
             Review & Place Order
@@ -155,22 +131,13 @@ const PlaceOrderScreen = ({ history }) => {
 
       </div>
 
-      {/* =========================
-          MAIN CONTENT
-      ========================= */}
-
+      {/* MAIN CONTENT */}
       <div className='cartnova-place-order-layout'>
 
-        {/* =========================
-            LEFT CONTENT
-        ========================= */}
-
+        {/* LEFT CONTENT */}
         <div className='cartnova-place-order-main'>
 
-          {/* =========================
-              SHIPPING
-          ========================= */}
-
+          {/* SHIPPING */}
           <div className='cartnova-review-card'>
 
             <div className='cartnova-review-card-header'>
@@ -193,39 +160,43 @@ const PlaceOrderScreen = ({ history }) => {
 
               </div>
 
-              <Link
-                to='/shipping'
-                className='cartnova-review-edit'
-              >
-                <i className='fas fa-pen'></i>
-                Edit
-              </Link>
-
             </div>
 
             <div className='cartnova-review-content'>
 
+              <strong>
+                {cart.shippingAddress?.address ||
+                  'Address not available'}
+              </strong>
+
               <p>
-                <strong>
-                  Address
-                </strong>
+                {cart.shippingAddress?.city || ''}
+                {cart.shippingAddress?.city &&
+                  cart.shippingAddress?.state
+                  ? ', '
+                  : ''}
+                {cart.shippingAddress?.state || ''}
               </p>
 
-              <p className='cartnova-address-text'>
-                {cart.shippingAddress.address},{' '}
-                {cart.shippingAddress.city}{' '}
-                {cart.shippingAddress.postalCode},{' '}
-                {cart.shippingAddress.country}
+              <p>
+                {cart.shippingAddress?.postalCode ||
+                  cart.shippingAddress?.pincode ||
+                  ''}
               </p>
 
+              <p>
+                Phone:{' '}
+                {cart.shippingAddress?.phone ||
+                  cart.shippingAddress?.phoneNumber ||
+                  cart.shippingAddress?.mobile ||
+                  cart.shippingAddress?.mobileNumber ||
+                  'Not provided'}
+              </p>
             </div>
 
           </div>
 
-          {/* =========================
-              PAYMENT METHOD
-          ========================= */}
-
+          {/* PAYMENT METHOD */}
           <div className='cartnova-review-card'>
 
             <div className='cartnova-review-card-header'>
@@ -248,46 +219,19 @@ const PlaceOrderScreen = ({ history }) => {
 
               </div>
 
-              <Link
-                to='/payment'
-                className='cartnova-review-edit'
-              >
-                <i className='fas fa-pen'></i>
-                Edit
-              </Link>
-
             </div>
 
             <div className='cartnova-review-content'>
 
-              <div className='cartnova-payment-method-display'>
-
-                <div className='cartnova-payment-method-icon'>
-                  <i className='fas fa-credit-card'></i>
-                </div>
-
-                <div>
-                  <strong>
-                    {cart.paymentMethod}
-                  </strong>
-
-                  <span>
-                    Secure payment via Razorpay
-                  </span>
-                </div>
-
-                <i className='fas fa-check-circle'></i>
-
-              </div>
+              <strong>
+                {cart.paymentMethod || 'Not selected'}
+              </strong>
 
             </div>
 
           </div>
 
-          {/* =========================
-              ORDER ITEMS
-          ========================= */}
-
+          {/* ORDER ITEMS */}
           <div className='cartnova-review-card'>
 
             <div className='cartnova-review-card-header'>
@@ -304,22 +248,11 @@ const PlaceOrderScreen = ({ history }) => {
                   </h2>
 
                   <span>
-                    {cart.cartItems.length} item
-                    {cart.cartItems.length !== 1
-                      ? 's'
-                      : ''}
+                    Products in your order
                   </span>
                 </div>
 
               </div>
-
-              <Link
-                to='/cart'
-                className='cartnova-review-edit'
-              >
-                <i className='fas fa-shopping-cart'></i>
-                Cart
-              </Link>
 
             </div>
 
@@ -327,147 +260,60 @@ const PlaceOrderScreen = ({ history }) => {
 
               {cart.cartItems.length === 0 ? (
 
-                <Message>
-                  Your cart is empty
+                <Message variant='danger'>
+                  Your cart is empty.
                 </Message>
 
               ) : (
 
-                cart.cartItems.map(
-                  (item, index) => {
+                cart.cartItems.map((item) => (
 
-                    const dealLive =
-                      Boolean(
-                        item.isDealActive
-                      ) &&
-                      Number(
-                        item.dealDiscount || 0
-                      ) > 0 &&
-                      item.dealExpiresAt &&
-                      new Date(
-                        item.dealExpiresAt
-                      ).getTime() >
-                      Date.now()
+                  <div
+                    className='cartnova-place-order-item'
+                    key={item.product}
+                  >
 
-                    const originalPrice =
-                      Number(
-                        item.originalPrice ??
-                        item.price ??
-                        0
-                      )
+                    <Link
+                      to={`/product/${item.product}`}
+                    >
+                      <Image
+                        src={
+                          item.image?.startsWith('http')
+                            ? item.image
+                            : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${item.image}`
+                        }
+                        alt={item.name}
+                        className='cartnova-place-order-item-image'
+                      />
+                    </Link>
 
-                    const finalPrice =
-                      Number(
-                        item.price || 0
-                      )
+                    <div className='cartnova-place-order-item-info'>
 
-                    const itemTotal =
-                      finalPrice *
-                      Number(item.qty || 0)
-
-                    return (
-                      <div
-                        className='cartnova-place-order-item'
-                        key={index}
+                      <Link
+                        to={`/product/${item.product}`}
+                        className='cartnova-place-order-item-name'
                       >
+                        {item.name}
+                      </Link>
 
-                        {/* IMAGE */}
+                      <span>
+                        {item.qty} × ₹
+                        {Number(item.price).toFixed(2)}
+                      </span>
 
-                        <Link
-                          to={`/product/${item.product}`}
-                          className='cartnova-place-order-item-image'
-                        >
-                          {item.image ? (
-                            <Image
-                              src={
-                                item.image?.startsWith('http')
-                                  ? item.image
-                                  : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${item.image}`
-                              }
-                              alt={item.name}
-                            />
-                          ) : (
-                            <div className='cartnova-place-order-item-image-placeholder'>
-                              <i className='fas fa-image'></i>
-                            </div>
-                          )}
-                        </Link>
+                    </div>
 
-                        {/* PRODUCT INFO */}
+                    <strong className='cartnova-place-order-item-total'>
+                      ₹
+                      {(
+                        Number(item.price || 0) *
+                        Number(item.qty || 0)
+                      ).toFixed(2)}
+                    </strong>
 
-                        <div className='cartnova-place-order-item-info'>
+                  </div>
 
-                          <Link
-                            to={`/product/${item.product}`}
-                            className='cartnova-place-order-item-name'
-                          >
-                            {item.name}
-                          </Link>
-
-                          {/* PRICE */}
-
-                          <span>
-                            ₹{finalPrice.toLocaleString('en-IN')}
-                            {' × '}
-                            {item.qty}
-                          </span>
-
-                          {/* DEAL */}
-
-                          {dealLive && (
-                            <small
-                              style={{
-                                display: 'block',
-                                marginTop: '5px',
-                                color: '#047857',
-                                fontWeight: 600,
-                              }}
-                            >
-                              <i className='fas fa-bolt'></i>{' '}
-                              {item.dealDiscount}% OFF
-                            </small>
-                          )}
-
-                          {/* ORIGINAL PRICE */}
-
-                          {dealLive &&
-                            originalPrice >
-                            finalPrice && (
-                              <small
-                                style={{
-                                  display: 'block',
-                                  color: '#6b7280',
-                                  textDecoration:
-                                    'line-through',
-                                  marginTop: '2px',
-                                }}
-                              >
-                                ₹
-                                {originalPrice.toLocaleString(
-                                  'en-IN'
-                                )}
-                              </small>
-                            )}
-
-                        </div>
-
-                        {/* ITEM TOTAL */}
-
-                        <div className='cartnova-place-order-item-total'>
-                          ₹
-                          {itemTotal.toLocaleString(
-                            'en-IN',
-                            {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            }
-                          )}
-                        </div>
-
-                      </div>
-                    )
-                  }
-                )
+                ))
 
               )}
 
@@ -477,77 +323,50 @@ const PlaceOrderScreen = ({ history }) => {
 
         </div>
 
-        {/* =========================
-            RIGHT SUMMARY
-        ========================= */}
-
+        {/* RIGHT SIDEBAR */}
         <div className='cartnova-place-order-sidebar'>
 
           <div className='cartnova-order-summary-card'>
 
-            <div className='cartnova-summary-header'>
+            <div className='cartnova-order-summary-header'>
 
-              <div>
-                <span>
-                  YOUR ORDER
-                </span>
-
-                <h2>
-                  Order Summary
-                </h2>
-              </div>
-
-              <i className='fas fa-receipt'></i>
+              <h2>
+                Order Summary
+              </h2>
 
             </div>
 
-            <div className='cartnova-summary-lines'>
+            <div className='cartnova-order-summary-row'>
+              <span>
+                Items
+              </span>
 
-              {/* ITEMS */}
-
-              <div>
-                <span>
-                  Items
-                </span>
-
-                <strong>
-                  ₹{itemsPrice}
-                </strong>
-              </div>
-
-              {/* SHIPPING */}
-
-              <div>
-                <span>
-                  Shipping
-                </span>
-
-                <strong>
-                  {Number(shippingPrice) === 0
-                    ? 'FREE'
-                    : `₹${shippingPrice}`}
-                </strong>
-              </div>
-
-              {/* TAX */}
-
-              <div>
-                <span>
-                  Tax
-                </span>
-
-                <strong>
-                  ₹{taxPrice}
-                </strong>
-              </div>
-
+              <strong>
+                ₹{itemsPrice}
+              </strong>
             </div>
 
-            <div className='cartnova-summary-divider'></div>
+            <div className='cartnova-order-summary-row'>
+              <span>
+                Shipping
+              </span>
 
-            {/* TOTAL */}
+              <strong>
+                ₹{shippingPrice}
+              </strong>
+            </div>
 
-            <div className='cartnova-summary-total'>
+            <div className='cartnova-order-summary-row'>
+              <span>
+                Tax
+              </span>
+
+              <strong>
+                ₹{taxPrice}
+              </strong>
+            </div>
+
+            <div className='cartnova-order-summary-total'>
 
               <span>
                 Total
@@ -559,10 +378,8 @@ const PlaceOrderScreen = ({ history }) => {
 
             </div>
 
-            {/* ERROR */}
-
             {error && (
-              <div className='cartnova-order-error'>
+              <div className='cartnova-place-order-error'>
                 <Message variant='danger'>
                   {error}
                 </Message>
@@ -570,19 +387,18 @@ const PlaceOrderScreen = ({ history }) => {
             )}
 
             {/* PLACE ORDER */}
-
             <Button
               type='button'
               className='cartnova-place-order-button'
               disabled={
                 cart.cartItems.length === 0
               }
-              onClick={
-                placeOrderHandler
-              }
+              onClick={placeOrderHandler}
             >
               <i className='fas fa-lock'></i>
+
               Place Order
+
               <i className='fas fa-arrow-right'></i>
             </Button>
 
@@ -599,10 +415,7 @@ const PlaceOrderScreen = ({ history }) => {
 
           </div>
 
-          {/* =========================
-              TRUST BOX
-          ========================= */}
-
+          {/* TRUST BOX */}
           <div className='cartnova-order-trust-box'>
 
             <div>
