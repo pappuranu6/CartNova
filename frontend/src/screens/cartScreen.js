@@ -22,9 +22,6 @@ function commas(price) {
 /*
   Check whether the saved Today's Deal
   is still active.
-
-  If the 24-hour expiry has passed,
-  normal/original price will be used.
 */
 function isDealLive(item) {
   if (!item?.isDealActive) {
@@ -62,8 +59,8 @@ const CartScreen = ({
 
   const qty = location.search
     ? Number(
-      location.search.split('=')[1]
-    )
+        location.search.split('=')[1]
+      )
     : 1
 
   const dispatch = useDispatch()
@@ -74,7 +71,10 @@ const CartScreen = ({
 
   const { cartItems } = cart
 
-  const userLogin = useSelector((state) => state.userLogin)
+  const userLogin = useSelector(
+    (state) => state.userLogin
+  )
+
   const { userInfo } = userLogin
 
   // =========================
@@ -116,7 +116,9 @@ const CartScreen = ({
     if (userInfo) {
       history.push('/shipping')
     } else {
-      history.push('/login?redirect=shipping')
+      history.push(
+        '/login?redirect=shipping'
+      )
     }
   }
 
@@ -135,13 +137,6 @@ const CartScreen = ({
     ==========================================
     CALCULATE CART SUBTOTAL
     ==========================================
-
-    New cart items already contain
-    the discounted price.
-
-    For old/localStorage items that don't
-    contain deal information, their saved
-    price will continue to work normally.
   */
 
   const subtotal =
@@ -170,11 +165,54 @@ const CartScreen = ({
         return (
           acc +
           item.qty *
-          itemPrice
+            itemPrice
         )
       },
       0
     )
+
+  /*
+    ==========================================
+    IMAGE URL
+    ==========================================
+
+    Local VS Code:
+    http://localhost:5000/uploads/...
+
+    Live Render:
+    https://cartnova-5dvn.onrender.com/uploads/...
+  */
+
+  const getImageUrl = (image) => {
+    if (!image) {
+      return ''
+    }
+
+    // Already complete URL
+    if (
+      image.startsWith('http://') ||
+      image.startsWith('https://')
+    ) {
+      return image
+    }
+
+    // Local development
+    // Live Render production
+    const backendUrl =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:5000'
+        : 'https://cartnova-5dvn.onrender.com'
+
+    const cleanBackendUrl =
+      backendUrl.replace(/\/$/, '')
+
+    const cleanImagePath =
+      image.startsWith('/')
+        ? image
+        : `/${image}`
+
+    return `${cleanBackendUrl}${cleanImagePath}`
+  }
 
   return (
     <div className='cartnova-cart-page'>
@@ -284,27 +322,16 @@ const CartScreen = ({
                         0
                       )
 
-                    /*
-                      Current cart price.
-
-                      If deal is live:
-                      item.price is already
-                      the discounted price.
-
-                      If deal expired:
-                      original price is used.
-                    */
-
                     const currentItemPrice =
                       dealLive
                         ? Number(
-                          item.price || 0
-                        )
+                            item.price || 0
+                          )
                         : Number(
-                          item.originalPrice ??
-                          item.price ??
-                          0
-                        )
+                            item.originalPrice ??
+                            item.price ??
+                            0
+                          )
 
                     const itemSubtotal =
                       item.qty *
@@ -322,13 +349,12 @@ const CartScreen = ({
                           to={`/product/${item.product}`}
                           className='cartnova-cart-image'
                         >
+
                           {item.image ? (
                             <Image
-                              src={
-                                item.image?.startsWith('http')
-                                  ? item.image
-                                  : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${item.image}`
-                              }
+                              src={getImageUrl(
+                                item.image
+                              )}
                               alt={item.name}
                               className='cartnova-cart-image-img'
                             />
@@ -337,6 +363,7 @@ const CartScreen = ({
                               <i className='fas fa-image'></i>
                             </div>
                           )}
+
                         </Link>
 
                         {/* ================= PRODUCT INFO ================= */}
@@ -353,14 +380,11 @@ const CartScreen = ({
                           {/* PRICE */}
 
                           <span className='cartnova-cart-unit-price'>
-
                             ₹
                             {commas(
                               currentItemPrice
                             )}
-
                             {' '}/ item
-
                           </span>
 
                           {/* DEAL */}

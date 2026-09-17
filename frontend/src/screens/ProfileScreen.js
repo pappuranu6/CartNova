@@ -159,20 +159,20 @@ const ProfileScreen = ({ settingsOnly = false }) => {
   // SET PROFILE DATA
   // =========================================================
 
-  useEffect(() => {
-    if (!user) return
+useEffect(() => {
+  if (!user) return
 
-    setProfileName(user.name || '')
-    setProfileEmail(user.email || '')
-    setProfilePhone(user.phone || '')
-    setProfileImage(user.profileImage || '')
+  setProfileName(user.name || '')
+  setProfileEmail(user.email || '')
+  setProfilePhone(user.phone || '')
+  setProfileImage(user.profileImage || '')
 
-    setNameDraft(user.name || '')
-    setEmailDraft(user.email || '')
-    setPhoneDraft(user.phone || '')
+  setNameDraft(user.name || '')
+  setEmailDraft(user.email || '')
+  setPhoneDraft(user.phone || '')
 
-    setAddresses(user.addresses || [])
-  }, [user])
+  setAddresses(user.addresses || [])
+}, [user])
 
   // =========================================================
   // OPEN ACCOUNT SETTINGS PAGE
@@ -212,8 +212,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
       } catch (err) {
         setAddressError(
           err?.response?.data?.message ||
-          err?.message ||
-          'Unable to load addresses.'
+            err?.message ||
+            'Unable to load addresses.'
         )
       }
     }
@@ -262,8 +262,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
       } catch (err) {
         setProfileError(
           err?.response?.data?.message ||
-          err?.message ||
-          'Unable to update profile photo.'
+            err?.message ||
+            'Unable to update profile photo.'
         )
       } finally {
         setPhotoLoading(false)
@@ -338,8 +338,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     } catch (err) {
       setProfileError(
         err?.response?.data?.message ||
-        err?.message ||
-        'Unable to update profile.'
+          err?.message ||
+          'Unable to update profile.'
       )
     } finally {
       setProfileSaving(false)
@@ -403,8 +403,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     } catch (err) {
       setEmailError(
         err?.response?.data?.message ||
-        err?.message ||
-        'Unable to send email OTP.'
+          err?.message ||
+          'Unable to send email OTP.'
       )
     } finally {
       setEmailLoading(false)
@@ -429,12 +429,12 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     setEmailLoading(true)
 
     try {
-      await dispatch(
-        verifyEmailChangeOtp(
-          emailDraft.trim().toLowerCase(),
-          emailOtp
-        )
-      )
+    await dispatch(
+  verifyEmailChangeOtp(
+    emailDraft.trim().toLowerCase(),
+    emailOtp
+  )
+)
 
       setEmailVerified(true)
       setEmailOtpSent(false)
@@ -450,8 +450,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     } catch (err) {
       setEmailError(
         err?.response?.data?.message ||
-        err?.message ||
-        'Email verification failed.'
+          err?.message ||
+          'Email verification failed.'
       )
     } finally {
       setEmailLoading(false)
@@ -536,8 +536,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     } catch (err) {
       setPhoneError(
         err?.response?.data?.message ||
-        err?.message ||
-        'Unable to generate mobile OTP.'
+          err?.message ||
+          'Unable to generate mobile OTP.'
       )
     } finally {
       setPhoneLoading(false)
@@ -580,8 +580,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     } catch (err) {
       setPhoneError(
         err?.response?.data?.message ||
-        err?.message ||
-        'Mobile verification failed.'
+          err?.message ||
+          'Mobile verification failed.'
       )
     } finally {
       setPhoneLoading(false)
@@ -747,8 +747,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     } catch (err) {
       setAddressError(
         err?.response?.data?.message ||
-        err?.message ||
-        'Unable to save address.'
+          err?.message ||
+          'Unable to save address.'
       )
     } finally {
       setAddressLoading(false)
@@ -787,8 +787,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     } catch (err) {
       setAddressError(
         err?.response?.data?.message ||
-        err?.message ||
-        'Unable to delete address.'
+          err?.message ||
+          'Unable to delete address.'
       )
     } finally {
       setAddressLoading(false)
@@ -821,8 +821,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     } catch (err) {
       setAddressError(
         err?.response?.data?.message ||
-        err?.message ||
-        'Unable to set default address.'
+          err?.message ||
+          'Unable to set default address.'
       )
     } finally {
       setAddressLoading(false)
@@ -847,20 +847,49 @@ const ProfileScreen = ({ settingsOnly = false }) => {
       ? order.orderItems
       : []
 
+    // =====================================================
+    // PRICE CALCULATION
+    // =====================================================
+
     const itemsPrice = items.reduce(
       (sum, item) =>
         sum +
         Number(item.price || 0) *
-        Number(item.qty || 1),
+          Number(item.qty || 1),
       0
     )
 
-    const shippingPrice = Number(order.shippingPrice || 0)
-    const taxPrice = Number(order.taxPrice || 0)
-    const totalPrice = Number(
-      order.totalPrice ||
-      itemsPrice + shippingPrice + taxPrice
+    // Big Sale discount percentage. If order item has no saved
+    // dealDiscount, use the current Big Sale rate of 10%.
+    const dealDiscount =
+      Number(
+        items.find(
+          (item) => Number(item.dealDiscount || 0) > 0
+        )?.dealDiscount || 10
+      )
+
+    // Rebuild original price from the discounted price.
+    const originalItemsPrice =
+      dealDiscount > 0 && dealDiscount < 100
+        ? Math.round(
+            (itemsPrice / (1 - dealDiscount / 100)) * 100
+          ) / 100
+        : itemsPrice
+
+    const discountAmount = Math.max(
+      0,
+      originalItemsPrice - itemsPrice
     )
+
+    // Fixed shipping charge
+    const shippingPrice = 150
+
+    // Final total = discounted items + shipping
+    const totalPrice = itemsPrice + shippingPrice
+
+    // =====================================================
+    // CUSTOMER DETAILS
+    // =====================================================
 
     const customerName =
       order.user?.name || profileName || 'Customer'
@@ -868,8 +897,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     const customerEmail =
       order.user?.email || profileEmail || ''
 
+    // Only shipping address is shown in invoice.
     const shippingAddress = order.shippingAddress || {}
-    const billingAddress = order.billingAddress || shippingAddress || {}
 
     const makeAddress = (address) => {
       const lines = [
@@ -879,13 +908,19 @@ const ProfileScreen = ({ settingsOnly = false }) => {
         address.city,
         address.state,
         address.postalCode || address.pincode,
+        address.country,
       ].filter(Boolean)
 
-      return lines.length ? lines.join(', ') : 'Address not available'
+      return lines.length
+        ? lines.join(', ')
+        : 'Address not available'
     }
 
-    const billingText = makeAddress(billingAddress)
     const shippingText = makeAddress(shippingAddress)
+
+    // =====================================================
+    // PAYMENT DETAILS
+    // =====================================================
 
     const paymentId =
       order.paymentResult?.id ||
@@ -894,6 +929,7 @@ const ProfileScreen = ({ settingsOnly = false }) => {
 
     const paymentMethod =
       order.paymentResult?.method ||
+      order.paymentMethod ||
       'Online Payment'
 
     const orderId = order._id || '-'
@@ -901,10 +937,10 @@ const ProfileScreen = ({ settingsOnly = false }) => {
 
     const orderDate = order.createdAt
       ? new Date(order.createdAt).toLocaleDateString('en-IN', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      })
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        })
       : '-'
 
     const money = (value) =>
@@ -923,288 +959,464 @@ const ProfileScreen = ({ settingsOnly = false }) => {
     doc.setDrawColor(210, 220, 232)
     doc.setLineWidth(0.5)
     doc.setFillColor(255, 255, 255)
-    doc.roundedRect(left, 12, right - left, 273, 5, 5, 'FD')
-
-    // =====================================================
-    // HEADER
-    // =====================================================
-
-    doc.setFillColor(25, 118, 210)
-    doc.roundedRect(21, 22, 15, 15, 3, 3, 'F')
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(22)
-    doc.setTextColor(25, 39, 64)
-    doc.text('CartNova', 43, 31)
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(9)
-    doc.setTextColor(100, 115, 135)
-    doc.text('PROFESSIONAL ORDER INVOICE', 43, 36)
-
-    // Invoice details
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(8)
-    doc.setTextColor(105, 118, 135)
-    doc.text('INVOICE', 143, 24)
-    doc.text('ORDER', 143, 32)
-    doc.text('DATE', 171, 32)
-
-    doc.setFontSize(9)
-    doc.setTextColor(25, 39, 64)
-    doc.text(`#${shortOrderId}`, 143, 38)
-    doc.text(orderDate, 171, 38)
-
-    doc.setDrawColor(210, 220, 232)
-    doc.setLineWidth(0.4)
-    doc.line(21, 45, 189, 45)
-
-    // =====================================================
-    // BILLING / SHIPPING / PAYMENT
-    // =====================================================
-
-    let y = 54
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(9)
-    doc.setTextColor(25, 118, 210)
-    doc.text('BILLING DETAILS', 21, y)
-    doc.text('SHIPPING DETAILS', 91, y)
-    doc.text('PAYMENT', 157, y)
-
-    y += 7
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(9)
-    doc.setTextColor(35, 48, 70)
-    doc.text(customerName, 21, y)
-    doc.text(customerName, 91, y)
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(7.8)
-    doc.setTextColor(82, 96, 116)
-
-    if (customerEmail) {
-      doc.text(customerEmail, 21, y + 5)
-    }
-
-    const billingLines = doc.splitTextToSize(billingText, 62)
-    const shippingLines = doc.splitTextToSize(shippingText, 58)
-
-    doc.text(billingLines.slice(0, 3), 21, y + 10)
-    doc.text(shippingLines.slice(0, 3), 91, y + 10)
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(8.5)
-    doc.setTextColor(order.isPaid ? 25 : 220, order.isPaid ? 135 : 70, order.isPaid ? 75 : 55)
-    doc.text(order.isPaid ? 'PAID' : 'UNPAID', 157, y)
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(7.8)
-    doc.setTextColor(82, 96, 116)
-    doc.text(
-      order.isDelivered ? 'Delivered' : 'Processing',
-      157,
-      y + 5
+    doc.roundedRect(
+      left,
+      12,
+      right - left,
+      273,
+      5,
+      5,
+      'FD'
     )
-    doc.text(paymentMethod, 157, y + 10)
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(7.5)
-    doc.setTextColor(105, 118, 135)
-    doc.text('PAYMENT ID', 157, y + 17)
-
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(82, 96, 116)
-    const paymentLines = doc.splitTextToSize(String(paymentId), 32)
-    doc.text(paymentLines.slice(0, 2), 157, y + 22)
 
     // =====================================================
-    // ITEM TABLE
+    // INVOICE CONTENT
     // =====================================================
 
-    y = 93
+    const generateInvoice = () => {
+      // ===================================================
+      // HEADER
+      // ===================================================
 
-    doc.setFillColor(238, 245, 253)
-    doc.roundedRect(21, y, 168, 11, 2.5, 2.5, 'F')
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(22)
+      doc.setTextColor(25, 39, 64)
+      doc.text('CartNova', 43, 31)
 
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(8)
-    doc.setTextColor(55, 70, 90)
-    doc.text('#', 25, y + 7)
-    doc.text('PRODUCT', 38, y + 7)
-    doc.text('QTY', 128, y + 7)
-    doc.text('PRICE', 145, y + 7)
-    doc.text('AMOUNT', 169, y + 7)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(9)
+      doc.setTextColor(100, 115, 135)
+      doc.text(
+        'PROFESSIONAL ORDER INVOICE',
+        43,
+        36
+      )
 
-    y += 16
+      // Invoice details
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8)
+      doc.setTextColor(105, 118, 135)
+      doc.text('INVOICE', 143, 24)
+      doc.text('ORDER', 143, 32)
+      doc.text('DATE', 171, 32)
 
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(8.2)
-    doc.setTextColor(45, 58, 78)
+      doc.setFontSize(9)
+      doc.setTextColor(25, 39, 64)
+      doc.text(`#${shortOrderId}`, 143, 38)
+      doc.text(orderDate, 171, 38)
 
-    if (items.length) {
-      items.forEach((item, index) => {
-        const productName = String(item.name || 'Product')
-        const productLines = doc.splitTextToSize(productName, 82)
-        const rowHeight = Math.max(9, productLines.length * 4.2 + 3)
+      doc.setDrawColor(210, 220, 232)
+      doc.setLineWidth(0.4)
+      doc.line(21, 45, 189, 45)
 
-        if (y + rowHeight > 235) {
-          doc.addPage()
-          y = 20
-        }
+      // ===================================================
+      // SHIPPING + PAYMENT
+      // ===================================================
 
-        doc.text(String(index + 1), 25, y)
-        doc.text(productLines.slice(0, 3), 38, y)
-        doc.text(String(item.qty || 1), 128, y)
-        doc.text(money(item.price), 145, y)
+      let y = 54
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(9)
+      doc.setTextColor(25, 118, 210)
+      doc.text('SHIPPING DETAILS', 21, y)
+      doc.text('PAYMENT', 157, y)
+
+      y += 7
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(9)
+      doc.setTextColor(35, 48, 70)
+      doc.text(customerName, 21, y)
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(7.8)
+      doc.setTextColor(82, 96, 116)
+
+      if (customerEmail) {
+        doc.text(customerEmail, 21, y + 5)
+      }
+
+      const shippingLines = doc.splitTextToSize(
+        shippingText,
+        115
+      )
+
+      doc.text(shippingLines.slice(0, 4), 21, y + 10)
+
+      // Payment status
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8.5)
+      doc.setTextColor(
+        order.isPaid ? 25 : 220,
+        order.isPaid ? 135 : 70,
+        order.isPaid ? 75 : 55
+      )
+      doc.text(
+        order.isPaid ? 'PAID' : 'UNPAID',
+        157,
+        y
+      )
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(7.8)
+      doc.setTextColor(82, 96, 116)
+      doc.text(
+        order.isDelivered ? 'Delivered' : 'Processing',
+        157,
+        y + 5
+      )
+      doc.text(paymentMethod, 157, y + 10)
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(7.5)
+      doc.setTextColor(105, 118, 135)
+      doc.text('PAYMENT ID', 157, y + 17)
+
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(82, 96, 116)
+      const paymentLines = doc.splitTextToSize(
+        String(paymentId),
+        32
+      )
+      doc.text(paymentLines.slice(0, 2), 157, y + 22)
+
+      // ===================================================
+      // ITEM TABLE
+      // ===================================================
+
+      y = 93
+
+      doc.setFillColor(238, 245, 253)
+      doc.roundedRect(21, y, 168, 11, 2.5, 2.5, 'F')
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8)
+      doc.setTextColor(55, 70, 90)
+      doc.text('#', 25, y + 7)
+      doc.text('PRODUCT', 38, y + 7)
+      doc.text('QTY', 128, y + 7)
+      doc.text('PRICE', 145, y + 7)
+      doc.text('AMOUNT', 169, y + 7)
+
+      y += 16
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8.2)
+      doc.setTextColor(45, 58, 78)
+
+      if (items.length) {
+        items.forEach((item, index) => {
+          const productName = String(
+            item.name || 'Product'
+          )
+
+          const productLines = doc.splitTextToSize(
+            productName,
+            82
+          )
+
+          const rowHeight = Math.max(
+            9,
+            productLines.length * 4.2 + 3
+          )
+
+          if (y + rowHeight > 235) {
+            doc.addPage()
+            y = 20
+          }
+
+          doc.text(String(index + 1), 25, y)
+          doc.text(productLines.slice(0, 3), 38, y)
+          doc.text(String(item.qty || 1), 128, y)
+          doc.text(money(item.price), 145, y)
+          doc.text(
+            money(
+              Number(item.price || 0) *
+                Number(item.qty || 1)
+            ),
+            169,
+            y
+          )
+
+          doc.setDrawColor(225, 231, 239)
+          doc.setLineWidth(0.25)
+          doc.line(
+            21,
+            y + rowHeight - 3,
+            189,
+            y + rowHeight - 3
+          )
+
+          y += rowHeight
+        })
+      } else {
         doc.text(
-          money(
-            Number(item.price || 0) *
-            Number(item.qty || 1)
-          ),
-          169,
+          'No item details available',
+          38,
           y
         )
+        y += 12
+      }
 
-        doc.setDrawColor(225, 231, 239)
-        doc.setLineWidth(0.25)
-        doc.line(21, y + rowHeight - 3, 189, y + rowHeight - 3)
+      // ===================================================
+      // ORDER SUMMARY
+      // ===================================================
 
-        y += rowHeight
-      })
-    } else {
-      doc.text('No item details available', 38, y)
-      y += 12
+      y += 5
+
+      const summaryTop = y
+
+      doc.setFillColor(250, 252, 255)
+      doc.roundedRect(
+        105,
+        summaryTop,
+        84,
+        61,
+        3,
+        3,
+        'F'
+      )
+
+      const labelX = 112
+      const valueX = 184
+      let sy = summaryTop + 8
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8.2)
+      doc.setTextColor(82, 96, 116)
+
+      // Original Price
+      doc.text('Original Price', labelX, sy)
+      doc.text(
+        money(originalItemsPrice),
+        valueX,
+        sy,
+        { align: 'right' }
+      )
+
+      sy += 7
+
+      // Big Sale
+      doc.setTextColor(5, 150, 105)
+      doc.text(
+        `Big Sale (${dealDiscount}% OFF)`,
+        labelX,
+        sy
+      )
+      doc.text(
+        `-${money(discountAmount)}`,
+        valueX,
+        sy,
+        { align: 'right' }
+      )
+
+      sy += 7
+
+      // Items Price after discount
+      doc.setTextColor(82, 96, 116)
+      doc.text('Items Price', labelX, sy)
+      doc.text(
+        money(itemsPrice),
+        valueX,
+        sy,
+        { align: 'right' }
+      )
+
+      sy += 7
+
+      // Shipping
+      doc.text('Shipping', labelX, sy)
+      doc.text(
+        money(shippingPrice),
+        valueX,
+        sy,
+        { align: 'right' }
+      )
+
+      sy += 5
+
+      doc.setDrawColor(185, 197, 212)
+      doc.setLineWidth(0.45)
+      doc.line(labelX, sy, valueX, sy)
+
+      sy += 9
+
+      // Total
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(11)
+      doc.setTextColor(25, 39, 64)
+      doc.text('TOTAL', labelX, sy)
+      doc.text(
+        money(totalPrice),
+        valueX,
+        sy,
+        { align: 'right' }
+      )
+
+      // ===================================================
+      // BIG SALE SAVINGS MESSAGE
+      // ===================================================
+
+      doc.setFillColor(236, 253, 245)
+      doc.roundedRect(
+        21,
+        sy + 8,
+        168,
+        12,
+        3,
+        3,
+        'F'
+      )
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8)
+      doc.setTextColor(5, 150, 105)
+      doc.text(
+        `You saved ${money(discountAmount)} with Big Sale`,
+        105,
+        sy + 15,
+        { align: 'center' }
+      )
+
+      // ===================================================
+      // ORDER STATUS
+      // ===================================================
+
+      const statusY = Math.max(sy + 27, 205)
+
+      doc.setFillColor(246, 249, 253)
+      doc.roundedRect(
+        21,
+        statusY,
+        168,
+        16,
+        3,
+        3,
+        'F'
+      )
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(7.5)
+      doc.setTextColor(105, 118, 135)
+      doc.text('ORDER STATUS', 27, statusY + 7)
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8)
+      doc.setTextColor(45, 58, 78)
+      doc.text(
+        order.isDelivered ? 'Delivered' : 'Processing',
+        61,
+        statusY + 7
+      )
+
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(105, 118, 135)
+      doc.text('PAYMENT STATUS', 111, statusY + 7)
+
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(45, 58, 78)
+      doc.text(
+        order.isPaid ? 'Paid' : 'Unpaid',
+        151,
+        statusY + 7
+      )
+
+      // ===================================================
+      // FOOTER
+      // ===================================================
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(10)
+      doc.setTextColor(25, 39, 64)
+      doc.text(
+        'Thank you for shopping with CartNova',
+        105,
+        244,
+        { align: 'center' }
+      )
+
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(7.5)
+      doc.setTextColor(105, 118, 135)
+      doc.text(
+        'Secure - Trusted - Easy Shopping',
+        105,
+        251,
+        { align: 'center' }
+      )
+
+      doc.text(
+        'This is a computer-generated invoice and does not require a signature.',
+        105,
+        257,
+        { align: 'center' }
+      )
+
+      doc.setDrawColor(225, 231, 239)
+      doc.setLineWidth(0.25)
+      doc.line(21, 263, 189, 263)
+
+      doc.setFontSize(7)
+      doc.text(
+        `CartNova | Invoice #${shortOrderId}`,
+        105,
+        269,
+        { align: 'center' }
+      )
+
+      // ===================================================
+      // DOWNLOAD
+      // ===================================================
+
+      doc.save(
+        `CartNova-Invoice-${shortOrderId}.pdf`
+      )
     }
 
     // =====================================================
-    // BILLING SUMMARY
+    // CARTNOVA LOGO
     // =====================================================
 
-    y += 5
+    const logo = new window.Image()
 
-    const summaryTop = y
-    doc.setFillColor(250, 252, 255)
-    doc.roundedRect(113, summaryTop, 76, 47, 3, 3, 'F')
+    logo.onload = () => {
+      try {
+        doc.addImage(
+          logo,
+          'PNG',
+          21,
+          19,
+          18,
+          18
+        )
+      } catch (error) {
+        console.log(
+          'CartNova logo could not be added:',
+          error
+        )
+      }
 
-    const labelX = 120
-    const valueX = 184
-    let sy = summaryTop + 9
+      generateInvoice()
+    }
 
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(8.5)
-    doc.setTextColor(82, 96, 116)
+    logo.onerror = () => {
+      // Fallback if cartnova-logo.png is not found.
+      doc.setFillColor(25, 118, 210)
+      doc.roundedRect(
+        21,
+        22,
+        15,
+        15,
+        3,
+        3,
+        'F'
+      )
 
-    doc.text('Items Price', labelX, sy)
-    doc.text(money(itemsPrice), valueX, sy, { align: 'right' })
+      generateInvoice()
+    }
 
-    sy += 7
-    doc.text('Shipping', labelX, sy)
-    doc.text(money(shippingPrice), valueX, sy, { align: 'right' })
-
-    sy += 7
-    doc.text('Tax', labelX, sy)
-    doc.text(money(taxPrice), valueX, sy, { align: 'right' })
-
-    sy += 5
-    doc.setDrawColor(185, 197, 212)
-    doc.setLineWidth(0.45)
-    doc.line(labelX, sy, valueX, sy)
-
-    sy += 9
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(11)
-    doc.setTextColor(25, 39, 64)
-    doc.text('TOTAL', labelX, sy)
-    doc.text(money(totalPrice), valueX, sy, { align: 'right' })
-
-    // =====================================================
-    // ORDER STATUS STRIP
-    // =====================================================
-
-    const statusY = Math.max(sy + 17, 205)
-
-    doc.setFillColor(246, 249, 253)
-    doc.roundedRect(21, statusY, 168, 16, 3, 3, 'F')
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(7.5)
-    doc.setTextColor(105, 118, 135)
-    doc.text('ORDER STATUS', 27, statusY + 7)
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(8)
-    doc.setTextColor(45, 58, 78)
-    doc.text(
-      order.isDelivered ? 'Delivered' : 'Processing',
-      61,
-      statusY + 7
-    )
-
-    doc.setFont('helvetica', 'bold')
-    doc.setTextColor(105, 118, 135)
-    doc.text('PAYMENT STATUS', 111, statusY + 7)
-
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(45, 58, 78)
-    doc.text(
-      order.isPaid ? 'Paid' : 'Unpaid',
-      151,
-      statusY + 7
-    )
-
-    // =====================================================
-    // FOOTER
-    // =====================================================
-
-    doc.setFont('helvetica', 'bold')
-    doc.setFontSize(10)
-    doc.setTextColor(25, 39, 64)
-    doc.text(
-      'Thank you for shopping with CartNova',
-      105,
-      244,
-      { align: 'center' }
-    )
-
-    doc.setFont('helvetica', 'normal')
-    doc.setFontSize(7.5)
-    doc.setTextColor(105, 118, 135)
-    doc.text(
-      'Secure • Trusted • Easy Shopping',
-      105,
-      251,
-      { align: 'center' }
-    )
-    doc.text(
-      'This is a computer-generated invoice and does not require a signature.',
-      105,
-      257,
-      { align: 'center' }
-    )
-
-    doc.setDrawColor(225, 231, 239)
-    doc.setLineWidth(0.25)
-    doc.line(21, 263, 189, 263)
-
-    doc.setFontSize(7)
-    doc.text(
-      `CartNova | Invoice #${shortOrderId}`,
-      105,
-      269,
-      { align: 'center' }
-    )
-
-    // =====================================================
-    // DOWNLOAD
-    // =====================================================
-
-    doc.save(
-      `CartNova-Invoice-${shortOrderId}.pdf`
-    )
+    logo.src = '/cartnova-logo.png'
   }
-
   // =========================================================
   // INITIAL LOADING
   // =========================================================
@@ -1285,427 +1497,427 @@ const ProfileScreen = ({ settingsOnly = false }) => {
 
           <div className='cn-profile-main-grid'>
 
-            {/* ===================================================
+        {/* ===================================================
             PROFILE OVERVIEW
         =================================================== */}
 
-            <section className='cn-profile-overview-card'>
+        <section className='cn-profile-overview-card'>
 
-              <div className='cn-profile-overview-top'>
+          <div className='cn-profile-overview-top'>
 
-                <div className='cn-profile-avatar'>
-                  {profileImage ? (
-                    <img
-                      src={profileImage}
-                      alt='Profile'
-                      className='cn-profile-avatar-image'
-                    />
-                  ) : (
-                    <i className='fas fa-user'></i>
-                  )}
+            <div className='cn-profile-avatar'>
+              {profileImage ? (
+                <img
+                  src={profileImage}
+                  alt='Profile'
+                  className='cn-profile-avatar-image'
+                />
+              ) : (
+                <i className='fas fa-user'></i>
+              )}
 
-                  <label
-                    htmlFor='profile-photo-input'
-                    className='cn-profile-photo-button'
-                    title='Change Photo'
-                  >
-                    <i className='fas fa-camera'></i>
-                  </label>
+              <label
+                htmlFor='profile-photo-input'
+                className='cn-profile-photo-button'
+                title='Change Photo'
+              >
+                <i className='fas fa-camera'></i>
+              </label>
 
-                  <input
-                    id='profile-photo-input'
-                    type='file'
-                    accept='image/*'
-                    onChange={handleProfilePhotoChange}
-                    disabled={photoLoading}
-                    style={{ display: 'none' }}
-                  />
-                </div>
+              <input
+                id='profile-photo-input'
+                type='file'
+                accept='image/*'
+                onChange={handleProfilePhotoChange}
+                disabled={photoLoading}
+                style={{ display: 'none' }}
+              />
+            </div>
 
-                <div className='cn-profile-overview-heading'>
+            <div className='cn-profile-overview-heading'>
 
-                  <span className='cn-profile-small-label'>
-                    ACCOUNT PROFILE
-                  </span>
+              <span className='cn-profile-small-label'>
+                ACCOUNT PROFILE
+              </span>
 
-                  <h2>
-                    {profileName || 'Your Profile'}
-                  </h2>
+              <h2>
+                {profileName || 'Your Profile'}
+              </h2>
 
-                  <p>
-                    Your account information
-                  </p>
+              <p>
+                Your account information
+              </p>
 
-                  <label
-                    htmlFor='profile-photo-input'
-                    className='cn-profile-photo-link'
-                  >
-                    <i className='fas fa-camera'></i>
-                    {photoLoading ? 'Saving Photo...' : 'Change Photo'}
-                  </label>
+              <label
+                htmlFor='profile-photo-input'
+                className='cn-profile-photo-link'
+              >
+                <i className='fas fa-camera'></i>
+                {photoLoading ? 'Saving Photo...' : 'Change Photo'}
+              </label>
 
-                </div>
+            </div>
 
+          </div>
+
+          {/* PROFILE INFORMATION */}
+
+          <div className='cn-profile-info-list'>
+
+            {/* NAME */}
+
+            <div className='cn-profile-info-item'>
+
+              <div className='cn-profile-info-icon'>
+                <i className='fas fa-user'></i>
               </div>
 
-              {/* PROFILE INFORMATION */}
+              <div className='cn-profile-info-content'>
+                <span>
+                  Full Name
+                </span>
 
-              <div className='cn-profile-info-list'>
-
-                {/* NAME */}
-
-                <div className='cn-profile-info-item'>
-
-                  <div className='cn-profile-info-icon'>
-                    <i className='fas fa-user'></i>
-                  </div>
-
-                  <div className='cn-profile-info-content'>
-                    <span>
-                      Full Name
-                    </span>
-
-                    <strong>
-                      {profileName || '-'}
-                    </strong>
-                  </div>
-
-                </div>
-
-                {/* EMAIL */}
-
-                <div className='cn-profile-info-item'>
-
-                  <div className='cn-profile-info-icon'>
-                    <i className='fas fa-envelope'></i>
-                  </div>
-
-                  <div className='cn-profile-info-content'>
-
-                    <span>
-                      Email Address
-                    </span>
-
-                    <strong>
-                      {profileEmail || '-'}
-                    </strong>
-
-                    {user?.isEmailVerified && (
-                      <small className='cn-verified-badge'>
-                        <i className='fas fa-check-circle'></i>
-                        Verified
-                      </small>
-                    )}
-
-                  </div>
-
-                </div>
-
-                {/* MOBILE */}
-
-                <div className='cn-profile-info-item'>
-
-                  <div className='cn-profile-info-icon'>
-                    <i className='fas fa-mobile-alt'></i>
-                  </div>
-
-                  <div className='cn-profile-info-content'>
-
-                    <span>
-                      Mobile Number
-                    </span>
-
-                    <strong>
-                      {profilePhone || '-'}
-                    </strong>
-
-                    {user?.isPhoneVerified && (
-                      <small className='cn-verified-badge'>
-                        <i className='fas fa-check-circle'></i>
-                        Verified
-                      </small>
-                    )}
-
-                  </div>
-
-                </div>
-
+                <strong>
+                  {profileName || '-'}
+                </strong>
               </div>
 
-              {/* EDIT BUTTON */}
+            </div>
 
-              <div className='cn-profile-overview-footer'>
+            {/* EMAIL */}
 
-                <Button
-                  type='button'
-                  className='cn-edit-profile-button'
-                  onClick={openSettings}
-                >
-                  <i className='fas fa-user-edit'></i>
-                  Edit Profile
-                </Button>
+            <div className='cn-profile-info-item'>
 
+              <div className='cn-profile-info-icon'>
+                <i className='fas fa-envelope'></i>
               </div>
 
-            </section>
-
-            {/* ===================================================
-            MY ORDERS
-        =================================================== */}
-
-            <section className='cn-profile-orders-wrapper'>
-
-              <div className='cartnova-profile-orders-card'>
-
-                <div className='cartnova-profile-orders-header'>
-
-                  <div className='cartnova-profile-orders-title'>
-
-                    <div className='cartnova-profile-orders-icon'>
-                      <i className='fas fa-shopping-bag'></i>
-                    </div>
-
-                    <div>
-
-                      <h2>
-                        My Orders
-                      </h2>
-
-                      <span>
-                        Your recent order history
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                  <Link
-                    to='/myorders'
-                    className='cartnova-profile-view-all'
-                  >
-                    View All
-                    <i className='fas fa-arrow-right'></i>
-                  </Link>
-
-                </div>
-
-                {/* ORDERS LOADING */}
-
-                {loadingOrders ? (
-
-                  <div className='cartnova-profile-orders-loader'>
-                    <Loader />
-                  </div>
-
-                ) : errorOrders ? (
-
-                  <div className='cartnova-profile-orders-message'>
-
-                    <Message variant='danger'>
-                      {errorOrders}
-                    </Message>
-
-                  </div>
-
-                ) : orders &&
-                  orders.length > 0 ? (
-
-                  <div className='cartnova-profile-orders-list'>
-
-                    {orders
-                      .slice(0, 5)
-                      .map((order) => (
-
-                        <div
-                          className='cartnova-profile-order-row'
-                          key={order._id}
-                        >
-
-                          {/* PRODUCT IMAGE */}
-
-                          <div className='cartnova-profile-order-product'>
-                            {order.orderItems && order.orderItems.length > 0 ? (
-                              <>
-                                <img
-                                  src={
-                                    order.orderItems[0].image ||
-                                    '/images/placeholder.png'
-                                  }
-                                  alt={
-                                    order.orderItems[0].name ||
-                                    'Ordered product'
-                                  }
-                                  className='cartnova-order-item-image'
-                                />
-                                <div>
-                                  <strong>
-                                    {order.orderItems[0].name || 'Ordered Product'}
-                                  </strong>
-                                  {order.orderItems.length > 1 && (
-                                    <small>
-                                      + {order.orderItems.length - 1} more item
-                                      {order.orderItems.length - 1 > 1 ? 's' : ''}
-                                    </small>
-                                  )}
-                                </div>
-                              </>
-                            ) : (
-                              <div>
-                                <i className='fas fa-box'></i> Order items
-                              </div>
-                            )}
-                          </div>
-
-                          {/* ORDER ID */}
-
-                          <div className='cartnova-profile-order-id-box'>
-
-                            <span>
-                              ORDER
-                            </span>
-
-                            <strong>
-                              #{order._id.slice(-8)}
-                            </strong>
-
-                          </div>
-
-                          {/* DATE */}
-
-                          <div className='cartnova-profile-order-date'>
-
-                            <span>
-                              DATE
-                            </span>
-
-                            <strong>
-                              {order.createdAt
-                                ? order.createdAt.substring(
-                                  0,
-                                  10
-                                )
-                                : '-'}
-                            </strong>
-
-                          </div>
-
-                          {/* TOTAL */}
-
-                          <div className='cartnova-profile-order-total'>
-
-                            <span>
-                              TOTAL
-                            </span>
-
-                            <strong>
-                              ₹{order.totalPrice}
-                            </strong>
-
-                          </div>
-
-                          {/* STATUS */}
-
-                          <div className='cartnova-profile-order-status'>
-
-                            {order.isPaid ? (
-
-                              <span className='cartnova-profile-status paid'>
-                                <i className='fas fa-check-circle'></i>
-                                Paid
-                              </span>
-
-                            ) : (
-
-                              <span className='cartnova-profile-status unpaid'>
-                                <i className='fas fa-clock'></i>
-                                Unpaid
-                              </span>
-
-                            )}
-
-                            {order.isDelivered ? (
-
-                              <span className='cartnova-profile-status delivered'>
-                                <i className='fas fa-check-circle'></i>
-                                Delivered
-                              </span>
-
-                            ) : (
-
-                              <span className='cartnova-profile-status pending'>
-                                <i className='fas fa-truck'></i>
-                                Pending
-                              </span>
-
-                            )}
-
-                          </div>
-
-                          {/* DETAILS */}
-                          <div className='cartnova-profile-order-actions'>
-
-                            {/* VIEW DETAILS */}
-
-                            <Link
-                              to={`/order/${order._id}`}
-                              className='cartnova-profile-order-details'
-                              title='View Order Details'
-                            >
-                              <i className='fas fa-eye'></i>
-                              <span>View Details</span>
-                            </Link>
-
-                            {/* DOWNLOAD INVOICE */}
-
-                            <Button
-                              type='button'
-                              className='cartnova-profile-order-invoice'
-                              onClick={() => downloadInvoice(order)}
-                              title='Download Invoice'
-                            >
-                              <i className='fas fa-file-invoice'></i>
-                              <span>Download Invoice</span>
-                            </Button>
-
-                          </div>
-                        </div>
-
-                      ))}
-
-                  </div>
-
-                ) : (
-
-                  <div className='cartnova-profile-no-orders'>
-
-                    <div>
-                      <i className='fas fa-shopping-bag'></i>
-                    </div>
-
-                    <h3>
-                      No Orders Yet
-                    </h3>
-
-                    <p>
-                      Your recent orders will
-                      appear here.
-                    </p>
-
-                    <Link
-                      to='/'
-                      className='cartnova-profile-shop-button'
-                    >
-                      <i className='fas fa-shopping-cart'></i>
-                      Start Shopping
-                    </Link>
-
-                  </div>
-
+              <div className='cn-profile-info-content'>
+
+                <span>
+                  Email Address
+                </span>
+
+                <strong>
+                  {profileEmail || '-'}
+                </strong>
+
+                {user?.isEmailVerified && (
+                  <small className='cn-verified-badge'>
+                    <i className='fas fa-check-circle'></i>
+                    Verified
+                  </small>
                 )}
 
               </div>
 
-            </section>
+            </div>
+
+            {/* MOBILE */}
+
+            <div className='cn-profile-info-item'>
+
+              <div className='cn-profile-info-icon'>
+                <i className='fas fa-mobile-alt'></i>
+              </div>
+
+              <div className='cn-profile-info-content'>
+
+                <span>
+                  Mobile Number
+                </span>
+
+                <strong>
+                  {profilePhone || '-'}
+                </strong>
+
+                {user?.isPhoneVerified && (
+                  <small className='cn-verified-badge'>
+                    <i className='fas fa-check-circle'></i>
+                    Verified
+                  </small>
+                )}
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* EDIT BUTTON */}
+
+          <div className='cn-profile-overview-footer'>
+
+            <Button
+              type='button'
+              className='cn-edit-profile-button'
+              onClick={openSettings}
+            >
+              <i className='fas fa-user-edit'></i>
+              Edit Profile
+            </Button>
+
+          </div>
+
+        </section>
+
+        {/* ===================================================
+            MY ORDERS
+        =================================================== */}
+
+        <section className='cn-profile-orders-wrapper'>
+
+          <div className='cartnova-profile-orders-card'>
+
+            <div className='cartnova-profile-orders-header'>
+
+              <div className='cartnova-profile-orders-title'>
+
+                <div className='cartnova-profile-orders-icon'>
+                  <i className='fas fa-shopping-bag'></i>
+                </div>
+
+                <div>
+
+                  <h2>
+                    My Orders
+                  </h2>
+
+                  <span>
+                    Your recent order history
+                  </span>
+
+                </div>
+
+              </div>
+
+              <Link
+                to='/myorders'
+                className='cartnova-profile-view-all'
+              >
+                View All
+                <i className='fas fa-arrow-right'></i>
+              </Link>
+
+            </div>
+
+            {/* ORDERS LOADING */}
+
+            {loadingOrders ? (
+
+              <div className='cartnova-profile-orders-loader'>
+                <Loader />
+              </div>
+
+            ) : errorOrders ? (
+
+              <div className='cartnova-profile-orders-message'>
+
+                <Message variant='danger'>
+                  {errorOrders}
+                </Message>
+
+              </div>
+
+            ) : orders &&
+              orders.length > 0 ? (
+
+              <div className='cartnova-profile-orders-list'>
+
+                {orders
+                  .slice(0, 5)
+                  .map((order) => (
+
+                    <div
+                      className='cartnova-profile-order-row'
+                      key={order._id}
+                    >
+
+                      {/* PRODUCT IMAGE */}
+
+                      <div className='cartnova-profile-order-product'>
+                        {order.orderItems && order.orderItems.length > 0 ? (
+                          <>
+                            <img
+                              src={
+                                order.orderItems[0].image ||
+                                '/images/placeholder.png'
+                              }
+                              alt={
+                                order.orderItems[0].name ||
+                                'Ordered product'
+                              }
+                              className='cartnova-order-item-image'
+                            />
+                            <div>
+                              <strong>
+                                {order.orderItems[0].name || 'Ordered Product'}
+                              </strong>
+                              {order.orderItems.length > 1 && (
+                                <small>
+                                  + {order.orderItems.length - 1} more item
+                                  {order.orderItems.length - 1 > 1 ? 's' : ''}
+                                </small>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <div>
+                            <i className='fas fa-box'></i> Order items
+                          </div>
+                        )}
+                      </div>
+
+                      {/* ORDER ID */}
+
+                      <div className='cartnova-profile-order-id-box'>
+
+                        <span>
+                          ORDER
+                        </span>
+
+                        <strong>
+                          #{order._id.slice(-8)}
+                        </strong>
+
+                      </div>
+
+                      {/* DATE */}
+
+                      <div className='cartnova-profile-order-date'>
+
+                        <span>
+                          DATE
+                        </span>
+
+                        <strong>
+                          {order.createdAt
+                            ? order.createdAt.substring(
+                                0,
+                                10
+                              )
+                            : '-'}
+                        </strong>
+
+                      </div>
+
+                      {/* TOTAL */}
+
+                      <div className='cartnova-profile-order-total'>
+
+                        <span>
+                          TOTAL
+                        </span>
+
+                        <strong>
+                          ₹{order.totalPrice}
+                        </strong>
+
+                      </div>
+
+                      {/* STATUS */}
+
+                      <div className='cartnova-profile-order-status'>
+
+                        {order.isPaid ? (
+
+                          <span className='cartnova-profile-status paid'>
+                            <i className='fas fa-check-circle'></i>
+                            Paid
+                          </span>
+
+                        ) : (
+
+                          <span className='cartnova-profile-status unpaid'>
+                            <i className='fas fa-clock'></i>
+                            Unpaid
+                          </span>
+
+                        )}
+
+                        {order.isDelivered ? (
+
+                          <span className='cartnova-profile-status delivered'>
+                            <i className='fas fa-check-circle'></i>
+                            Delivered
+                          </span>
+
+                        ) : (
+
+                          <span className='cartnova-profile-status pending'>
+                            <i className='fas fa-truck'></i>
+                            Pending
+                          </span>
+
+                        )}
+
+                      </div>
+
+                      {/* DETAILS */}
+<div className='cartnova-profile-order-actions'>
+
+  {/* VIEW DETAILS */}
+
+  <Link
+    to={`/order/${order._id}`}
+    className='cartnova-profile-order-details'
+    title='View Order Details'
+  >
+    <i className='fas fa-eye'></i>
+    <span>View Details</span>
+  </Link>
+
+  {/* DOWNLOAD INVOICE */}
+
+  <Button
+    type='button'
+    className='cartnova-profile-order-invoice'
+    onClick={() => downloadInvoice(order)}
+    title='Download Invoice'
+  >
+    <i className='fas fa-file-invoice'></i>
+    <span>Download Invoice</span>
+  </Button>
+
+</div>
+                    </div>
+
+                  ))}
+
+              </div>
+
+            ) : (
+
+              <div className='cartnova-profile-no-orders'>
+
+                <div>
+                  <i className='fas fa-shopping-bag'></i>
+                </div>
+
+                <h3>
+                  No Orders Yet
+                </h3>
+
+                <p>
+                  Your recent orders will
+                  appear here.
+                </p>
+
+                <Link
+                  to='/'
+                  className='cartnova-profile-shop-button'
+                >
+                  <i className='fas fa-shopping-cart'></i>
+                  Start Shopping
+                </Link>
+
+              </div>
+
+            )}
+
+          </div>
+
+        </section>
 
           </div>
         </>
@@ -1913,20 +2125,20 @@ const ProfileScreen = ({ settingsOnly = false }) => {
                           .trim()
                           .toLowerCase() && (
 
-                          <Button
-                            type='button'
-                            className='cn-secondary-action'
-                            onClick={
-                              handleSendEmailOtp
-                            }
-                            disabled={emailLoading}
-                          >
-                            {emailLoading
-                              ? 'Sending...'
-                              : 'Send OTP'}
-                          </Button>
+                        <Button
+                          type='button'
+                          className='cn-secondary-action'
+                          onClick={
+                            handleSendEmailOtp
+                          }
+                          disabled={emailLoading}
+                        >
+                          {emailLoading
+                            ? 'Sending...'
+                            : 'Send OTP'}
+                        </Button>
 
-                        )}
+                      )}
 
                     </div>
 
@@ -2063,20 +2275,20 @@ const ProfileScreen = ({ settingsOnly = false }) => {
                       {phoneDraft.trim() !==
                         profilePhone.trim() && (
 
-                          <Button
-                            type='button'
-                            className='cn-secondary-action'
-                            onClick={
-                              handleSendPhoneOtp
-                            }
-                            disabled={phoneLoading}
-                          >
-                            {phoneLoading
-                              ? 'Sending...'
-                              : 'Send OTP'}
-                          </Button>
+                        <Button
+                          type='button'
+                          className='cn-secondary-action'
+                          onClick={
+                            handleSendPhoneOtp
+                          }
+                          disabled={phoneLoading}
+                        >
+                          {phoneLoading
+                            ? 'Sending...'
+                            : 'Send OTP'}
+                        </Button>
 
-                        )}
+                      )}
 
                     </div>
 
@@ -2570,8 +2782,8 @@ const ProfileScreen = ({ settingsOnly = false }) => {
                           {addressLoading
                             ? 'Saving...'
                             : editingAddressId
-                              ? 'Update Address'
-                              : 'Save Address'}
+                            ? 'Update Address'
+                            : 'Save Address'}
                         </Button>
 
                         <Button
@@ -2596,7 +2808,7 @@ const ProfileScreen = ({ settingsOnly = false }) => {
                 {/* ADDRESS LIST */}
 
                 {addresses &&
-                  addresses.length > 0 ? (
+                addresses.length > 0 ? (
 
                   <div className='cn-address-list'>
 
@@ -2619,7 +2831,7 @@ const ProfileScreen = ({ settingsOnly = false }) => {
                               <i
                                 className={
                                   address.addressType ===
-                                    'Work'
+                                  'Work'
                                     ? 'fas fa-briefcase'
                                     : 'fas fa-home'
                                 }

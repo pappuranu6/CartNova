@@ -1,6 +1,9 @@
 import React from 'react'
+
 import { Card } from 'react-bootstrap'
+
 import { Link } from 'react-router-dom'
+
 import Rating from './Rating'
 
 function numberWithCommas(price) {
@@ -63,16 +66,22 @@ function getImageUrl(image) {
   }
 
   // Already a complete URL
-  if (image.startsWith('http://') || image.startsWith('https://')) {
+  if (
+    image.startsWith('http://') ||
+    image.startsWith('https://')
+  ) {
     return image
   }
 
-  // Use Render backend when REACT_APP_API_URL is available.
-  // Otherwise use local backend.
+  // Local development VS Code
+  // Live website Render
   const backendUrl =
-    process.env.REACT_APP_API_URL || 'http://localhost:5000'
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:5000'
+      : 'https://cartnova-5dvn.onrender.com'
 
   const cleanBackendUrl = backendUrl.replace(/\/$/, '')
+
   const cleanImagePath = image.startsWith('/')
     ? image
     : `/${image}`
@@ -82,6 +91,7 @@ function getImageUrl(image) {
 
 const Product = ({ product }) => {
   const currentPrice = Number(product.price || 0)
+
   const mrpPrice = getMrp(currentPrice)
 
   const dealLive = isDealLive(product)
@@ -111,6 +121,8 @@ const Product = ({ product }) => {
               Today's Deal
             </span>
           )}
+
+          {/* PRODUCT IMAGE */}
 
           {product.image ? (
             <Card.Img

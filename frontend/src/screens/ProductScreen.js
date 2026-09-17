@@ -170,6 +170,7 @@ const ProductScreen = ({ history, match }) => {
       return ''
     }
 
+    // Already complete URL
     if (
       image.startsWith('http://') ||
       image.startsWith('https://')
@@ -177,9 +178,12 @@ const ProductScreen = ({ history, match }) => {
       return image
     }
 
+    // Local development
+    // Live Render production
     const backendUrl =
-      process.env.REACT_APP_API_URL ||
-      'http://localhost:5000'
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:5000'
+        : 'https://cartnova-5dvn.onrender.com'
 
     const cleanBackendUrl =
       backendUrl.replace(/\/$/, '')

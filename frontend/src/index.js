@@ -8,11 +8,13 @@ import App from './App'
 import reportWebVitals from './reportWebVitals'
 import axios from 'axios'
 
-if (process.env.REACT_APP_API_URL) {
-  axios.defaults.baseURL = process.env.REACT_APP_API_URL
+if (process.env.NODE_ENV === 'development') {
+  axios.defaults.baseURL = 'http://localhost:5000'
+} else {
+  axios.defaults.baseURL =
+    process.env.REACT_APP_API_URL ||
+    'https://cartnova-5dvn.onrender.com'
 }
-
-// axios.defaults.baseURL = 'http://35.154.127.106:5000/'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root')

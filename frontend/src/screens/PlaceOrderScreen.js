@@ -27,30 +27,49 @@ const PlaceOrderScreen = ({ history, location }) => {
     ).toFixed(2)
   }
 
+  // Final item price AFTER discount
   const itemsPrice = addDecimals(
     cart.cartItems.reduce(
       (acc, item) =>
         acc +
         Number(item.price || 0) *
-        Number(item.qty || 0),
+          Number(item.qty || 0),
       0
     )
   )
 
-  const shippingPrice = addDecimals(
-    Number(itemsPrice) > 100 ? 0 : 100
-  )
-
-  const taxPrice = addDecimals(
-    Number(
-      (0.08 * Number(itemsPrice)).toFixed(2)
+  // Original item price BEFORE discount
+  const originalItemsPrice = addDecimals(
+    cart.cartItems.reduce(
+      (acc, item) =>
+        acc +
+        Number(
+          item.originalPrice ?? item.price ?? 0
+        ) *
+          Number(item.qty || 0),
+      0
     )
   )
 
+  // Total discount amount
+  const discountAmount = addDecimals(
+    Math.max(
+      0,
+      Number(originalItemsPrice) -
+        Number(itemsPrice)
+    )
+  )
+
+  // Fixed shipping charge
+  const shippingPrice = addDecimals(150)
+
+  // Tax removed
+  const taxPrice = addDecimals(0)
+
+  // Final total = discounted items + shipping
   const totalPrice = (
     Number(itemsPrice) +
-    Number(shippingPrice) +
-    Number(taxPrice)
+    Number(shippingPrice)
   ).toFixed(2)
 
   // =========================
@@ -74,7 +93,12 @@ const PlaceOrderScreen = ({ history, location }) => {
         state: { fromOrder: true },
       })
     }
-  }, [history, success, order, isPlacingOrder])
+  }, [
+    history,
+    success,
+    order,
+    isPlacingOrder,
+  ])
 
   // =========================
   // PLACE ORDER
@@ -88,9 +112,17 @@ const PlaceOrderScreen = ({ history, location }) => {
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod,
+
+        // Price after discount
         itemsPrice,
+
+        // Fixed shipping
         shippingPrice,
+
+        // Tax = 0
         taxPrice,
+
+        // Final amount
         totalPrice,
       })
     )
@@ -100,6 +132,7 @@ const PlaceOrderScreen = ({ history, location }) => {
     <div className='cartnova-place-order-page'>
 
       {/* CHECKOUT STEPS */}
+
       <div className='cartnova-checkout-steps-wrapper'>
         <CheckoutSteps
           step1
@@ -110,10 +143,14 @@ const PlaceOrderScreen = ({ history, location }) => {
       </div>
 
       {/* PAGE HEADER */}
+
       <div className='cartnova-place-order-header'>
 
         <div>
-          <span>FINAL STEP</span>
+
+          <span>
+            FINAL STEP
+          </span>
 
           <h1>
             Review & Place Order
@@ -123,6 +160,7 @@ const PlaceOrderScreen = ({ history, location }) => {
             Please review your order details
             before placing your order.
           </p>
+
         </div>
 
         <div className='cartnova-place-order-header-icon'>
@@ -132,12 +170,15 @@ const PlaceOrderScreen = ({ history, location }) => {
       </div>
 
       {/* MAIN CONTENT */}
+
       <div className='cartnova-place-order-layout'>
 
         {/* LEFT CONTENT */}
+
         <div className='cartnova-place-order-main'>
 
           {/* SHIPPING */}
+
           <div className='cartnova-review-card'>
 
             <div className='cartnova-review-card-header'>
@@ -149,6 +190,7 @@ const PlaceOrderScreen = ({ history, location }) => {
                 </div>
 
                 <div>
+
                   <h2>
                     Shipping Address
                   </h2>
@@ -156,6 +198,7 @@ const PlaceOrderScreen = ({ history, location }) => {
                   <span>
                     Delivery information
                   </span>
+
                 </div>
 
               </div>
@@ -192,11 +235,13 @@ const PlaceOrderScreen = ({ history, location }) => {
                   cart.shippingAddress?.mobileNumber ||
                   'Not provided'}
               </p>
+
             </div>
 
           </div>
 
           {/* PAYMENT METHOD */}
+
           <div className='cartnova-review-card'>
 
             <div className='cartnova-review-card-header'>
@@ -208,6 +253,7 @@ const PlaceOrderScreen = ({ history, location }) => {
                 </div>
 
                 <div>
+
                   <h2>
                     Payment Method
                   </h2>
@@ -215,6 +261,7 @@ const PlaceOrderScreen = ({ history, location }) => {
                   <span>
                     Selected payment option
                   </span>
+
                 </div>
 
               </div>
@@ -232,6 +279,7 @@ const PlaceOrderScreen = ({ history, location }) => {
           </div>
 
           {/* ORDER ITEMS */}
+
           <div className='cartnova-review-card'>
 
             <div className='cartnova-review-card-header'>
@@ -243,6 +291,7 @@ const PlaceOrderScreen = ({ history, location }) => {
                 </div>
 
                 <div>
+
                   <h2>
                     Order Items
                   </h2>
@@ -250,6 +299,7 @@ const PlaceOrderScreen = ({ history, location }) => {
                   <span>
                     Products in your order
                   </span>
+
                 </div>
 
               </div>
@@ -276,15 +326,23 @@ const PlaceOrderScreen = ({ history, location }) => {
                     <Link
                       to={`/product/${item.product}`}
                     >
+
                       <Image
                         src={
-                          item.image?.startsWith('http')
-                            ? item.image
-                            : `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${item.image}`
+                          item.image
+                            ? item.image.startsWith('http')
+                              ? item.image
+                              : `https://cartnova-5dvn.onrender.com${
+                                  item.image.startsWith('/')
+                                    ? item.image
+                                    : `/${item.image}`
+                                }`
+                            : '/images/placeholder.png'
                         }
                         alt={item.name}
                         className='cartnova-place-order-item-image'
                       />
+
                     </Link>
 
                     <div className='cartnova-place-order-item-info'>
@@ -324,6 +382,7 @@ const PlaceOrderScreen = ({ history, location }) => {
         </div>
 
         {/* RIGHT SIDEBAR */}
+
         <div className='cartnova-place-order-sidebar'>
 
           <div className='cartnova-order-summary-card'>
@@ -336,7 +395,42 @@ const PlaceOrderScreen = ({ history, location }) => {
 
             </div>
 
+            {/* ORIGINAL PRICE */}
+
             <div className='cartnova-order-summary-row'>
+
+              <span>
+                Original Price
+              </span>
+
+              <strong>
+                ₹{originalItemsPrice}
+              </strong>
+
+            </div>
+
+            {/* DISCOUNT */}
+
+            {Number(discountAmount) > 0 && (
+
+              <div className='cartnova-order-summary-row'>
+
+                <span style={{ color: '#059669' }}>
+                  Discount
+                </span>
+
+                <strong style={{ color: '#059669' }}>
+                  -₹{discountAmount}
+                </strong>
+
+              </div>
+
+            )}
+
+            {/* ITEMS AFTER DISCOUNT */}
+
+            <div className='cartnova-order-summary-row'>
+
               <span>
                 Items
               </span>
@@ -344,9 +438,13 @@ const PlaceOrderScreen = ({ history, location }) => {
               <strong>
                 ₹{itemsPrice}
               </strong>
+
             </div>
 
+            {/* SHIPPING */}
+
             <div className='cartnova-order-summary-row'>
+
               <span>
                 Shipping
               </span>
@@ -354,17 +452,12 @@ const PlaceOrderScreen = ({ history, location }) => {
               <strong>
                 ₹{shippingPrice}
               </strong>
+
             </div>
 
-            <div className='cartnova-order-summary-row'>
-              <span>
-                Tax
-              </span>
+            {/* TAX = 0 */}
 
-              <strong>
-                ₹{taxPrice}
-              </strong>
-            </div>
+            {/* FINAL TOTAL */}
 
             <div className='cartnova-order-summary-total'>
 
@@ -379,14 +472,19 @@ const PlaceOrderScreen = ({ history, location }) => {
             </div>
 
             {error && (
+
               <div className='cartnova-place-order-error'>
+
                 <Message variant='danger'>
                   {error}
                 </Message>
+
               </div>
+
             )}
 
             {/* PLACE ORDER */}
+
             <Button
               type='button'
               className='cartnova-place-order-button'
@@ -395,11 +493,13 @@ const PlaceOrderScreen = ({ history, location }) => {
               }
               onClick={placeOrderHandler}
             >
+
               <i className='fas fa-lock'></i>
 
               Place Order
 
               <i className='fas fa-arrow-right'></i>
+
             </Button>
 
             <div className='cartnova-order-secure'>
@@ -416,22 +516,27 @@ const PlaceOrderScreen = ({ history, location }) => {
           </div>
 
           {/* TRUST BOX */}
+
           <div className='cartnova-order-trust-box'>
 
             <div>
+
               <i className='fas fa-check-circle'></i>
 
               <span>
                 Verified & Secure
               </span>
+
             </div>
 
             <div>
+
               <i className='fas fa-truck'></i>
 
               <span>
                 Reliable Delivery
               </span>
+
             </div>
 
           </div>
