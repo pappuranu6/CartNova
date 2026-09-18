@@ -141,7 +141,7 @@ const HomeScreen = ({ match }) => {
 
         <>
 
-          <Row className='cartnova-product-grid'>
+          <Row className='cartnova-product-grid gx-3'>
 
             {products.map((product) => (
 
