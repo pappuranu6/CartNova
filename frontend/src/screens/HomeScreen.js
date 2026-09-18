@@ -14,7 +14,6 @@ import Meta from '../components/Meta'
 import { listProducts } from '../actions/productActions'
 
 const HomeScreen = ({ match }) => {
-
   const keyword = match.params.keyword
   const pageNumber = match.params.pageNumber || 1
 
@@ -49,7 +48,6 @@ const HomeScreen = ({ match }) => {
         </>
       ) : (
         <div className='cartnova-search-header'>
-
           <Link
             to='/'
             className='cartnova-search-back'
@@ -59,11 +57,9 @@ const HomeScreen = ({ match }) => {
           </Link>
 
           <div className='cartnova-search-title'>
-
             <i className='fas fa-search'></i>
 
             <div>
-
               <h1>
                 Search Results
               </h1>
@@ -74,21 +70,15 @@ const HomeScreen = ({ match }) => {
                   "{keyword}"
                 </strong>
               </p>
-
             </div>
-
           </div>
-
         </div>
       )}
-
 
       {/* ================= PRODUCTS HEADER ================= */}
 
       <div className='cartnova-products-heading'>
-
         <div>
-
           <span className='cartnova-section-label'>
             CARTNOVA STORE
           </span>
@@ -100,85 +90,51 @@ const HomeScreen = ({ match }) => {
           <p>
             Discover amazing products at great prices.
           </p>
-
         </div>
-
 
         {!loading &&
           !error &&
           products &&
           products.length > 0 && (
-
             <div className='cartnova-product-count'>
-
               <i className='fas fa-box-open'></i>
 
               {products.length} Products
-
             </div>
-
           )}
-
       </div>
-
 
       {/* ================= PRODUCTS ================= */}
 
       {loading ? (
-
         <div className='cartnova-home-loader'>
           <Loader />
         </div>
-
       ) : error ? (
-
         <Message variant='danger'>
           {error}
         </Message>
-
       ) : products &&
         products.length > 0 ? (
-
         <>
-
-          <Row className='cartnova-product-grid gx-3'>
-
+         <Row className="cartnova-product-grid g-4">
             {products.map((product) => (
-
               <Col
                 key={product._id}
-
-                /* PHONE = 3 COLUMNS */
-                xs={4}
-
-                /* TABLET = 3 COLUMNS */
-                sm={4}
-
-                /* DESKTOP = 2 COLUMNS */
-                md={6}
-
-                /* LARGE DESKTOP = 3 COLUMNS */
+                xs={12}
+                sm={6}
                 lg={4}
-
-                /* EXTRA LARGE = 4 COLUMNS */
                 xl={3}
-
-                className='mb-4'
               >
-
                 <Product product={product} />
-
               </Col>
-
             ))}
 
           </Row>
 
-
           {/* ================= PAGINATION ================= */}
 
           <div className='cartnova-home-pagination'>
-
             <Paginate
               pages={pages}
               page={page}
@@ -188,13 +144,9 @@ const HomeScreen = ({ match }) => {
                   : ''
               }
             />
-
           </div>
-
         </>
-
       ) : (
-
         <div className='cartnova-no-products-home'>
 
           <div className='cartnova-no-products-icon'>
@@ -219,9 +171,7 @@ const HomeScreen = ({ match }) => {
           </Link>
 
         </div>
-
       )}
-
     </>
   )
 }

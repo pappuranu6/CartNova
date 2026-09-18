@@ -5,11 +5,30 @@ import Product from '../models/productModel.js'
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 10
+  const pageSize = 8
   const page = Number(req.query.pageNumber) || 1
 
-  const keyword = req.query.keyword
-    ? {
+  let keyword = {}
+
+  if (req.query.keyword) {
+    const searchKeyword = req.query.keyword.toLowerCase()
+
+    const categoryMap = {
+      electronics: 'Electronics',
+      fashion: 'Fashion',
+      laptop: 'Laptops',
+      laptops: 'Laptops',
+      shoes: 'Shoes',
+      home: 'Home & Living',
+      books: 'Books',
+    }
+
+    if (categoryMap[searchKeyword]) {
+      keyword = {
+        category: categoryMap[searchKeyword],
+      }
+    } else {
+      keyword = {
         $or: [
           {
             name: {
@@ -25,11 +44,13 @@ const getProducts = asyncHandler(async (req, res) => {
           },
         ],
       }
-    : {}
+    }
+  }
 
   const count = await Product.countDocuments(keyword)
 
   const products = await Product.find(keyword)
+    .sort({ price: 1 })
     .limit(pageSize)
     .skip(pageSize * (page - 1))
 

@@ -12,7 +12,7 @@ const sendEmail = async ({
     secure: false,
     auth: {
       user: 'pappuranu6@gmail.com',
-      pass: 'gnfakfkzfhqcmber',
+      pass: 'kvatxygstbuclgin',
     },
   })
 

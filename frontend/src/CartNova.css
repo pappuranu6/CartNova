@@ -20524,3 +20524,25 @@ img {
   object-position: center;
   display: block;
 }
+
+/* =========================================================
+   CARTNOVA PRODUCT GRID - FIX LAST ROW GAP
+   ========================================================= */
+
+.cartnova-product-grid {
+  justify-content: flex-start !important;
+}
+
+.cartnova-product-grid > [class*="col-"] {
+  flex-grow: 0 !important;
+}
+
+/* PRODUCT GRID - FINAL SPACING FIX */
+.cartnova-product-grid {
+  justify-content: flex-start !important;
+}
+
+.cartnova-product-grid > .col,
+.cartnova-product-grid > [class*='col-'] {
+  flex-grow: 0 !important;
+}
