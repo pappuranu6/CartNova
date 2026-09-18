@@ -2,519 +2,2627 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import Product from './models/productModel.js'
 
-dotenv.config()
+dotenv.config({ path: '../.env' })
 
 const adminUserId = '6aa4df8c24fdc1b4c2c2e493'
 
-const products = [
-  // =====================================================
-  // ELECTRONICS - SMARTPHONES
-  // =====================================================
+// 70 products in each category = 420 products total.
+// Products are priced from lowest to highest within every category.
+const catalog = {
+  "Electronics": [
+    {
+      name: "Samsung Galaxy S25",
+      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 6999,
+    },
+    {
+      name: "Samsung Galaxy A56 5G",
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 8799,
+    },
+    {
+      name: "Apple iPhone 16",
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 10599,
+    },
+    {
+      name: "Apple iPhone 16 Pro",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 12399,
+    },
+    {
+      name: "Redmi Note 14",
+      image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80",
+      brand: "Redmi",
+      price: 14199,
+    },
+    {
+      name: "Redmi Note 14 Pro",
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&auto=format&fit=crop&q=80",
+      brand: "Redmi",
+      price: 15999,
+    },
+    {
+      name: "Realme 14 Pro",
+      image: "https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800&auto=format&fit=crop&q=80",
+      brand: "Realme",
+      price: 17799,
+    },
+    {
+      name: "Realme GT 7",
+      image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80",
+      brand: "Realme",
+      price: 19599,
+    },
+    {
+      name: "Vivo V50",
+      image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&auto=format&fit=crop&q=80",
+      brand: "Vivo",
+      price: 21399,
+    },
+    {
+      name: "Vivo V40",
+      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80",
+      brand: "Vivo",
+      price: 23199,
+    },
+    {
+      name: "OPPO Reno13",
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80",
+      brand: "OPPO",
+      price: 24999,
+    },
+    {
+      name: "OPPO Find X8",
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
+      brand: "OPPO",
+      price: 26799,
+    },
+    {
+      name: "Infinix Note 50",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 28599,
+    },
+    {
+      name: "Infinix GT 20 Pro",
+      image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 30399,
+    },
+    {
+      name: "OnePlus 13",
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&auto=format&fit=crop&q=80",
+      brand: "OnePlus",
+      price: 32199,
+    },
+    {
+      name: "OnePlus Nord 5",
+      image: "https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800&auto=format&fit=crop&q=80",
+      brand: "OnePlus",
+      price: 33999,
+    },
+    {
+      name: "Motorola Edge 60",
+      image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80",
+      brand: "Motorola",
+      price: 35799,
+    },
+    {
+      name: "Motorola Moto G85",
+      image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&auto=format&fit=crop&q=80",
+      brand: "Motorola",
+      price: 37599,
+    },
+    {
+      name: "Galaxy A26 5G",
+      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 39399,
+    },
+    {
+      name: "Galaxy M36 5G",
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 41199,
+    },
+    {
+      name: "Galaxy F56 5G",
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 42999,
+    },
+    {
+      name: "Galaxy S24 FE",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 44799,
+    },
+    {
+      name: "Galaxy A36 5G",
+      image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 46599,
+    },
+    {
+      name: "Galaxy M55 5G",
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 48399,
+    },
+    {
+      name: "Galaxy A16 5G",
+      image: "https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 50199,
+    },
+    {
+      name: "Galaxy F15 5G",
+      image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 51999,
+    },
+    {
+      name: "iPhone 15",
+      image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 53799,
+    },
+    {
+      name: "iPhone 15 Plus",
+      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 55599,
+    },
+    {
+      name: "iPhone 15 Pro",
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 57399,
+    },
+    {
+      name: "iPhone 14",
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 59199,
+    },
+    {
+      name: "iPhone 14 Plus",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 60999,
+    },
+    {
+      name: "iPhone 13",
+      image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 62799,
+    },
+    {
+      name: "Redmi 13 5G",
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&auto=format&fit=crop&q=80",
+      brand: "Redmi",
+      price: 64599,
+    },
+    {
+      name: "Redmi Note 13",
+      image: "https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800&auto=format&fit=crop&q=80",
+      brand: "Redmi",
+      price: 66399,
+    },
+    {
+      name: "Redmi Note 13 Pro",
+      image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80",
+      brand: "Redmi",
+      price: 68199,
+    },
+    {
+      name: "Redmi 14C",
+      image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&auto=format&fit=crop&q=80",
+      brand: "Redmi",
+      price: 69999,
+    },
+    {
+      name: "Redmi 13C",
+      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80",
+      brand: "Redmi",
+      price: 71799,
+    },
+    {
+      name: "Redmi A5",
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80",
+      brand: "Redmi",
+      price: 73599,
+    },
+    {
+      name: "Realme P3",
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Realme",
+      price: 75399,
+    },
+    {
+      name: "Realme P3x",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+      brand: "Realme",
+      price: 77199,
+    },
+    {
+      name: "Realme 13+",
+      image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80",
+      brand: "Realme",
+      price: 78999,
+    },
+    {
+      name: "Realme 13 Pro",
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&auto=format&fit=crop&q=80",
+      brand: "Realme",
+      price: 80799,
+    },
+    {
+      name: "Realme Narzo 80 Pro",
+      image: "https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800&auto=format&fit=crop&q=80",
+      brand: "Realme",
+      price: 82599,
+    },
+    {
+      name: "Realme C75",
+      image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80",
+      brand: "Realme",
+      price: 84399,
+    },
+    {
+      name: "Vivo T4",
+      image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&auto=format&fit=crop&q=80",
+      brand: "Vivo",
+      price: 86199,
+    },
+    {
+      name: "Vivo T4x",
+      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80",
+      brand: "Vivo",
+      price: 87999,
+    },
+    {
+      name: "Vivo Y200",
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80",
+      brand: "Vivo",
+      price: 89799,
+    },
+    {
+      name: "Vivo Y39",
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Vivo",
+      price: 91599,
+    },
+    {
+      name: "Vivo V30",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+      brand: "Vivo",
+      price: 93399,
+    },
+    {
+      name: "Vivo V30 Pro",
+      image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80",
+      brand: "Vivo",
+      price: 95199,
+    },
+    {
+      name: "OPPO A5 Pro",
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&auto=format&fit=crop&q=80",
+      brand: "OPPO",
+      price: 96999,
+    },
+    {
+      name: "OPPO K13",
+      image: "https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800&auto=format&fit=crop&q=80",
+      brand: "OPPO",
+      price: 98799,
+    },
+    {
+      name: "OPPO F27",
+      image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80",
+      brand: "OPPO",
+      price: 100599,
+    },
+    {
+      name: "OPPO F29",
+      image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&auto=format&fit=crop&q=80",
+      brand: "OPPO",
+      price: 102399,
+    },
+    {
+      name: "OPPO A3 Pro",
+      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80",
+      brand: "OPPO",
+      price: 104199,
+    },
+    {
+      name: "OPPO K12",
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80",
+      brand: "OPPO",
+      price: 105999,
+    },
+    {
+      name: "OnePlus 12R",
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
+      brand: "OnePlus",
+      price: 107799,
+    },
+    {
+      name: "OnePlus Nord CE 4",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+      brand: "OnePlus",
+      price: 109599,
+    },
+    {
+      name: "OnePlus Nord CE 4 Lite",
+      image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80",
+      brand: "OnePlus",
+      price: 111399,
+    },
+    {
+      name: "OnePlus 12",
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&auto=format&fit=crop&q=80",
+      brand: "OnePlus",
+      price: 113199,
+    },
+    {
+      name: "OnePlus 11R",
+      image: "https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800&auto=format&fit=crop&q=80",
+      brand: "OnePlus",
+      price: 114999,
+    },
+    {
+      name: "OnePlus Nord 4",
+      image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800&auto=format&fit=crop&q=80",
+      brand: "OnePlus",
+      price: 116799,
+    },
+    {
+      name: "Moto G75",
+      image: "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 118599,
+    },
+    {
+      name: "Moto G85",
+      image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 120399,
+    },
+    {
+      name: "Moto Edge 50 Fusion",
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 122199,
+    },
+    {
+      name: "Moto Edge 50 Pro",
+      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 123999,
+    },
+    {
+      name: "Moto G64",
+      image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 125799,
+    },
+    {
+      name: "Moto G55",
+      image: "https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800&auto=format&fit=crop&q=80",
+      brand: "SmartTech",
+      price: 127599,
+    },
+    {
+      name: "Nothing Phone 3a",
+      image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800&auto=format&fit=crop&q=80",
+      brand: "Nothing",
+      price: 129399,
+    },
+    {
+      name: "Nothing Phone 2a",
+      image: "https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800&auto=format&fit=crop&q=80",
+      brand: "Nothing",
+      price: 131199,
+    },
+  ],
+  "Fashion": [
+    {
+      name: "Basic Cotton T-Shirt",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 399,
+    },
+    {
+      name: "Oversized T-Shirt",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 509,
+    },
+    {
+      name: "Polo T-Shirt",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 619,
+    },
+    {
+      name: "Casual Shirt",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 729,
+    },
+    {
+      name: "Linen Shirt",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 839,
+    },
+    {
+      name: "Denim Shirt",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 949,
+    },
+    {
+      name: "Classic Hoodie",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Roadster",
+      price: 1059,
+    },
+    {
+      name: "Zip Hoodie",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "U.S. Polo Assn.",
+      price: 1169,
+    },
+    {
+      name: "Crewneck Sweatshirt",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 1279,
+    },
+    {
+      name: "Track Jacket",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 1389,
+    },
+    {
+      name: "Bomber Jacket",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 1499,
+    },
+    {
+      name: "Lightweight Jacket",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 1609,
+    },
+    {
+      name: "Regular Fit Jeans",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 1719,
+    },
+    {
+      name: "Slim Fit Jeans",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 1829,
+    },
+    {
+      name: "Relaxed Fit Jeans",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Roadster",
+      price: 1939,
+    },
+    {
+      name: "Cargo Pants",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "U.S. Polo Assn.",
+      price: 2049,
+    },
+    {
+      name: "Chino Pants",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 2159,
+    },
+    {
+      name: "Joggers",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 2269,
+    },
+    {
+      name: "Track Pants",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 2379,
+    },
+    {
+      name: "Formal Trousers",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 2489,
+    },
+    {
+      name: "Cotton Shorts",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 2599,
+    },
+    {
+      name: "Denim Shorts",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 2709,
+    },
+    {
+      name: "Sports Shorts",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "Roadster",
+      price: 2819,
+    },
+    {
+      name: "Kurta",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "U.S. Polo Assn.",
+      price: 2929,
+    },
+    {
+      name: "Casual Kurta",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 3039,
+    },
+    {
+      name: "Nehru Jacket",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 3149,
+    },
+    {
+      name: "Formal Blazer",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 3259,
+    },
+    {
+      name: "Casual Blazer",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 3369,
+    },
+    {
+      name: "Windcheater",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 3479,
+    },
+    {
+      name: "Rain Jacket",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 3589,
+    },
+    {
+      name: "Running T-Shirt",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Roadster",
+      price: 3699,
+    },
+    {
+      name: "Training T-Shirt",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "U.S. Polo Assn.",
+      price: 3809,
+    },
+    {
+      name: "Gym Tank Top",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 3919,
+    },
+    {
+      name: "Sports Track Suit",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 4029,
+    },
+    {
+      name: "Athletic Socks",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 4139,
+    },
+    {
+      name: "Crew Socks",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 4249,
+    },
+    {
+      name: "Formal Belt",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 4359,
+    },
+    {
+      name: "Leather Belt",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 4469,
+    },
+    {
+      name: "Canvas Belt",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Roadster",
+      price: 4579,
+    },
+    {
+      name: "Baseball Cap",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "U.S. Polo Assn.",
+      price: 4689,
+    },
+    {
+      name: "Classic Cap",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 4799,
+    },
+    {
+      name: "Winter Beanie",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 4909,
+    },
+    {
+      name: "Casual Backpack",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 5019,
+    },
+    {
+      name: "Laptop Backpack",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 5129,
+    },
+    {
+      name: "Crossbody Bag",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 5239,
+    },
+    {
+      name: "Travel Backpack",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 5349,
+    },
+    {
+      name: "Wallet",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "Roadster",
+      price: 5459,
+    },
+    {
+      name: "Leather Wallet",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "U.S. Polo Assn.",
+      price: 5569,
+    },
+    {
+      name: "Sunglasses",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 5679,
+    },
+    {
+      name: "Polarized Sunglasses",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 5789,
+    },
+    {
+      name: "Running Gloves",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 5899,
+    },
+    {
+      name: "Winter Gloves",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 6009,
+    },
+    {
+      name: "Cotton Scarf",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 6119,
+    },
+    {
+      name: "Wool Scarf",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 6229,
+    },
+    {
+      name: "Casual Sneakers",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Roadster",
+      price: 6339,
+    },
+    {
+      name: "Canvas Sneakers",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "U.S. Polo Assn.",
+      price: 6449,
+    },
+    {
+      name: "Formal Shirt",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 6559,
+    },
+    {
+      name: "Oxford Shirt",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 6669,
+    },
+    {
+      name: "Casual Pants",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 6779,
+    },
+    {
+      name: "Cargo Shorts",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 6889,
+    },
+    {
+      name: "Activewear Tights",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 6999,
+    },
+    {
+      name: "Sports Leggings",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 7109,
+    },
+    {
+      name: "Thermal Top",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "Roadster",
+      price: 7219,
+    },
+    {
+      name: "Thermal Bottom",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "U.S. Polo Assn.",
+      price: 7329,
+    },
+    {
+      name: "Puffer Vest",
+      image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 7439,
+    },
+    {
+      name: "Fleece Jacket",
+      image: "https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 7549,
+    },
+    {
+      name: "Everyday Sandals",
+      image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 7659,
+    },
+    {
+      name: "Flip Flops",
+      image: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800&auto=format&fit=crop&q=80",
+      brand: "Levi's",
+      price: 7769,
+    },
+    {
+      name: "Formal Shoes",
+      image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&auto=format&fit=crop&q=80",
+      brand: "H&M",
+      price: 7879,
+    },
+    {
+      name: "Loafers",
+      image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format&fit=crop&q=80",
+      brand: "Zara",
+      price: 7989,
+    },
+  ],
+  "Laptops": [
+    {
+      name: "HP 15 Laptop",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "HP",
+      price: 24999,
+    },
+    {
+      name: "Dell Inspiron 15",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "Dell",
+      price: 27399,
+    },
+    {
+      name: "Lenovo IdeaPad Slim 5",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "Lenovo",
+      price: 29799,
+    },
+    {
+      name: "ASUS Vivobook 15",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "ASUS",
+      price: 32199,
+    },
+    {
+      name: "HP Laptop 1",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "Acer",
+      price: 34599,
+    },
+    {
+      name: "Dell Notebook 2",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "MSI",
+      price: 36999,
+    },
+    {
+      name: "Lenovo Ultrabook 3",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 39399,
+    },
+    {
+      name: "ASUS Gaming Laptop 4",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 41799,
+    },
+    {
+      name: "Acer Business Laptop 5",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "LG",
+      price: 44199,
+    },
+    {
+      name: "MSI Creator Laptop 6",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "Microsoft",
+      price: 46599,
+    },
+    {
+      name: "Apple 2-in-1 Laptop 7",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "HP",
+      price: 48999,
+    },
+    {
+      name: "Samsung Laptop 8",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "Dell",
+      price: 51399,
+    },
+    {
+      name: "LG Notebook 9",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "Lenovo",
+      price: 53799,
+    },
+    {
+      name: "Microsoft Ultrabook 10",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "ASUS",
+      price: 56199,
+    },
+    {
+      name: "HP Gaming Laptop 11",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "Acer",
+      price: 58599,
+    },
+    {
+      name: "Dell Business Laptop 12",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "MSI",
+      price: 60999,
+    },
+    {
+      name: "Lenovo Creator Laptop 13",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 63399,
+    },
+    {
+      name: "ASUS 2-in-1 Laptop 14",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 65799,
+    },
+    {
+      name: "Acer Laptop 15",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "LG",
+      price: 68199,
+    },
+    {
+      name: "MSI Notebook 16",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "Microsoft",
+      price: 70599,
+    },
+    {
+      name: "Apple Ultrabook 17",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "HP",
+      price: 72999,
+    },
+    {
+      name: "Samsung Gaming Laptop 18",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "Dell",
+      price: 75399,
+    },
+    {
+      name: "LG Business Laptop 19",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "Lenovo",
+      price: 77799,
+    },
+    {
+      name: "Microsoft Creator Laptop 20",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "ASUS",
+      price: 80199,
+    },
+    {
+      name: "HP 2-in-1 Laptop 21",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "Acer",
+      price: 82599,
+    },
+    {
+      name: "Dell Laptop 22",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "MSI",
+      price: 84999,
+    },
+    {
+      name: "Lenovo Notebook 23",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 87399,
+    },
+    {
+      name: "ASUS Ultrabook 24",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 89799,
+    },
+    {
+      name: "Acer Gaming Laptop 25",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "LG",
+      price: 92199,
+    },
+    {
+      name: "MSI Business Laptop 26",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "Microsoft",
+      price: 94599,
+    },
+    {
+      name: "Apple Creator Laptop 27",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "HP",
+      price: 96999,
+    },
+    {
+      name: "Samsung 2-in-1 Laptop 28",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "Dell",
+      price: 99399,
+    },
+    {
+      name: "LG Laptop 29",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "Lenovo",
+      price: 101799,
+    },
+    {
+      name: "Microsoft Notebook 30",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "ASUS",
+      price: 104199,
+    },
+    {
+      name: "HP Ultrabook 31",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "Acer",
+      price: 106599,
+    },
+    {
+      name: "Dell Gaming Laptop 32",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "MSI",
+      price: 108999,
+    },
+    {
+      name: "Lenovo Business Laptop 33",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 111399,
+    },
+    {
+      name: "ASUS Creator Laptop 34",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 113799,
+    },
+    {
+      name: "Acer 2-in-1 Laptop 35",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "LG",
+      price: 116199,
+    },
+    {
+      name: "MSI Laptop 36",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "Microsoft",
+      price: 118599,
+    },
+    {
+      name: "Apple Notebook 37",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "HP",
+      price: 120999,
+    },
+    {
+      name: "Samsung Ultrabook 38",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "Dell",
+      price: 123399,
+    },
+    {
+      name: "LG Gaming Laptop 39",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "Lenovo",
+      price: 125799,
+    },
+    {
+      name: "Microsoft Business Laptop 40",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "ASUS",
+      price: 128199,
+    },
+    {
+      name: "HP Creator Laptop 41",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "Acer",
+      price: 130599,
+    },
+    {
+      name: "Dell 2-in-1 Laptop 42",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "MSI",
+      price: 132999,
+    },
+    {
+      name: "Lenovo Laptop 43",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 135399,
+    },
+    {
+      name: "ASUS Notebook 44",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 137799,
+    },
+    {
+      name: "Acer Ultrabook 45",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "LG",
+      price: 140199,
+    },
+    {
+      name: "MSI Gaming Laptop 46",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "Microsoft",
+      price: 142599,
+    },
+    {
+      name: "Apple Business Laptop 47",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "HP",
+      price: 144999,
+    },
+    {
+      name: "Samsung Creator Laptop 48",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "Dell",
+      price: 147399,
+    },
+    {
+      name: "LG 2-in-1 Laptop 49",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "Lenovo",
+      price: 149799,
+    },
+    {
+      name: "Microsoft Laptop 50",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "ASUS",
+      price: 152199,
+    },
+    {
+      name: "HP Notebook 51",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "Acer",
+      price: 154599,
+    },
+    {
+      name: "Dell Ultrabook 52",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "MSI",
+      price: 156999,
+    },
+    {
+      name: "Lenovo Gaming Laptop 53",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 159399,
+    },
+    {
+      name: "ASUS Business Laptop 54",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 161799,
+    },
+    {
+      name: "Acer Creator Laptop 55",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "LG",
+      price: 164199,
+    },
+    {
+      name: "MSI 2-in-1 Laptop 56",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "Microsoft",
+      price: 166599,
+    },
+    {
+      name: "Apple Laptop 57",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "HP",
+      price: 168999,
+    },
+    {
+      name: "Samsung Notebook 58",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "Dell",
+      price: 171399,
+    },
+    {
+      name: "LG Ultrabook 59",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "Lenovo",
+      price: 173799,
+    },
+    {
+      name: "Microsoft Gaming Laptop 60",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "ASUS",
+      price: 176199,
+    },
+    {
+      name: "HP Business Laptop 61",
+      image: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=800&auto=format&fit=crop&q=80",
+      brand: "Acer",
+      price: 178599,
+    },
+    {
+      name: "Dell Creator Laptop 62",
+      image: "https://images.unsplash.com/photo-1593642532400-2682810df593?w=800&auto=format&fit=crop&q=80",
+      brand: "MSI",
+      price: 180999,
+    },
+    {
+      name: "Lenovo 2-in-1 Laptop 63",
+      image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80",
+      brand: "Apple",
+      price: 183399,
+    },
+    {
+      name: "ASUS Laptop 64",
+      image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800&auto=format&fit=crop&q=80",
+      brand: "Samsung",
+      price: 185799,
+    },
+    {
+      name: "Acer Notebook 65",
+      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800&auto=format&fit=crop&q=80",
+      brand: "LG",
+      price: 188199,
+    },
+    {
+      name: "MSI Ultrabook 66",
+      image: "https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800&auto=format&fit=crop&q=80",
+      brand: "Microsoft",
+      price: 190599,
+    },
+  ],
+  "Shoes": [
+    {
+      name: "Air Running Shoes",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 899,
+    },
+    {
+      name: "Ultraboost Running Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 1069,
+    },
+    {
+      name: "Sports Walking Shoes",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 1239,
+    },
+    {
+      name: "Daily Running Shoes",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 1409,
+    },
+    {
+      name: "Training Shoes",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 1579,
+    },
+    {
+      name: "Walking Sneakers",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 1749,
+    },
+    {
+      name: "Casual Sneakers",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "ASICS",
+      price: 1919,
+    },
+    {
+      name: "Court Sneakers",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Woodland",
+      price: 2089,
+    },
+    {
+      name: "Basketball Shoes",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 2259,
+    },
+    {
+      name: "Football Boots",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 2429,
+    },
+    {
+      name: "Cricket Shoes",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 2599,
+    },
+    {
+      name: "Tennis Shoes",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 2769,
+    },
+    {
+      name: "Gym Trainers",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 2939,
+    },
+    {
+      name: "Trail Running Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 3109,
+    },
+    {
+      name: "Hiking Shoes",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "ASICS",
+      price: 3279,
+    },
+    {
+      name: "Trekking Shoes",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Woodland",
+      price: 3449,
+    },
+    {
+      name: "Road Running Shoes",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 3619,
+    },
+    {
+      name: "Marathon Shoes",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 3789,
+    },
+    {
+      name: "Lightweight Trainers",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 3959,
+    },
+    {
+      name: "Cross Training Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 4129,
+    },
+    {
+      name: "Slip-On Sneakers",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 4299,
+    },
+    {
+      name: "Canvas Sneakers",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 4469,
+    },
+    {
+      name: "High-Top Sneakers",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "ASICS",
+      price: 4639,
+    },
+    {
+      name: "Low-Top Sneakers",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Woodland",
+      price: 4809,
+    },
+    {
+      name: "Skate Shoes",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 4979,
+    },
+    {
+      name: "Lifestyle Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 5149,
+    },
+    {
+      name: "Leather Formal Shoes",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 5319,
+    },
+    {
+      name: "Classic Loafers",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 5489,
+    },
+    {
+      name: "Penny Loafers",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 5659,
+    },
+    {
+      name: "Driving Shoes",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 5829,
+    },
+    {
+      name: "Derby Shoes",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "ASICS",
+      price: 5999,
+    },
+    {
+      name: "Oxford Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Woodland",
+      price: 6169,
+    },
+    {
+      name: "Monk Strap Shoes",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 6339,
+    },
+    {
+      name: "Chelsea Boots",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 6509,
+    },
+    {
+      name: "Chukka Boots",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 6679,
+    },
+    {
+      name: "Desert Boots",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 6849,
+    },
+    {
+      name: "Work Boots",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 7019,
+    },
+    {
+      name: "Safety Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 7189,
+    },
+    {
+      name: "Sports Sandals",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "ASICS",
+      price: 7359,
+    },
+    {
+      name: "Outdoor Sandals",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Woodland",
+      price: 7529,
+    },
+    {
+      name: "Casual Sandals",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 7699,
+    },
+    {
+      name: "Leather Sandals",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 7869,
+    },
+    {
+      name: "Slides",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 8039,
+    },
+    {
+      name: "Flip Flops",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 8209,
+    },
+    {
+      name: "Clogs",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 8379,
+    },
+    {
+      name: "Comfort Sandals",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 8549,
+    },
+    {
+      name: "Kids Running Shoes",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "ASICS",
+      price: 8719,
+    },
+    {
+      name: "Kids Sneakers",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Woodland",
+      price: 8889,
+    },
+    {
+      name: "Kids Sports Shoes",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 9059,
+    },
+    {
+      name: "Kids School Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 9229,
+    },
+    {
+      name: "Men Casual Shoes",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 9399,
+    },
+    {
+      name: "Women Casual Shoes",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 9569,
+    },
+    {
+      name: "Men Sports Shoes",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 9739,
+    },
+    {
+      name: "Women Sports Shoes",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 9909,
+    },
+    {
+      name: "Men Walking Shoes",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "ASICS",
+      price: 10079,
+    },
+    {
+      name: "Women Walking Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Woodland",
+      price: 10249,
+    },
+    {
+      name: "Men Running Shoes",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 10419,
+    },
+    {
+      name: "Women Running Shoes",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 10589,
+    },
+    {
+      name: "Men Training Shoes",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 10759,
+    },
+    {
+      name: "Women Training Shoes",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 10929,
+    },
+    {
+      name: "Classic Trainers",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 11099,
+    },
+    {
+      name: "Performance Trainers",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 11269,
+    },
+    {
+      name: "Everyday Sneakers",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "ASICS",
+      price: 11439,
+    },
+    {
+      name: "Premium Sneakers",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Woodland",
+      price: 11609,
+    },
+    {
+      name: "Retro Sneakers",
+      image: "https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80",
+      brand: "Nike",
+      price: 11779,
+    },
+    {
+      name: "Minimal Sneakers",
+      image: "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800&auto=format&fit=crop&q=80",
+      brand: "Adidas",
+      price: 11949,
+    },
+    {
+      name: "Comfort Shoes",
+      image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80",
+      brand: "Puma",
+      price: 12119,
+    },
+    {
+      name: "Active Lifestyle Shoes",
+      image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800&auto=format&fit=crop&q=80",
+      brand: "Skechers",
+      price: 12289,
+    },
+    {
+      name: "Travel Shoes",
+      image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800&auto=format&fit=crop&q=80",
+      brand: "Campus",
+      price: 12459,
+    },
+    {
+      name: "Lightweight Walking Shoes",
+      image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&auto=format&fit=crop&q=80",
+      brand: "Reebok",
+      price: 12629,
+    },
+  ],
+  "Home & Living": [
+    {
+      name: "LED Smart Bulb",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 299,
+    },
+    {
+      name: "Modern Storage Box",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 579,
+    },
+    {
+      name: "Table Lamp",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 859,
+    },
+    {
+      name: "Desk Lamp",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 1139,
+    },
+    {
+      name: "Floor Lamp",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 1419,
+    },
+    {
+      name: "Bedside Lamp",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 1699,
+    },
+    {
+      name: "Ceiling Light",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Cello",
+      price: 1979,
+    },
+    {
+      name: "Smart LED Strip",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Wakefit",
+      price: 2259,
+    },
+    {
+      name: "Night Light",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 2539,
+    },
+    {
+      name: "Study Lamp",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 2819,
+    },
+    {
+      name: "Wall Clock",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 3099,
+    },
+    {
+      name: "Digital Alarm Clock",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 3379,
+    },
+    {
+      name: "Decorative Vase",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 3659,
+    },
+    {
+      name: "Ceramic Vase",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 3939,
+    },
+    {
+      name: "Photo Frame",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Cello",
+      price: 4219,
+    },
+    {
+      name: "Wall Mirror",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Wakefit",
+      price: 4499,
+    },
+    {
+      name: "Full Length Mirror",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 4779,
+    },
+    {
+      name: "Cushion Cover",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 5059,
+    },
+    {
+      name: "Decorative Cushion",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 5339,
+    },
+    {
+      name: "Throw Pillow",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 5619,
+    },
+    {
+      name: "Bedsheet Set",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 5899,
+    },
+    {
+      name: "Comforter",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 6179,
+    },
+    {
+      name: "Blanket",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Cello",
+      price: 6459,
+    },
+    {
+      name: "Duvet Cover",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "Wakefit",
+      price: 6739,
+    },
+    {
+      name: "Pillow",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 7019,
+    },
+    {
+      name: "Memory Foam Pillow",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 7299,
+    },
+    {
+      name: "Bath Towel",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 7579,
+    },
+    {
+      name: "Hand Towel",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 7859,
+    },
+    {
+      name: "Kitchen Towel",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 8139,
+    },
+    {
+      name: "Curtain Set",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 8419,
+    },
+    {
+      name: "Blackout Curtains",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Cello",
+      price: 8699,
+    },
+    {
+      name: "Door Mat",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Wakefit",
+      price: 8979,
+    },
+    {
+      name: "Area Rug",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 9259,
+    },
+    {
+      name: "Kitchen Organizer",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 9539,
+    },
+    {
+      name: "Spice Rack",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 9819,
+    },
+    {
+      name: "Storage Basket",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 10099,
+    },
+    {
+      name: "Laundry Basket",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 10379,
+    },
+    {
+      name: "Water Bottle",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 10659,
+    },
+    {
+      name: "Thermal Flask",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Cello",
+      price: 10939,
+    },
+    {
+      name: "Coffee Mug",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Wakefit",
+      price: 11219,
+    },
+    {
+      name: "Ceramic Dinner Set",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 11499,
+    },
+    {
+      name: "Glass Set",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 11779,
+    },
+    {
+      name: "Dinner Plates",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 12059,
+    },
+    {
+      name: "Cutlery Set",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 12339,
+    },
+    {
+      name: "Frying Pan",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 12619,
+    },
+    {
+      name: "Non Stick Pan",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 12899,
+    },
+    {
+      name: "Saucepan",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Cello",
+      price: 13179,
+    },
+    {
+      name: "Pressure Cooker",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "Wakefit",
+      price: 13459,
+    },
+    {
+      name: "Electric Kettle",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 13739,
+    },
+    {
+      name: "Air Fryer",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 14019,
+    },
+    {
+      name: "Mixer Grinder",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 14299,
+    },
+    {
+      name: "Hand Blender",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 14579,
+    },
+    {
+      name: "Toaster",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 14859,
+    },
+    {
+      name: "Rice Cooker",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 15139,
+    },
+    {
+      name: "Induction Cooktop",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Cello",
+      price: 15419,
+    },
+    {
+      name: "Food Storage Containers",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Wakefit",
+      price: 15699,
+    },
+    {
+      name: "Lunch Box",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 15979,
+    },
+    {
+      name: "Trash Bin",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 16259,
+    },
+    {
+      name: "Dustbin",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 16539,
+    },
+    {
+      name: "Cleaning Brush Set",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 16819,
+    },
+    {
+      name: "Mop",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 17099,
+    },
+    {
+      name: "Floor Cleaning Bucket",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 17379,
+    },
+    {
+      name: "Laundry Hanger Set",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Cello",
+      price: 17659,
+    },
+    {
+      name: "Clothes Hangers",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Wakefit",
+      price: 17939,
+    },
+    {
+      name: "Shoe Rack",
+      image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&auto=format&fit=crop&q=80",
+      brand: "Philips",
+      price: 18219,
+    },
+    {
+      name: "Bookshelf",
+      image: "https://images.unsplash.com/photo-1556911220-bff31c812dba?w=800&auto=format&fit=crop&q=80",
+      brand: "IKEA",
+      price: 18499,
+    },
+    {
+      name: "Side Table",
+      image: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800&auto=format&fit=crop&q=80",
+      brand: "Prestige",
+      price: 18779,
+    },
+    {
+      name: "Study Table",
+      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
+      brand: "Havells",
+      price: 19059,
+    },
+    {
+      name: "Office Chair",
+      image: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800&auto=format&fit=crop&q=80",
+      brand: "Borosil",
+      price: 19339,
+    },
+    {
+      name: "Cushion Chair",
+      image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&auto=format&fit=crop&q=80",
+      brand: "Milton",
+      price: 19619,
+    },
+  ],
+  "Books": [
+    {
+      name: "The Power of Habits",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 199,
+    },
+    {
+      name: "English Grammar Guide",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 239,
+    },
+    {
+      name: "Programming Fundamentals",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 279,
+    },
+    {
+      name: "Python Programming",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 319,
+    },
+    {
+      name: "C++ Programming",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 359,
+    },
+    {
+      name: "JavaScript Essentials",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 399,
+    },
+    {
+      name: "React for Beginners",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "HarperCollins",
+      price: 439,
+    },
+    {
+      name: "Node.js Guide",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Bloomsbury",
+      price: 479,
+    },
+    {
+      name: "Express.js Handbook",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 519,
+    },
+    {
+      name: "MongoDB Basics",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 559,
+    },
+    {
+      name: "SQL Fundamentals",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 599,
+    },
+    {
+      name: "Data Structures and Algorithms",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 639,
+    },
+    {
+      name: "Machine Learning Basics",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 679,
+    },
+    {
+      name: "Deep Learning Essentials",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 719,
+    },
+    {
+      name: "Artificial Intelligence",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "HarperCollins",
+      price: 759,
+    },
+    {
+      name: "Computer Networks",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Bloomsbury",
+      price: 799,
+    },
+    {
+      name: "Operating Systems",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 839,
+    },
+    {
+      name: "Database Management Systems",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 879,
+    },
+    {
+      name: "Software Engineering",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 919,
+    },
+    {
+      name: "Web Development",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 959,
+    },
+    {
+      name: "Full Stack Development",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 999,
+    },
+    {
+      name: "Git and GitHub",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 1039,
+    },
+    {
+      name: "Cloud Computing",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "HarperCollins",
+      price: 1079,
+    },
+    {
+      name: "Cyber Security",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "Bloomsbury",
+      price: 1119,
+    },
+    {
+      name: "Data Science",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 1159,
+    },
+    {
+      name: "Statistics for Data Science",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 1199,
+    },
+    {
+      name: "Linear Algebra",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 1239,
+    },
+    {
+      name: "Calculus Made Easy",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 1279,
+    },
+    {
+      name: "Business Communication",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 1319,
+    },
+    {
+      name: "English Vocabulary Builder",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 1359,
+    },
+    {
+      name: "Aptitude Practice",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "HarperCollins",
+      price: 1399,
+    },
+    {
+      name: "Reasoning Practice",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Bloomsbury",
+      price: 1439,
+    },
+    {
+      name: "Interview Preparation",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 1479,
+    },
+    {
+      name: "Competitive Programming",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 1519,
+    },
+    {
+      name: "System Design Basics",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 1559,
+    },
+    {
+      name: "Clean Code",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 1599,
+    },
+    {
+      name: "Design Patterns",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 1639,
+    },
+    {
+      name: "Computer Organization",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 1679,
+    },
+    {
+      name: "Digital Electronics",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "HarperCollins",
+      price: 1719,
+    },
+    {
+      name: "Discrete Mathematics",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Bloomsbury",
+      price: 1759,
+    },
+    {
+      name: "Probability and Statistics",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 1799,
+    },
+    {
+      name: "Natural Language Processing",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 1839,
+    },
+    {
+      name: "Computer Vision",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 1879,
+    },
+    {
+      name: "DevOps Fundamentals",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 1919,
+    },
+    {
+      name: "Docker Essentials",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 1959,
+    },
+    {
+      name: "Kubernetes Basics",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 1999,
+    },
+    {
+      name: "REST API Design",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "HarperCollins",
+      price: 2039,
+    },
+    {
+      name: "TypeScript Handbook",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "Bloomsbury",
+      price: 2079,
+    },
+    {
+      name: "Next.js Guide",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 2119,
+    },
+    {
+      name: "Django Web Development",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 2159,
+    },
+    {
+      name: "Flask Web Development",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 2199,
+    },
+    {
+      name: "Spring Boot Essentials",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 2239,
+    },
+    {
+      name: "Android Development",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 2279,
+    },
+    {
+      name: "iOS Development",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 2319,
+    },
+    {
+      name: "UI UX Design",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "HarperCollins",
+      price: 2359,
+    },
+    {
+      name: "Graphic Design Basics",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Bloomsbury",
+      price: 2399,
+    },
+    {
+      name: "Photography Basics",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 2439,
+    },
+    {
+      name: "Personal Finance",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 2479,
+    },
+    {
+      name: "Atomic Habits Workbook",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 2519,
+    },
+    {
+      name: "Mindfulness Guide",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 2559,
+    },
+    {
+      name: "Leadership Skills",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 2599,
+    },
+    {
+      name: "Time Management",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 2639,
+    },
+    {
+      name: "Communication Skills",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "HarperCollins",
+      price: 2679,
+    },
+    {
+      name: "Entrepreneurship Basics",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Bloomsbury",
+      price: 2719,
+    },
+    {
+      name: "Marketing Fundamentals",
+      image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&auto=format&fit=crop&q=80",
+      brand: "Penguin",
+      price: 2759,
+    },
+    {
+      name: "Economics Made Simple",
+      image: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?w=800&auto=format&fit=crop&q=80",
+      brand: "Oxford",
+      price: 2799,
+    },
+    {
+      name: "Physics Fundamentals",
+      image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&auto=format&fit=crop&q=80",
+      brand: "McGraw Hill",
+      price: 2839,
+    },
+    {
+      name: "Chemistry Essentials",
+      image: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&auto=format&fit=crop&q=80",
+      brand: "O'Reilly",
+      price: 2879,
+    },
+    {
+      name: "Biology Essentials",
+      image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&auto=format&fit=crop&q=80",
+      brand: "Wiley",
+      price: 2919,
+    },
+    {
+      name: "World History",
+      image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=800&auto=format&fit=crop&q=80",
+      brand: "Pearson",
+      price: 2959,
+    },
+  ],
+}
 
-  {
+const products = Object.entries(catalog).flatMap(([category, items]) =>
+  items.map((item, index) => ({
     user: adminUserId,
-    name: 'Samsung Galaxy S25',
-    image:
-      'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=800',
-    brand: 'Samsung',
-    category: 'Electronics',
-    description:
-      'Samsung Galaxy S25 smartphone with modern design and powerful performance.',
-    price: 79999,
-    countInStock: 20,
-  },
+    name: item.name,
+    image: item.image,
+    brand: item.brand,
+    category,
+    description: (category === 'Electronics'
+      ? 'Modern smartphone with a sharp display, dependable performance and a clean premium design.'
+      : category === 'Fashion'
+        ? 'Comfortable everyday fashion product designed for style, fit and regular use.'
+        : category === 'Laptops'
+          ? 'Reliable laptop designed for study, work, productivity and everyday computing.'
+          : category === 'Shoes'
+            ? 'Comfortable footwear designed for everyday use, movement and long-lasting wear.'
+            : category === 'Home & Living'
+              ? 'Practical home product with a clean design for comfortable everyday living.'
+              : 'Useful book for learning, reading and building practical knowledge.'),
+    price: item.price,
+    countInStock: 20 + (index % 31),
+  }))
+)
 
-  {
-    user: adminUserId,
-    name: 'Samsung Galaxy A56 5G',
-    image:
-      'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800',
-    brand: 'Samsung',
-    category: 'Electronics',
-    description:
-      'Samsung Galaxy A56 5G smartphone with a large display and reliable performance.',
-    price: 41999,
-    countInStock: 25,
-  },
-
-  {
-    user: adminUserId,
-    name: 'iPhone 16',
-    image:
-      'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800',
-    brand: 'Apple',
-    category: 'Electronics',
-    description:
-      'Apple iPhone 16 with powerful performance and premium design.',
-    price: 79900,
-    countInStock: 15,
-  },
-
-  {
-    user: adminUserId,
-    name: 'iPhone 16 Pro',
-    image:
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800',
-    brand: 'Apple',
-    category: 'Electronics',
-    description:
-      'Apple iPhone 16 Pro with premium build and advanced performance.',
-    price: 109900,
-    countInStock: 12,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Redmi Note 14',
-    image:
-      'https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800',
-    brand: 'Redmi',
-    category: 'Electronics',
-    description:
-      'Redmi Note 14 smartphone with modern design and reliable performance.',
-    price: 17999,
-    countInStock: 30,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Redmi Note 14 Pro',
-    image:
-      'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800',
-    brand: 'Redmi',
-    category: 'Electronics',
-    description:
-      'Redmi Note 14 Pro smartphone designed for everyday performance.',
-    price: 24999,
-    countInStock: 30,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Realme 14 Pro',
-    image:
-      'https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800',
-    brand: 'Realme',
-    category: 'Electronics',
-    description:
-      'Realme 14 Pro smartphone with stylish design and strong performance.',
-    price: 29999,
-    countInStock: 25,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Realme GT 7',
-    image:
-      'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800',
-    brand: 'Realme',
-    category: 'Electronics',
-    description:
-      'Realme GT 7 smartphone with powerful performance and premium design.',
-    price: 42999,
-    countInStock: 20,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Vivo V50',
-    image:
-      'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800',
-    brand: 'Vivo',
-    category: 'Electronics',
-    description:
-      'Vivo V50 smartphone with premium styling and smooth performance.',
-    price: 34999,
-    countInStock: 20,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Vivo V40',
-    image:
-      'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800',
-    brand: 'Vivo',
-    category: 'Electronics',
-    description:
-      'Vivo V40 smartphone with stylish design and excellent everyday performance.',
-    price: 34999,
-    countInStock: 20,
-  },
-
-  {
-    user: adminUserId,
-    name: 'OPPO Reno13',
-    image:
-      'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800',
-    brand: 'Oppo',
-    category: 'Electronics',
-    description:
-      'OPPO Reno13 smartphone with elegant design and everyday performance.',
-    price: 37999,
-    countInStock: 20,
-  },
-
-  {
-    user: adminUserId,
-    name: 'OPPO Find X8',
-    image:
-      'https://images.unsplash.com/photo-1580910051074-3eb694886505?w=800',
-    brand: 'Oppo',
-    category: 'Electronics',
-    description:
-      'OPPO Find X8 smartphone with premium design and powerful hardware.',
-    price: 69999,
-    countInStock: 15,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Infinix Note 50',
-    image:
-      'https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800',
-    brand: 'Infinix',
-    category: 'Electronics',
-    description:
-      'Infinix Note 50 smartphone with large display and dependable performance.',
-    price: 16999,
-    countInStock: 35,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Infinix GT 20 Pro',
-    image:
-      'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=800',
-    brand: 'Infinix',
-    category: 'Electronics',
-    description:
-      'Infinix GT 20 Pro gaming smartphone with powerful performance.',
-    price: 24999,
-    countInStock: 25,
-  },
-
-  {
-    user: adminUserId,
-    name: 'OnePlus 13',
-    image:
-      'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=800',
-    brand: 'OnePlus',
-    category: 'Electronics',
-    description:
-      'OnePlus 13 premium smartphone with fast performance and modern design.',
-    price: 69999,
-    countInStock: 15,
-  },
-
-  {
-    user: adminUserId,
-    name: 'OnePlus Nord 5',
-    image:
-      'https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800',
-    brand: 'OnePlus',
-    category: 'Electronics',
-    description:
-      'OnePlus Nord smartphone with fast performance and modern design.',
-    price: 33999,
-    countInStock: 20,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Motorola Edge 60',
-    image:
-      'https://images.unsplash.com/photo-1598327106026-d9521da673d5?w=800',
-    brand: 'Motorola',
-    category: 'Electronics',
-    description:
-      'Motorola Edge 60 smartphone with modern features and premium styling.',
-    price: 35999,
-    countInStock: 20,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Motorola Moto G85',
-    image:
-      'https://images.unsplash.com/photo-1567581935884-3349723552ca?w=800',
-    brand: 'Motorola',
-    category: 'Electronics',
-    description:
-      'Motorola smartphone with stylish design and dependable daily performance.',
-    price: 19999,
-    countInStock: 25,
-  },
-
-  // =====================================================
-  // FASHION
-  // =====================================================
-
-  {
-    user: adminUserId,
-    name: 'Men Running T-Shirt',
-    image:
-      'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800',
-    brand: 'Nike',
-    category: 'Fashion',
-    description:
-      'Comfortable sports t-shirt for everyday workouts and running.',
-    price: 1499,
-    countInStock: 40,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Classic Sports Hoodie',
-    image:
-      'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=800',
-    brand: 'Puma',
-    category: 'Fashion',
-    description:
-      'Casual sports hoodie suitable for everyday wear.',
-    price: 2499,
-    countInStock: 30,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Regular Fit Jeans',
-    image:
-      'https://images.unsplash.com/photo-1542272604-787c3835535d?w=800',
-    brand: "Levi's",
-    category: 'Fashion',
-    description:
-      'Classic regular fit jeans designed for comfortable everyday use.',
-    price: 2999,
-    countInStock: 35,
-  },
-
-  // =====================================================
-  // LAPTOPS
-  // =====================================================
-
-  {
-    user: adminUserId,
-    name: 'HP 15 Laptop',
-    image:
-      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800',
-    brand: 'HP',
-    category: 'Laptops',
-    description:
-      'HP laptop suitable for study, office work and everyday computing.',
-    price: 54999,
-    countInStock: 12,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Dell Inspiron 15',
-    image:
-      'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=800',
-    brand: 'Dell',
-    category: 'Laptops',
-    description:
-      'Dell Inspiron laptop designed for productivity and everyday use.',
-    price: 57999,
-    countInStock: 10,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Lenovo IdeaPad Slim 5',
-    image:
-      'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=800',
-    brand: 'Lenovo',
-    category: 'Laptops',
-    description:
-      'Slim Lenovo laptop for students, professionals and everyday tasks.',
-    price: 62999,
-    countInStock: 10,
-  },
-
-  {
-    user: adminUserId,
-    name: 'ASUS Vivobook 15',
-    image:
-      'https://images.unsplash.com/photo-1484788984921-03950022c9ef?w=800',
-    brand: 'Asus',
-    category: 'Laptops',
-    description:
-      'ASUS Vivobook laptop with a slim design for work and entertainment.',
-    price: 59999,
-    countInStock: 12,
-  },
-
-  // =====================================================
-  // SHOES
-  // =====================================================
-
-  {
-    user: adminUserId,
-    name: 'Air Running Shoes',
-    image:
-      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800',
-    brand: 'Nike',
-    category: 'Shoes',
-    description:
-      'Comfortable running shoes designed for daily training.',
-    price: 3999,
-    countInStock: 30,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Ultraboost Running Shoes',
-    image:
-      'https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=800',
-    brand: 'Adidas',
-    category: 'Shoes',
-    description:
-      'Performance running shoes designed for comfort and daily activity.',
-    price: 6999,
-    countInStock: 25,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Sports Walking Shoes',
-    image:
-      'https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=800',
-    brand: 'Puma',
-    category: 'Shoes',
-    description:
-      'Lightweight sports shoes for walking and casual activities.',
-    price: 2999,
-    countInStock: 35,
-  },
-
-  // =====================================================
-  // HOME & LIVING
-  // =====================================================
-
-  {
-    user: adminUserId,
-    name: 'LED Smart Bulb',
-    image:
-      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800',
-    brand: 'Philips',
-    category: 'Home & Living',
-    description:
-      'Energy-efficient LED smart bulb for home lighting.',
-    price: 799,
-    countInStock: 50,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Modern Storage Box',
-    image:
-      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800',
-    brand: 'IKEA',
-    category: 'Home & Living',
-    description:
-      'Practical storage box for organizing household items.',
-    price: 599,
-    countInStock: 45,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Table Lamp',
-    image:
-      'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=800',
-    brand: 'Philips',
-    category: 'Home & Living',
-    description:
-      'Modern table lamp suitable for bedrooms, desks and study areas.',
-    price: 1299,
-    countInStock: 30,
-  },
-
-  // =====================================================
-  // BOOKS
-  // =====================================================
-
-  {
-    user: adminUserId,
-    name: 'The Power of Habits',
-    image:
-      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800',
-    brand: 'Penguin',
-    category: 'Books',
-    description:
-      'A motivational book about habits, routines and personal development.',
-    price: 399,
-    countInStock: 40,
-  },
-
-  {
-    user: adminUserId,
-    name: 'English Grammar Guide',
-    image:
-      'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800',
-    brand: 'Oxford',
-    category: 'Books',
-    description:
-      'English grammar reference book for students and learners.',
-    price: 499,
-    countInStock: 35,
-  },
-
-  {
-    user: adminUserId,
-    name: 'Programming Fundamentals',
-    image:
-      'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800',
-    brand: 'Oxford',
-    category: 'Books',
-    description:
-      'Beginner-friendly programming fundamentals reference book.',
-    price: 699,
-    countInStock: 25,
-  },
-]
-
-// =====================================================
-// DEFAULT VALUES
-// =====================================================
-
+// Keep the same defaults used by the existing product seed.
 const productsWithDefaults = products.map((product) => ({
   ...product,
-
   rating: 0,
   numReviews: 0,
   reviews: [],
-
   isDealActive: false,
   dealDiscount: 0,
   dealStartedAt: null,
   dealExpiresAt: null,
 }))
 
-// =====================================================
-// IMPORT PRODUCTS
-// =====================================================
-
 const importProducts = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI)
-
     console.log('MongoDB connected')
 
-    await Product.insertMany(productsWithDefaults)
+    // Upsert by name so existing products are updated (including better images)
+    // and new products are added without creating duplicates on reruns.
+    const operations = productsWithDefaults.map((product) => ({
+      updateOne: {
+        filter: { user: adminUserId, name: product.name },
+        update: {
+          $set: {
+            user: product.user,
+            name: product.name,
+            image: product.image,
+            brand: product.brand,
+            category: product.category,
+            description: product.description,
+            price: product.price,
+            countInStock: product.countInStock,
+          },
+          $setOnInsert: {
+            rating: 0,
+            numReviews: 0,
+            reviews: [],
+            isDealActive: false,
+            dealDiscount: 0,
+            dealStartedAt: null,
+            dealExpiresAt: null,
+          },
+        },
+        upsert: true,
+      },
+    }))
 
-    console.log(
-      `${productsWithDefaults.length} products imported successfully`
-    )
+    await Product.bulkWrite(operations, { ordered: false })
+
+    console.log(`${productsWithDefaults.length} products processed successfully`)
+    console.log('Categories: 6 | Products per category: 70 | Total: 420')
 
     await mongoose.connection.close()
-
     process.exit(0)
   } catch (error) {
     console.error('Import failed:', error.message)
-
     await mongoose.connection.close()
-
     process.exit(1)
   }
 }
