@@ -10,9 +10,10 @@ const sendEmail = async ({
     host: 'smtp.gmail.com',
     port: 587,
     secure: false,
+
     auth: {
       user: 'pappuranu6@gmail.com',
-      pass: 'kvatxygstbuclgin',
+      pass: 'damjreqicbnkwzza',
     },
   })
 
