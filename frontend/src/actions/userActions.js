@@ -620,7 +620,7 @@ export const updateUser =
 // ================= SEND PASSWORD RESET OTP =================
 
 export const sendPasswordResetOtp =
-  (phone) => async (dispatch) => {
+  (email) => async (dispatch) => {
     try {
       dispatch({
         type: USER_FORGOT_PASSWORD_REQUEST,
@@ -635,7 +635,7 @@ export const sendPasswordResetOtp =
       const { data } = await axios.post(
         '/api/users/forgot-password/send-otp',
         {
-          phone,
+          email,
         },
         config
       )
@@ -663,7 +663,7 @@ export const sendPasswordResetOtp =
 // ================= VERIFY OTP =================
 
 export const verifyPasswordResetOtp =
-  (phone, otp) => async (dispatch) => {
+  (email, otp) => async (dispatch) => {
     try {
       dispatch({
         type: USER_VERIFY_OTP_REQUEST,
@@ -678,7 +678,7 @@ export const verifyPasswordResetOtp =
       const { data } = await axios.post(
         '/api/users/forgot-password/verify-otp',
         {
-          phone,
+          email,
           otp,
         },
         config
@@ -707,7 +707,7 @@ export const verifyPasswordResetOtp =
 // ================= RESET PASSWORD =================
 
 export const resetPassword =
-  (phone, resetToken, password) =>
+  (email, resetToken, password) =>
   async (dispatch) => {
     try {
       dispatch({
@@ -723,7 +723,7 @@ export const resetPassword =
       const { data } = await axios.post(
         '/api/users/forgot-password/reset-password',
         {
-          phone,
+          email,
           resetToken,
           password,
         },

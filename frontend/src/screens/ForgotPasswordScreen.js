@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Button, Alert } from 'react-bootstrap'
+import { Form, Button } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -15,7 +15,7 @@ import {
 const ForgotPasswordScreen = ({ history }) => {
   const [step, setStep] = useState(1)
 
-  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
   const [otp, setOtp] = useState('')
 
   const [password, setPassword] = useState('')
@@ -59,7 +59,7 @@ const ForgotPasswordScreen = ({ history }) => {
     e.preventDefault()
 
     try {
-      await dispatch(sendPasswordResetOtp(phone))
+      await dispatch(sendPasswordResetOtp(email))
       setStep(2)
     } catch (error) {
       // Error is already handled by reducer
@@ -71,7 +71,7 @@ const ForgotPasswordScreen = ({ history }) => {
 
     try {
       await dispatch(
-        verifyPasswordResetOtp(phone, otp)
+        verifyPasswordResetOtp(email, otp)
       )
 
       setStep(3)
@@ -94,7 +94,7 @@ const ForgotPasswordScreen = ({ history }) => {
     try {
       await dispatch(
         resetPassword(
-          phone,
+          email,
           resetToken,
           password
         )
@@ -160,8 +160,8 @@ const ForgotPasswordScreen = ({ history }) => {
           <div className='cartnova-forgot-features'>
 
             <div>
-              <i className='fas fa-mobile-alt'></i>
-              Mobile OTP Verification
+              <i className='fas fa-envelope'></i>
+              Email OTP Verification
             </div>
 
             <div>
@@ -186,10 +186,10 @@ const ForgotPasswordScreen = ({ history }) => {
 
             <p>
               {step === 1 &&
-                'Enter your mobile number to continue.'}
+                'Enter your email address to continue.'}
 
               {step === 2 &&
-                'Enter the OTP sent to your mobile number.'}
+                'Enter the OTP sent to your email address.'}
 
               {step === 3 &&
                 'Create a new password for your account.'}
@@ -207,7 +207,7 @@ const ForgotPasswordScreen = ({ history }) => {
               }
             >
               <span>1</span>
-              <small>Mobile</small>
+              <small>Email</small>
             </div>
 
             <div
@@ -262,29 +262,26 @@ const ForgotPasswordScreen = ({ history }) => {
             <Form onSubmit={sendOtpHandler}>
 
               <Form.Group
-                controlId='phone'
+                controlId='email'
                 className='cartnova-forgot-form-group'
               >
                 <Form.Label>
-                  <i className='fas fa-mobile-alt'></i>{' '}
-                  Mobile Number
+                  <i className='fas fa-envelope'></i>{' '}
+                  Email Address
                 </Form.Label>
 
                 <Form.Control
-                  type='tel'
-                  placeholder='Enter your 10-digit mobile number'
-                  value={phone}
+                  type='email'
+                  placeholder='Enter your registered email address'
+                  value={email}
                   onChange={(e) =>
-                    setPhone(
-                      e.target.value.replace(/\D/g, '')
-                    )
+                    setEmail(e.target.value)
                   }
-                  maxLength='10'
                   required
                 />
 
                 <Form.Text className='cartnova-forgot-help'>
-                  Enter the mobile number registered with
+                  Enter the email address registered with
                   your CartNova account.
                 </Form.Text>
               </Form.Group>
@@ -311,17 +308,6 @@ const ForgotPasswordScreen = ({ history }) => {
                 <Message variant='success'>
                   OTP sent successfully.
                 </Message>
-              )}
-
-              {developmentOtp && (
-                <Alert
-                  variant='warning'
-                  className='cartnova-development-otp'
-                >
-                  <i className='fas fa-code'></i>{' '}
-                  <strong>Development OTP:</strong>{' '}
-                  {developmentOtp}
-                </Alert>
               )}
 
               <Form onSubmit={verifyOtpHandler}>
@@ -375,7 +361,7 @@ const ForgotPasswordScreen = ({ history }) => {
                 onClick={() => setStep(1)}
               >
                 <i className='fas fa-arrow-left'></i>{' '}
-                Change Mobile Number
+                Change Email Address
               </button>
             </>
           )}

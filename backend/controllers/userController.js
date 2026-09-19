@@ -1511,32 +1511,32 @@ const updateUser = asyncHandler(async (req, res) => {
 // Public
 const sendPasswordResetOtp = asyncHandler(
   async (req, res) => {
-    const { phone } = req.body
+    const { email } = req.body
 
-    if (!phone) {
+    if (!email) {
       res.status(400)
       throw new Error(
-        'Please enter your mobile number'
+        'Please enter your email address'
       )
     }
 
-    const cleanPhone = phone.toString().trim()
+    const cleanEmail = email.toLowerCase().trim()
 
     const user = await User.findOne({
-      phone: cleanPhone,
+      email: cleanEmail,
     })
 
     if (!user) {
       res.status(404)
       throw new Error(
-        'No account found with this mobile number'
+        'No account found with this email address'
       )
     }
 
-    if (!user.isPhoneVerified) {
+    if (!user.isEmailVerified) {
       res.status(403)
       throw new Error(
-        'Mobile number is not verified'
+        'Email address is not verified'
       )
     }
 
@@ -1565,9 +1565,47 @@ const sendPasswordResetOtp = asyncHandler(
       validateBeforeSave: false,
     })
 
-    // --------------------------------------------------
-    // DEVELOPMENT MODE
-    // --------------------------------------------------
+    try {
+      await sendEmail({
+        to: cleanEmail,
+        subject: 'CartNova Password Reset OTP',
+        text: `Your CartNova password reset OTP is ${otp}. This OTP is valid for 5 minutes.`,
+        html: `
+          <div style="font-family: Arial, sans-serif;">
+            <h2>CartNova Password Reset</h2>
+
+            <p>Your password reset OTP is:</p>
+
+            <h1 style="letter-spacing: 5px;">
+              ${otp}
+            </h1>
+
+            <p>This OTP is valid for 5 minutes.</p>
+
+            <p>
+              If you did not request a password reset,
+              please ignore this email.
+            </p>
+          </div>
+        `,
+      })
+    } catch (error) {
+      user.passwordResetOtp = null
+      user.passwordResetOtpExpires = null
+      user.passwordResetOtpAttempts = 0
+      user.passwordResetOtpLastSentAt = null
+
+      await user.save({
+        validateBeforeSave: false,
+      })
+
+      console.error('Password reset email error:', error)
+
+      res.status(500)
+      throw new Error(
+        'Unable to send password reset email. Please try again.'
+      )
+    }
 
     if (
       process.env.NODE_ENV === 'development'
@@ -1578,11 +1616,6 @@ const sendPasswordResetOtp = asyncHandler(
         otp,
       })
     }
-
-    // --------------------------------------------------
-    // PRODUCTION SMS
-    // --------------------------------------------------
-    // Actual SMS provider can be connected here.
 
     res.json({
       message: 'OTP sent successfully',
@@ -1598,36 +1631,36 @@ const sendPasswordResetOtp = asyncHandler(
 // Public
 const verifyPasswordResetOtp = asyncHandler(
   async (req, res) => {
-    const { phone, otp } = req.body
+    const { email, otp } = req.body
 
     if (
-      !phone ||
+      !email ||
       otp === undefined ||
       otp === null
     ) {
       res.status(400)
       throw new Error(
-        'Mobile number and OTP are required'
+        'Email address and OTP are required'
       )
     }
 
-    const cleanPhone = phone.toString().trim()
+    const cleanEmail = email.toLowerCase().trim()
 
     const user = await User.findOne({
-      phone: cleanPhone,
+      email: cleanEmail,
     })
 
     if (!user) {
       res.status(404)
       throw new Error(
-        'No account found with this mobile number'
+        'No account found with this email address'
       )
     }
 
-    if (!user.isPhoneVerified) {
+    if (!user.isEmailVerified) {
       res.status(403)
       throw new Error(
-        'Mobile number is not verified'
+        'Email address is not verified'
       )
     }
 
@@ -1773,19 +1806,19 @@ const verifyPasswordResetOtp = asyncHandler(
 const resetPassword = asyncHandler(
   async (req, res) => {
     const {
-      phone,
+      email,
       resetToken,
       password,
     } = req.body
 
     if (
-      !phone ||
+      !email ||
       !resetToken ||
       !password
     ) {
       res.status(400)
       throw new Error(
-        'Mobile number, reset token and password are required'
+        'Email address, reset token and password are required'
       )
     }
 
@@ -1800,7 +1833,7 @@ const resetPassword = asyncHandler(
       hashValue(resetToken)
 
     const user = await User.findOne({
-      phone: phone.toString().trim(),
+      email: email.toLowerCase().trim(),
 
       passwordResetToken:
         hashedResetToken,
@@ -1809,7 +1842,7 @@ const resetPassword = asyncHandler(
         $gt: new Date(),
       },
 
-      isPhoneVerified: true,
+      isEmailVerified: true,
     })
 
     if (!user) {
