@@ -121,7 +121,7 @@ const HomeScreen = ({ match }) => {
             {products.map((product) => (
               <Col
                 key={product._id}
-                xs={12}
+                xs={3}
                 sm={6}
                 lg={4}
                 xl={3}
