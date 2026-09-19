@@ -114,54 +114,70 @@ const RegisterScreen = ({ location, history }) => {
   // ==================================================
   // VERIFY EMAIL
   // ==================================================
+const verifyEmailHandler = async (e) => {
+  e.preventDefault()
 
-  const verifyEmailHandler = async (e) => {
-    e.preventDefault()
+  if (emailOtp.length !== 6) {
+    setVerifyError(
+      'Please enter a valid 6-digit email OTP'
+    )
+    return
+  }
 
-    if (emailOtp.length !== 6) {
-      setVerifyError('Please enter a valid 6-digit email OTP')
-      return
-    }
+  setVerifyLoading(true)
+  setVerifyError('')
+  setVerifyMessage('')
 
-    setVerifyLoading(true)
-    setVerifyError('')
-    setVerifyMessage('')
+  try {
+    const response = await fetch(
+      '/api/users/verify-email',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          otp: emailOtp,
+        }),
+      }
+    )
 
-    try {
-      const response = await fetch(
-        '/api/users/verify-email',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: email.trim(),
-            otp: emailOtp,
-          }),
-        }
-      )
+    const responseText = await response.text()
 
-      const data = await response.json()
+    let data = {}
 
-      if (!response.ok) {
+    if (responseText) {
+      try {
+        data = JSON.parse(responseText)
+      } catch (error) {
         throw new Error(
-          data.message || 'Email verification failed'
+          'Invalid response received from server'
         )
       }
-
-      setEmailVerified(true)
-      setEmailOtp('')
-
-      setVerifyMessage(
-        'Email verified successfully!'
-      )
-    } catch (err) {
-      setVerifyError(err.message)
-    } finally {
-      setVerifyLoading(false)
     }
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+          'Email verification failed'
+      )
+    }
+
+    setEmailVerified(true)
+    setEmailOtp('')
+
+    setVerifyMessage(
+      data.message ||
+        'Email verified successfully!'
+    )
+  } catch (err) {
+    setVerifyError(err.message)
+  } finally {
+    setVerifyLoading(false)
   }
+}
+  
 
   // ==================================================
   // VERIFY PHONE
