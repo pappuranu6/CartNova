@@ -121,7 +121,6 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const emailOtp = generateOtp()
-  const phoneOtp = generateOtp()
 
   const user = await User.create({
     name: name.trim(),
@@ -130,7 +129,7 @@ const registerUser = asyncHandler(async (req, res) => {
     phone: cleanPhone,
 
     isEmailVerified: false,
-    isPhoneVerified: false,
+    isPhoneVerified: true,
 
     emailVerificationOtp: hashValue(emailOtp),
     emailVerificationOtpExpires: new Date(
@@ -139,12 +138,6 @@ const registerUser = asyncHandler(async (req, res) => {
     emailVerificationOtpAttempts: 0,
     emailOtpLastSentAt: new Date(),
 
-    phoneVerificationOtp: hashValue(phoneOtp),
-    phoneVerificationOtpExpires: new Date(
-      Date.now() + OTP_EXPIRY
-    ),
-    phoneVerificationOtpAttempts: 0,
-    phoneOtpLastSentAt: new Date(),
 
     passwordResetOtpAttempts: 0,
   })
@@ -190,14 +183,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     message:
-      'Registration successful. Please verify your email and mobile number.',
+      'Registration successful. Please verify your email.',
     userId: user._id,
     email: cleanEmail,
     phone: cleanPhone,
-
-    ...(process.env.RETURN_PHONE_OTP === 'true' && {
-      phoneOtp,
-    }),
   })
 })
 
@@ -290,8 +279,9 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
     res.status(400)
     throw new Error(
-      `Invalid email OTP. ${MAX_OTP_ATTEMPTS -
-      user.emailVerificationOtpAttempts
+      `Invalid email OTP. ${
+        MAX_OTP_ATTEMPTS -
+        user.emailVerificationOtpAttempts
       } attempts remaining.`
     )
   }
@@ -403,8 +393,9 @@ const verifyPhone = asyncHandler(async (req, res) => {
 
     res.status(400)
     throw new Error(
-      `Invalid phone OTP. ${MAX_OTP_ATTEMPTS -
-      user.phoneVerificationOtpAttempts
+      `Invalid phone OTP. ${
+        MAX_OTP_ATTEMPTS -
+        user.phoneVerificationOtpAttempts
       } attempts remaining.`
     )
   }
@@ -564,8 +555,8 @@ const resendPhoneOtp = asyncHandler(async (req, res) => {
     message:
       'Phone verification OTP generated successfully',
 
-    ...(process.env.RETURN_PHONE_OTP === 'true' && {
-    otp,
+    ...(process.env.NODE_ENV === 'development' && {
+      otp,
     }),
   })
 })
@@ -630,19 +621,19 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     req.body.phone !== undefined
       ? req.body.phone.toString().trim()
       : user.phone
-  const newProfileImage =
+      const newProfileImage =
     req.body.profileImage !== undefined
       ? req.body.profileImage
       : user.profileImage
 
 
-  // ----------------------------------------------------
-  // PROFILE IMAGE
-  // ----------------------------------------------------
+     // ----------------------------------------------------
+// PROFILE IMAGE
+// ----------------------------------------------------
 
-  if (newProfileImage !== undefined) {
-    user.profileImage = newProfileImage
-  }
+if (newProfileImage !== undefined) {
+  user.profileImage = newProfileImage
+} 
 
   // ----------------------------------------------------
   // NAME
@@ -900,8 +891,9 @@ const verifyEmailChangeOtp = asyncHandler(
 
       res.status(400)
       throw new Error(
-        `Invalid email OTP. ${MAX_OTP_ATTEMPTS -
-        user.pendingEmailOtpAttempts
+        `Invalid email OTP. ${
+          MAX_OTP_ATTEMPTS -
+          user.pendingEmailOtpAttempts
         } attempts remaining.`
       )
     }
@@ -1114,8 +1106,9 @@ const verifyPhoneChangeOtp = asyncHandler(
 
       res.status(400)
       throw new Error(
-        `Invalid mobile OTP. ${MAX_OTP_ATTEMPTS -
-        user.pendingPhoneOtpAttempts
+        `Invalid mobile OTP. ${
+          MAX_OTP_ATTEMPTS -
+          user.pendingPhoneOtpAttempts
         } attempts remaining.`
       )
     }
@@ -1645,7 +1638,7 @@ const verifyPasswordResetOtp = asyncHandler(
     if (
       user.passwordResetOtpLockedUntil &&
       user.passwordResetOtpLockedUntil.getTime() >
-      Date.now()
+        Date.now()
     ) {
       res.status(429)
       throw new Error(
@@ -1731,8 +1724,9 @@ const verifyPasswordResetOtp = asyncHandler(
 
       res.status(400)
       throw new Error(
-        `Invalid OTP. ${MAX_OTP_ATTEMPTS -
-        user.passwordResetOtpAttempts
+        `Invalid OTP. ${
+          MAX_OTP_ATTEMPTS -
+          user.passwordResetOtpAttempts
         } attempts remaining.`
       )
     }

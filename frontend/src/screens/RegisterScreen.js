@@ -26,16 +26,12 @@ const RegisterScreen = ({ location, history }) => {
   const [showVerification, setShowVerification] = useState(false)
 
   const [emailOtp, setEmailOtp] = useState('')
-  const [phoneOtp, setPhoneOtp] = useState('')
 
   const [emailVerified, setEmailVerified] = useState(false)
-  const [phoneVerified, setPhoneVerified] = useState(false)
 
   const [verifyLoading, setVerifyLoading] = useState(false)
   const [verifyError, setVerifyError] = useState('')
   const [verifyMessage, setVerifyMessage] = useState('')
-
-  const [developmentPhoneOtp, setDevelopmentPhoneOtp] = useState('')
 
   const dispatch = useDispatch()
 
@@ -64,10 +60,6 @@ const RegisterScreen = ({ location, history }) => {
   useEffect(() => {
     if (userInfo) {
       setShowVerification(true)
-
-      if (userInfo.phoneOtp) {
-        setDevelopmentPhoneOtp(userInfo.phoneOtp)
-      }
     }
   }, [userInfo])
 
@@ -177,63 +169,6 @@ const verifyEmailHandler = async (e) => {
     setVerifyLoading(false)
   }
 }
-  
-
-  // ==================================================
-  // VERIFY PHONE
-  // ==================================================
-
-  const verifyPhoneHandler = async (e) => {
-    e.preventDefault()
-
-    if (phoneOtp.length !== 6) {
-      setVerifyError(
-        'Please enter a valid 6-digit mobile OTP'
-      )
-      return
-    }
-
-    setVerifyLoading(true)
-    setVerifyError('')
-    setVerifyMessage('')
-
-    try {
-      const cleanPhone = phone.replace(/\D/g, '')
-
-      const response = await fetch(
-        '/api/users/verify-phone',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            phone: cleanPhone,
-            otp: phoneOtp,
-          }),
-        }
-      )
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || 'Mobile verification failed'
-        )
-      }
-
-      setPhoneVerified(true)
-      setPhoneOtp('')
-
-      setVerifyMessage(
-        'Mobile number verified successfully!'
-      )
-    } catch (err) {
-      setVerifyError(err.message)
-    } finally {
-      setVerifyLoading(false)
-    }
-  }
 
   // ==================================================
   // RESEND EMAIL OTP
@@ -272,57 +207,6 @@ const verifyEmailHandler = async (e) => {
 
       setVerifyMessage(
         'New email OTP sent successfully!'
-      )
-    } catch (err) {
-      setVerifyError(err.message)
-    } finally {
-      setVerifyLoading(false)
-    }
-  }
-
-  // ==================================================
-  // RESEND MOBILE OTP
-  // ==================================================
-
-  const resendPhoneOtp = async () => {
-    if (!phone.trim()) return
-
-    setVerifyLoading(true)
-    setVerifyError('')
-    setVerifyMessage('')
-
-    try {
-      const cleanPhone = phone.replace(/\D/g, '')
-
-      const response = await fetch(
-        '/api/users/resend-phone-otp',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            phone: cleanPhone,
-          }),
-        }
-      )
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(
-          data.message || 'Unable to resend mobile OTP'
-        )
-      }
-
-      setPhoneOtp('')
-
-      if (data.otp) {
-        setDevelopmentPhoneOtp(data.otp)
-      }
-
-      setVerifyMessage(
-        'New mobile OTP generated successfully!'
       )
     } catch (err) {
       setVerifyError(err.message)
@@ -631,176 +515,27 @@ const verifyEmailHandler = async (e) => {
                 Mobile Number
               </Form.Label>
 
-              <div
-                style={{
-                  display: 'flex',
-                  gap: '10px',
-                  alignItems: 'stretch',
-                }}
-              >
-
-                <Form.Control
-                  type='tel'
-                  inputMode='numeric'
-                  maxLength='10'
-                  placeholder='Enter 10-digit mobile number'
-                  value={phone}
-                  onChange={(e) =>
-                    setPhone(
-                      e.target.value.replace(
-                        /\D/g,
-                        ''
-                      )
+              <Form.Control
+                type='tel'
+                inputMode='numeric'
+                maxLength='10'
+                placeholder='Enter 10-digit mobile number'
+                value={phone}
+                onChange={(e) =>
+                  setPhone(
+                    e.target.value.replace(
+                      /\D/g,
+                      ''
                     )
-                  }
-                  disabled={showVerification}
-                  required
-                />
-
-                {showVerification && (
-                  <Button
-                    type='button'
-                    variant={
-                      phoneVerified
-                        ? 'success'
-                        : 'primary'
-                    }
-                    onClick={() => {
-                      if (!phoneVerified) {
-                        const input =
-                          document.getElementById(
-                            'phoneOtp'
-                          )
-
-                        if (input) {
-                          input.focus()
-                        }
-                      }
-                    }}
-                    disabled={
-                      verifyLoading ||
-                      phoneVerified
-                    }
-                    style={{
-                      minWidth: '125px',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {phoneVerified
-                      ? '✓ Verified'
-                      : 'Verify Mobile'}
-                  </Button>
-                )}
-
-              </div>
+                  )
+                }
+                disabled={showVerification}
+                required
+              />
 
               <Form.Text className='cartnova-phone-help'>
                 Enter your 10-digit mobile number
               </Form.Text>
-
-              {/* MOBILE OTP */}
-
-              {showVerification &&
-                !phoneVerified && (
-
-                  <div
-                    style={{
-                      marginTop: '10px',
-                    }}
-                  >
-
-                    <Form.Control
-                      id='phoneOtp'
-                      type='text'
-                      inputMode='numeric'
-                      maxLength='6'
-                      placeholder='Enter 6-digit Mobile OTP'
-                      value={phoneOtp}
-                      onChange={(e) =>
-                        setPhoneOtp(
-                          e.target.value.replace(
-                            /\D/g,
-                            ''
-                          )
-                        )
-                      }
-                    />
-
-                    {developmentPhoneOtp && (
-                      <div
-                        style={{
-                          background: '#fff3cd',
-                          border: '1px solid #ffe69c',
-                          padding: '8px 10px',
-                          borderRadius: '6px',
-                          marginTop: '8px',
-                          fontSize: '14px',
-                        }}
-                      >
-
-                        <strong>
-                          Development Mobile OTP:
-                        </strong>{' '}
-
-                        {developmentPhoneOtp}
-
-                      </div>
-                    )}
-
-                    <div
-                      style={{
-                        display: 'flex',
-                        gap: '10px',
-                        marginTop: '8px',
-                      }}
-                    >
-
-                      <Button
-                        type='button'
-                        className='flex-grow-1'
-                        onClick={
-                          verifyPhoneHandler
-                        }
-                        disabled={
-                          verifyLoading ||
-                          phoneOtp.length !== 6
-                        }
-                      >
-                        <i className='fas fa-check'></i>{' '}
-                        Confirm Mobile OTP
-                      </Button>
-
-                      <Button
-                        type='button'
-                        variant='outline-secondary'
-                        onClick={
-                          resendPhoneOtp
-                        }
-                        disabled={verifyLoading}
-                      >
-                        <i className='fas fa-redo'></i>{' '}
-                        Resend
-                      </Button>
-
-                    </div>
-
-                  </div>
-                )}
-
-              {showVerification &&
-                phoneVerified && (
-
-                  <div
-                    style={{
-                      color: '#198754',
-                      fontWeight: '600',
-                      marginTop: '8px',
-                    }}
-                  >
-                    ✓ Mobile Number Verified
-                  </div>
-
-                )}
 
             </Form.Group>
 
@@ -877,8 +612,7 @@ const verifyEmailHandler = async (e) => {
           {/* BOTH VERIFIED */}
 
           {showVerification &&
-            emailVerified &&
-            phoneVerified && (
+            emailVerified && (
 
               <div className='mt-3'>
 
